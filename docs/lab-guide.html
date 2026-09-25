@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FLIGHT400 Bobathon Lab Guide</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3348;
+    --text: #e8eaf0;
+    --muted: #8b90a7;
+    --accent: #4f8ef7;
+    --accent2: #7c5cd8;
+    --success: #34d399;
+    --warning: #fbbf24;
+    --danger: #f87171;
+    --info: #60a5fa;
+    --radius: 10px;
+    --sidebar-w: 280px;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, "Segoe UI", system-ui, sans-serif; font-size: 15px; line-height: 1.65; display: flex; min-height: 100vh; }
+
+  /* ── SIDEBAR ────────────────────────────────────────── */
+  #sidebar {
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    transition: transform .25s ease;
+  }
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .sidebar-header {
+    padding: 22px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .sidebar-header .logo { font-size: 13px; color: var(--accent); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
+  .sidebar-header h2 { font-size: 15px; color: var(--text); font-weight: 600; line-height: 1.3; }
+
+  .nav-section { padding: 12px 0; }
+  .nav-section-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; padding: 0 20px 6px; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 20px;
+    cursor: pointer;
+    font-size: 13.5px;
+    color: var(--muted);
+    transition: background .15s, color .15s;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(79,142,247,.08); }
+  .nav-item .badge {
+    margin-left: auto;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 20px;
+    background: var(--surface2);
+    color: var(--muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .nav-item.active .badge { background: rgba(79,142,247,.2); color: var(--accent); }
+  .nav-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); flex-shrink: 0; transition: background .15s; }
+  .nav-item.active .nav-dot { background: var(--accent); }
+  .nav-item.done .nav-dot { background: var(--success); }
+  .nav-item.done { color: var(--success); }
+
+  .progress-wrap { padding: 16px 20px; border-top: 1px solid var(--border); margin-top: auto; }
+  .progress-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .progress-bar { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width .4s ease; }
+
+  /* ── MAIN ────────────────────────────────────────────── */
+  #main { flex: 1; overflow-y: auto; padding: 0; }
+  #main::-webkit-scrollbar { width: 6px; }
+  #main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .page { display: none; animation: fadein .25s ease; }
+  .page.active { display: block; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .page-hero {
+    background: linear-gradient(135deg, var(--surface2) 0%, rgba(79,142,247,.07) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 40px 48px 32px;
+  }
+  .page-hero .eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); margin-bottom: 10px; }
+  .page-hero h1 { font-size: 28px; font-weight: 700; line-height: 1.25; color: var(--text); margin-bottom: 10px; }
+  .page-hero .subtitle { font-size: 15px; color: var(--muted); max-width: 640px; }
+  .meta-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .pill { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
+  .pill.time { background: rgba(251,191,36,.12); color: var(--warning); }
+  .pill.level { background: rgba(79,142,247,.12); color: var(--accent); }
+  .pill.optional { background: rgba(124,92,216,.12); color: var(--accent2); }
+
+  .page-body { padding: 36px 48px 60px; max-width: 900px; }
+
+  /* ── STEPS ───────────────────────────────────────────── */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: flex; gap: 20px;
+    padding: 0 0 32px;
+    position: relative;
+  }
+  .step:not(:last-child)::before {
+    content: ''; position: absolute;
+    left: 17px; top: 36px; bottom: 0;
+    width: 2px; background: var(--border);
+  }
+  .step-num {
+    width: 36px; height: 36px; flex-shrink: 0;
+    background: var(--surface2); border: 2px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: var(--muted);
+    z-index: 1;
+    transition: all .2s;
+  }
+  .step:hover .step-num { border-color: var(--accent); color: var(--accent); }
+  .step-content { flex: 1; padding-top: 6px; }
+  .step-content h3 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .step-content p, .step-content li { color: var(--muted); font-size: 14px; }
+  .step-content ul, .step-content ol { padding-left: 20px; display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
+  .step-content li { color: var(--text); font-size: 14px; line-height: 1.6; }
+
+  /* ── CALLOUTS ────────────────────────────────────────── */
+  .callout {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 14px 16px; border-radius: var(--radius);
+    margin: 16px 0; font-size: 14px;
+    border-left: 4px solid;
+  }
+  .callout.tip { background: rgba(79,142,247,.08); border-color: var(--accent); color: var(--info); }
+  .callout.warning { background: rgba(251,191,36,.08); border-color: var(--warning); color: var(--warning); }
+  .callout.success { background: rgba(52,211,153,.08); border-color: var(--success); color: var(--success); }
+  .callout.info { background: rgba(124,92,216,.08); border-color: var(--accent2); color: var(--accent2); }
+  .callout .icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .callout p { margin: 0; color: inherit; font-size: 14px; }
+
+  /* ── CODE BLOCKS ─────────────────────────────────────── */
+  .code-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 14px 0;
+    overflow: hidden;
+  }
+  .code-header { padding: 8px 14px; background: rgba(255,255,255,.03); border-bottom: 1px solid var(--border); font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; display: flex; align-items: center; justify-content: space-between; }
+  .copy-btn { font-size: 11px; cursor: pointer; color: var(--muted); background: none; border: 1px solid var(--border); padding: 3px 10px; border-radius: 5px; transition: all .15s; }
+  .copy-btn:hover { background: var(--border); color: var(--text); }
+  pre { padding: 16px; overflow-x: auto; font-size: 13px; line-height: 1.6; color: #c9d1d9; font-family: "SF Mono", "Fira Code", monospace; white-space: pre; }
+
+  /* ── PROMPT BLOCK ────────────────────────────────────── */
+  .prompt-block {
+    background: rgba(79,142,247,.06);
+    border: 1px solid rgba(79,142,247,.25);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin: 14px 0;
+  }
+  .prompt-label { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
+  .prompt-text { font-size: 14px; color: var(--text); line-height: 1.6; font-style: italic; }
+
+  /* ── TABLE ───────────────────────────────────────────── */
+  .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: var(--radius); border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead { background: var(--surface2); }
+  th { padding: 10px 14px; text-align: left; color: var(--muted); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 10px 14px; color: var(--text); border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,.02); }
+  code { font-family: "SF Mono", "Fira Code", monospace; background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 12.5px; color: #c9d1d9; border: 1px solid var(--border); }
+
+  /* ── SECTION HEADINGS ────────────────────────────────── */
+  h2.section-title { font-size: 18px; font-weight: 700; color: var(--text); margin: 36px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  h2.section-title .section-badge { font-size: 11px; font-weight: 700; background: rgba(79,142,247,.15); color: var(--accent); padding: 3px 10px; border-radius: 20px; }
+  h3.subsection { font-size: 15px; font-weight: 600; color: var(--text); margin: 24px 0 10px; }
+
+  /* ── NAV BUTTONS ─────────────────────────────────────── */
+  .page-nav { display: flex; justify-content: space-between; align-items: center; padding: 24px 48px; border-top: 1px solid var(--border); margin-top: 20px; background: var(--surface); }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; transition: all .15s; border: none; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #3a7de8; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-ghost { background: none; color: var(--muted); }
+  .btn-ghost:hover { color: var(--text); }
+
+  /* ── MOBILE TOGGLE ───────────────────────────────────── */
+  #menu-toggle { display: none; position: fixed; top: 14px; left: 14px; z-index: 200; width: 38px; height: 38px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; align-items: center; justify-content: center; }
+  #menu-toggle span { display: block; width: 18px; height: 2px; background: var(--text); margin: 3px auto; border-radius: 1px; }
+
+  /* ── OVERVIEW CARDS ──────────────────────────────────── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin: 20px 0; }
+  .ex-card {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px; cursor: pointer; transition: all .2s;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .ex-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .ex-card .ex-num { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; }
+  .ex-card h3 { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.35; }
+  .ex-card .ex-time { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .ex-card.optional { border-left: 3px solid var(--accent2); }
+  .ex-card.optional .ex-num { color: var(--accent2); }
+
+  /* ── LIBRARY PICKER ──────────────────────────────────── */
+  .lib-picker { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; margin: 20px 0; }
+  .lib-picker h3 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+  .lib-row { display: flex; align-items: center; gap: 10px; }
+  .lib-picker select, .lib-picker input { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 7px; font-size: 14px; outline: none; transition: border .15s; }
+  .lib-picker select:focus, .lib-picker input:focus { border-color: var(--accent); }
+  #lib-display { font-family: "SF Mono", "Fira Code", monospace; font-size: 15px; font-weight: 700; color: var(--accent); padding: 8px 16px; background: rgba(79,142,247,.1); border-radius: 7px; border: 1px solid rgba(79,142,247,.3); }
+  #port-display { font-family: "SF Mono", "Fira Code", monospace; font-size: 15px; font-weight: 700; color: var(--success); padding: 8px 16px; background: rgba(52,211,153,.1); border-radius: 7px; border: 1px solid rgba(52,211,153,.3); }
+
+  /* ── SCREENSHOT ──────────────────────────────────────── */
+  .screenshot {
+    display: block; max-width: 100%; height: auto;
+    border-radius: var(--radius); border: 1px solid var(--border);
+    margin: 12px 0; background: var(--surface2);
+  }
+  .screenshot-group { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+  .screenshot-group .screenshot { flex: 1 1 200px; max-width: 100%; margin: 0; }
+  .screenshot-caption { font-size: 12px; color: var(--muted); margin-top: -6px; margin-bottom: 12px; font-style: italic; }
+
+  /* ── TRACK SWITCHER ──────────────────────────────────── */
+  .track-tabs {
+    display: flex; gap: 6px;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .track-tab {
+    flex: 1; text-align: center;
+    padding: 7px 6px; border-radius: 8px;
+    font-size: 11px; font-weight: 700;
+    cursor: pointer; border: 1px solid var(--border);
+    color: var(--muted); background: none;
+    transition: all .15s; line-height: 1.3;
+  }
+  .track-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .track-tab.ansible-tab.active { background: var(--accent2); border-color: var(--accent2); }
+  .nav-track { display: none; }
+  .nav-track.active { display: block; }
+
+  @media (max-width: 768px) {
+    #sidebar { position: fixed; left: 0; top: 0; transform: translateX(-100%); }
+    #sidebar.open { transform: none; }
+    #menu-toggle { display: flex; }
+    .page-hero { padding: 56px 20px 24px; }
+    .page-body { padding: 24px 20px 48px; }
+    .page-nav { padding: 16px 20px; }
+    #main { padding-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="Toggle menu">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- ─── SIDEBAR ─────────────────────────────────────── -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">Bobathon 2024</div>
+    <h2>FLIGHT400 Lab Guide</h2>
+  </div>
+
+  <!-- Track switcher tabs -->
+  <div class="track-tabs">
+    <button class="track-tab active" id="tab-dev" onclick="switchTrack('dev')">💻 Developer<br>Track</button>
+    <button class="track-tab ansible-tab" id="tab-ansible" onclick="switchTrack('ansible')">⚙️ Ansible<br>Track</button>
+  </div>
+
+  <!-- ── DEVELOPER TRACK NAV ── -->
+  <div class="nav-track active" id="nav-dev">
+    <div class="nav-section">
+      <div class="nav-section-label">Getting Started</div>
+      <a class="nav-item active" onclick="showPage('overview', this)">
+        <span class="nav-dot"></span> Overview
+      </a>
+      <a class="nav-item" onclick="showPage('setup', this)">
+        <span class="nav-dot"></span> Part 0 — Environment Setup
+        <span class="badge">5 steps</span>
+      </a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Exercises</div>
+      <a class="nav-item" onclick="showPage('ex1', this)">
+        <span class="nav-dot"></span> Exercise 1 — Architecture Docs
+        <span class="badge">~30m</span>
+      </a>
+      <a class="nav-item" onclick="showPage('ex2', this)">
+        <span class="nav-dot"></span> Exercise 2 — Modernization
+        <span class="badge">~15m</span>
+      </a>
+      <a class="nav-item" onclick="showPage('ex3', this)">
+        <span class="nav-dot"></span> Exercise 3 — Field Expansion
+        <span class="badge">~30m</span>
+      </a>
+      <a class="nav-item" onclick="showPage('ex4', this)">
+        <span class="nav-dot"></span> Exercise 4 — DB Optimization
+        <span class="badge">~15m</span>
+      </a>
+      <a class="nav-item" onclick="showPage('ex5', this)">
+        <span class="nav-dot"></span> Exercise 5 — Ask Your System
+        <span class="badge">~10m</span>
+      </a>
+      <a class="nav-item" onclick="showPage('ex6', this)">
+        <span class="nav-dot"></span> Exercise 6 — RPGUnit Tests
+        <span class="badge">~20m</span>
+      </a>
+      <a class="nav-item" onclick="showPage('ex7', this)">
+        <span class="nav-dot"></span> Exercise 7 — React App
+        <span class="badge">Optional</span>
+      </a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Wrap-Up</div>
+      <a class="nav-item" onclick="showPage('summary', this)">
+        <span class="nav-dot"></span> Summary
+      </a>
+    </div>
+  </div>
+
+  <!-- ── ANSIBLE TRACK NAV ── -->
+  <div class="nav-track" id="nav-ansible">
+    <div class="nav-section">
+      <div class="nav-section-label">Ansible Track</div>
+      <a class="nav-item" onclick="showPage('ansible-overview', this)">
+        <span class="nav-dot"></span> Overview
+      </a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Labs</div>
+      <a class="nav-item" onclick="showPage('lab4', this)">
+        <span class="nav-dot"></span> Lab 4 — IBM i MCP Mode
+        <span class="badge">~15m</span>
+      </a>
+      <a class="nav-item" onclick="showPage('lab5', this)">
+        <span class="nav-dot"></span> Lab 5 — PTF Management
+        <span class="badge">~20m</span>
+      </a>
+      <a class="nav-item" onclick="showPage('lab6', this)">
+        <span class="nav-dot"></span> Lab 6 — Security Compliance
+        <span class="badge">~25m</span>
+      </a>
+      <a class="nav-item" onclick="showPage('lab200', this)">
+        <span class="nav-dot"></span> Lab 200 — Ops &amp; SysAdmin
+        <span class="badge">~45m</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Your Progress</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+</nav>
+
+<!-- ─── MAIN CONTENT ──────────────────────────────────── -->
+<main id="main">
+
+  <!-- OVERVIEW -->
+  <div class="page active" id="page-overview">
+    <div class="page-hero">
+      <img src="../IBMI-Bob-UHG.png" alt="UnitedHealth Group × IBM Bob × IBM i Technical Lab" class="screenshot" style="max-height:260px;object-fit:cover;width:100%;margin-bottom:16px;" />
+      <div class="eyebrow">Bobathon Event</div>
+      <h1>FLIGHT400 IBM i Modernization Lab</h1>
+      <p class="subtitle">A hands-on lab where you'll use IBM Bob AI to explain, modernize, optimize, and extend a real legacy IBM i application — no deep mainframe experience required.</p>
+      <div class="meta-pills">
+        <span class="pill time">⏱ 2–3 hours total</span>
+        <span class="pill level">All skill levels welcome</span>
+        <span class="pill optional">Exercise 7 is optional</span>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="callout tip"><div class="icon">💡</div><p><strong>First time here?</strong> Start with <strong>Part 0 — Environment Setup</strong>. Complete all five setup steps before attempting any exercise. Click it in the left sidebar.</p></div>
+
+      <h2 class="section-title">What You'll Build Today</h2>
+      <div class="card-grid">
+        <div class="ex-card" onclick="showPage('setup', document.querySelector('[onclick*=setup]'))">
+          <div class="ex-num">Setup</div>
+          <h3>Environment &amp; Connections</h3>
+          <div class="ex-time">⏱ ~15 min</div>
+        </div>
+        <div class="ex-card" onclick="showPage('ex1', document.querySelector('[onclick*=ex1]'))">
+          <div class="ex-num">Exercise 1</div>
+          <h3>Architecture Docs &amp; ERD</h3>
+          <div class="ex-time">⏱ ~30 min</div>
+        </div>
+        <div class="ex-card" onclick="showPage('ex2', document.querySelector('[onclick*=ex2]'))">
+          <div class="ex-num">Exercise 2</div>
+          <h3>OPM → ILE RPG Modernization</h3>
+          <div class="ex-time">⏱ ~15 min</div>
+        </div>
+        <div class="ex-card" onclick="showPage('ex3', document.querySelector('[onclick*=ex3]'))">
+          <div class="ex-num">Exercise 3</div>
+          <h3>Add a Field End-to-End</h3>
+          <div class="ex-time">⏱ ~30 min</div>
+        </div>
+        <div class="ex-card" onclick="showPage('ex4', document.querySelector('[onclick*=ex4]'))">
+          <div class="ex-num">Exercise 4</div>
+          <h3>Database Query Optimization</h3>
+          <div class="ex-time">⏱ ~15 min</div>
+        </div>
+        <div class="ex-card" onclick="showPage('ex5', document.querySelector('[onclick*=ex5]'))">
+          <div class="ex-num">Exercise 5</div>
+          <h3>Natural Language System Queries</h3>
+          <div class="ex-time">⏱ ~10 min</div>
+        </div>
+        <div class="ex-card" onclick="showPage('ex6', document.querySelector('[onclick*=ex6]'))">
+          <div class="ex-num">Exercise 6</div>
+          <h3>RPGUnit Test Suite</h3>
+          <div class="ex-time">⏱ ~20 min</div>
+        </div>
+        <div class="ex-card optional" onclick="showPage('ex7', document.querySelector('[onclick*=ex7]'))">
+          <div class="ex-num">Exercise 7 — Optional</div>
+          <h3>React Carbon App from Green Screen</h3>
+          <div class="ex-time">⏱ ~30 min</div>
+        </div>
+      </div>
+
+      <h2 class="section-title">Before You Begin — Prerequisites</h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">✓</div><div class="step-content"><h3>IBM Bob IDE installed on your laptop</h3><p>You should have received an invitation email to join your team's Bob account.</p></div></div>
+        <div class="step"><div class="step-num">✓</div><div class="step-content"><h3>Internet access</h3></div></div>
+        <div class="step"><div class="step-num">✓</div><div class="step-content"><h3>IBM i TechZone LPAR credentials</h3><p>Your instructor will provide the host IP, user profile, and private key.</p></div></div>
+        <div class="step"><div class="step-num">✓</div><div class="step-content"><h3>IBM Bob Premium Package for i</h3><p>Pre-installed for most Bobathon teams — you'll verify this in Setup Step 2.</p></div></div>
+      </div>
+    </div>
+    <div class="page-nav">
+      <span></span>
+      <button class="btn btn-primary" onclick="showPage('setup', document.querySelector('[onclick*=setup]'))">Start Setup →</button>
+    </div>
+  </div>
+
+  <!-- SETUP -->
+  <div class="page" id="page-setup">
+    <div class="page-hero">
+      <div class="eyebrow">Part 0</div>
+      <h1>Environment Setup</h1>
+      <p class="subtitle">Complete all five steps before starting any exercise. Don't skip steps — later exercises depend on this setup being correct.</p>
+    </div>
+    <div class="page-body">
+
+      <div class="callout warning"><div class="icon">⚠️</div><p><strong>Instructors:</strong> Complete your instructor setup separately before participants arrive. See the Instructor Setup README for details.</p></div>
+
+      <!-- LIBRARY PICKER -->
+      <div class="lib-picker">
+        <h3>🔢 Enter Your Assigned Student Number</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Your instructor will tell you your number (1–50). Enter it below and your library name and port will appear everywhere in this guide.</p>
+        <div class="lib-row">
+          <input type="number" id="student-num" min="1" max="50" placeholder="e.g. 3" oninput="updateLib()" style="width:100px;" />
+          <span style="color:var(--muted);font-size:13px;">→ Your library:</span>
+          <span id="lib-display">FLGHT4nn</span>
+          <span style="color:var(--muted);font-size:13px;">Dev port:</span>
+          <span id="port-display">30nn</span>
+        </div>
+      </div>
+
+      <h2 class="section-title">Step 1 <span class="section-badge">Bob Setup</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Create your IBM ID</h3><p>Open the <strong>"You've been invited to join your team"</strong> email you received and click the link to create your IBM ID. This gives you access to IBM Bob.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Download &amp; open Bob</h3><p>Download Bob using the correct installer for your computer and open it. If Bob asks whether to import settings from another editor, click your regular IDE or <strong>Skip for now</strong>. If it asks about chat migration, click <strong>Skip migration</strong>.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Log in to Bob</h3><p>In the Bob chat window, click <strong>Log in to Bob</strong>. When asked to allow Bob to sign in, click <strong>Allow</strong>. Bob will ask if you want to open a link — click <strong>Open</strong>. This opens your browser to complete sign-in.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><h3>Verify you're on the correct team</h3><p>Click the <strong>gear icon</strong> above the Bob chat window → <strong>General</strong> → Team selector. Make sure it shows a team with <strong>Bobathon</strong> in the name. If not, click and select the correct account.</p>
+          <div class="screenshot-group">
+            <img src="img/settings-pt1.png" alt="Bob settings panel" class="screenshot" />
+            <img src="img/change-team.png" alt="Bob team selector" class="screenshot" />
+          </div>
+        </div></div>
+      </div>
+
+      <h2 class="section-title">Step 2 <span class="section-badge">Extensions</span></h2>
+      <div class="callout tip"><div class="icon">💡</div><p>Open the Extensions view with <code>Cmd+Shift+X</code> (macOS) or <code>Ctrl+Shift+X</code> (Windows/Linux).</p></div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Verify IBM Bob Premium Package for i</h3><p>Search for <code>"IBM Bob Premium"</code>. If it appears under <em>Installed</em> — you're done with this step. If not, click <strong>Install</strong>. This package includes Code for IBM i (source editing, Object Browser, IFS Browser, Db2 for i, and more).</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Confirm it is activated in Bob</h3><p>In the Bob Activity sidebar, open Bob extension settings and verify <strong>IBM Bob Premium Package for i</strong> is activated. If you just installed it, reload Bob when prompted first. Activation unlocks the IBM i Developer and IBM i Database modes.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Install IBM i Development Pack</h3><p>Search for <code>"IBM i Development Pack"</code> in Extensions. This is <strong>not</strong> pre-installed — click <strong>Install</strong> if it doesn't appear under <em>Installed</em>. Reload Bob if prompted.</p></div></div>
+      </div>
+
+      <h2 class="section-title">Step 3 <span class="section-badge">Your Library</span></h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">Each participant has their own copy of FLIGHT400 in a dedicated library. <strong>Use only your assigned number throughout all exercises.</strong></p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Library</th><th>Dev Port</th><th>React App URL</th></tr></thead>
+          <tbody id="lib-table"></tbody>
+        </table>
+      </div>
+      <div class="callout tip"><div class="icon">💡</div><p>The <strong>Dev Port</strong> is only needed for Exercise 7. When Bob asks you to pin Vite to a port, use the value from your row.</p></div>
+
+      <h2 class="section-title">Step 4 <span class="section-badge">Connect Bob to IBM i</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Open the IBM i panel</h3><p>Click the IBM i icon in the left Activity Bar of Bob.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Add a new connection</h3><p>Click <strong>New Connection</strong> and enter the <strong>host IP</strong>, <strong>user profile</strong>, and <strong>ssh_private_key</strong> provided by your instructor. <strong>Do not use the password — use only the ssh_private_key.</strong></p>
+          <img src="img/i-connection.png" alt="IBM i connection dialog" class="screenshot" />
+        </div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Add your library to the User Library List</h3><p>In Code for IBM i, go to <strong>User Library List</strong> → click the <strong>+</strong> icon → type <code>FLGHT4nn</code> (replace <code>nn</code> with your number) → press Enter.</p>
+          <div class="screenshot-group">
+            <img src="img/add-library.png" alt="User Library List panel" class="screenshot" />
+            <img src="img/add-library-name.png" alt="Add library name input" class="screenshot" />
+          </div>
+        </div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><h3>Add your library to the Object Browser</h3><p>Go to <strong>Object Browser</strong> → click the funnel icon → <strong>Create new filter</strong>. Set <strong>Libraries</strong> to <code>FLGHT4nn</code>, <strong>Object types</strong> to <code>*ALL</code>. Click <strong>Save Settings</strong>.</p>
+          <div class="screenshot-group">
+            <img src="img/add-object-filter.png" alt="Object Browser filter" class="screenshot" />
+            <img src="img/object-filter-fields.png" alt="Object Browser filter fields" class="screenshot" />
+          </div>
+        </div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-content"><h3>Set the workspace to Library List</h3><p>Click the <strong>+</strong> icon above the Bob chat window. Make sure your library is listed under <strong>New Task in Library List</strong> and select that option.</p>
+          <img src="img/set-workspace.png" alt="Bob scope picker" class="screenshot" />
+        </div></div>
+      </div>
+
+      <h2 class="section-title">Step 5 <span class="section-badge">SSH Tunnel</span></h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Required for the green screen and Exercise 7. Your instructor provides the host IP, user profile, and password.</p>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Download the private key &amp; set permissions</h3>
+          <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>chmod 600 ssh_private_key.pem</pre></div>
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Open the SSH tunnel</h3><p>Replace <code>&lt;myuser&gt;@&lt;myIPaddress&gt;</code> with your TechZone values. On macOS/Linux you may need <code>sudo ssh</code>; on Windows remove <code>sudo</code> and run as Administrator.</p>
+          <img src="img/bob-lab-network.png" alt="Lab network diagram" class="screenshot" />
+          <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>sudo ssh -L 50000:localhost:23 -L 2001:localhost:2001 -L 449:localhost:449 \
+  -L 8470:localhost:8470 -L 8471:localhost:8471 -L 8472:localhost:8472 \
+  -L 2007:localhost:2007 -L 8473:localhost:8473 -L 8474:localhost:8474 \
+  -L 8475:localhost:8475 -L 8476:localhost:8476 -L 2003:localhost:2003 \
+  -L 2002:localhost:2002 -L 2006:localhost:2006 -L 2300:localhost:2300 \
+  -L 2323:localhost:2323 -L 2005:localhost:2005 -L 8076:localhost:8076 \
+  -L 3001:localhost:3001 -L 3002:localhost:3002 ... -L 3050:localhost:3050 \
+  -o ExitOnForwardFailure=yes -o ServerAliveInterval=15 -o ServerAliveCountMax=3 \
+  &lt;myuser&gt;@&lt;myIPaddress&gt; -i ssh_private_key.pem</pre></div>
+          <div class="callout warning"><div class="icon">⚠️</div><p>The full tunnel command includes ports 3001–3050 for React apps. Your instructor will provide the complete command or you can copy it from the README.</p></div>
+        </div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>(Optional) Connect IBM i Access Client Solutions for 5250</h3><p>Only needed if you want to view the green screen. Install <a href="https://www.ibm.com/support/pages/ibm-i-access-client-solutions" style="color:var(--accent)">IBM i Access Client Solutions</a>, set IP Address to <code>127.0.0.1</code>, port to <code>50000</code>. Log in, then:</p>
+          <div class="code-block"><div class="code-header">5250 commands <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ADDLIBLE FLGHT4nn
+CALL FLGHT4nn/FRS021</pre></div>
+          <img src="img/ACS-green-screen.png" alt="Flight Maintenance in 5250" class="screenshot" />
+          <div class="callout warning"><div class="icon">⚠️</div><p>When finished in the 5250 screen, always exit by pressing <strong>F3</strong>.</p></div>
+        </div></div>
+      </div>
+      <div class="callout success"><div class="icon">✅</div><p>Setup complete! You are now ready to start Exercise 1. Use the button below or click the exercise in the sidebar.</p></div>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('overview', document.querySelector('[onclick*=overview]'))">← Overview</button>
+      <button class="btn btn-primary" onclick="showPage('ex1', document.querySelector('[onclick*=ex1]'))">Exercise 1 →</button>
+    </div>
+  </div>
+
+  <!-- EXERCISE 1 -->
+  <div class="page" id="page-ex1">
+    <div class="page-hero">
+      <div class="eyebrow">Exercise 1</div>
+      <h1>Code Explanation &amp; Architecture Documentation</h1>
+      <p class="subtitle">Use Bob's IBM i Developer mode to auto-generate an architecture overview with Mermaid diagrams, then switch to Database mode to produce an Entity Relationship Diagram.</p>
+      <div class="meta-pills"><span class="pill time">⏱ ~30 minutes</span><span class="pill level">IBM i Developer mode + IBM i Database mode</span></div>
+    </div>
+    <div class="page-body">
+
+      <h2 class="section-title">1a <span class="section-badge">Browse the Object Browser</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Expand User Library List and Object Browser</h3><p>In the IBM i sidebar, expand both panels. If you haven't added a filter for <code>FLGHT4nn</code> yet, do it now with Object types set to <code>*ALL</code>.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Browse source programs</h3><p>Expand <strong>Source Files</strong> and open a few programs from <code>QRPGSRC</code> to get a feel for the classic fixed-format RPG style.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Preview a display file</h3><p>Navigate to <code>QDDSSRCD</code> and open <code>FRS001DF</code>. Click <strong>Preview All</strong> on the first line to see the green-screen layout rendered visually.</p>
+          <div class="callout tip"><div class="icon">💡</div><p>Try previewing <code>FRS021DF</code> too — this is the <strong>Flight Maintenance</strong> screen used in Exercise 3.</p></div>
+        </div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><h3>Check program age</h3><p>In the Object Browser, click <code>FRS000.pgm</code> — the flight reservation logon. Check its <strong>Detail</strong>: it was compiled in 1997, over 30 years ago!</p></div></div>
+      </div>
+
+      <h2 class="section-title">1b <span class="section-badge">Generate Architecture Overview</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Switch to IBM i Developer mode</h3><p>Click the <strong>+ (Scope) button</strong> and select <strong>(QSYS) Library List</strong> as the context scope. Confirm <code>FLGHT4nn</code> is in the library list.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Send this prompt to Bob</h3><p>Replace <code>4nn</code> with your number:</p>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Generate a comprehensive architecture overview of the FLGHT4nn application in QSYS in Markdown format. Include a high-level description, the main program flows, key programs and their roles, a Mermaid architecture diagram, and a summary of the database tables used."</div></div>
+        </div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Review the output</h3><p>Bob analyzes programs, source members, and database files and returns a structured Markdown document. Notice how it identifies the menu-driven architecture, core transaction programs, and the underlying database schema.</p>
+          <div class="callout tip"><div class="icon">💡</div><p>Copy the output to a new file <code>FLGHT4nn-Architecture.md</code> in your workspace for reference.</p></div>
+        </div></div>
+      </div>
+
+      <h2 class="section-title">1c <span class="section-badge">Generate ERD</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Switch to IBM i Database mode</h3><p>Use the mode selector at the bottom of the Bob chat panel.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Run the /erd command</h3><p>Type <code>/erd</code> first so it highlights in Bob chat, then replace <code>4nn</code> with your number:</p>
+          <div class="prompt-block"><div class="prompt-label">Bob Slash Command</div><div class="prompt-text">/erd FLGHT4nn</div></div>
+        </div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Review the Mermaid ERD</h3><p>Bob introspects <code>FLIGHTS</code>, <code>ORDERS</code>, <code>CUSTOMERS</code>, <code>AGENTS</code>, etc. Key relationships: <code>ORDERS</code> links to <code>FLIGHTS</code>, <code>CUSTOMERS</code>, and <code>AGENTS</code>. Copy it to your architecture document.</p></div></div>
+      </div>
+
+      <h2 class="section-title">1d <span class="section-badge">Optional</span></h2>
+      <h3 class="subsection">Draw.io Diagram</h3>
+      <div class="callout info"><div class="icon">📝</div><p>Install the <strong>Draw.io Integration</strong> extension first: <code>Cmd+Shift+X</code> → search "Draw.io Integration" → Install.</p></div>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt (IBM i Developer mode, Library List scope)</div><div class="prompt-text">"Analyze the FLGHT4nn application from the library list and generate a draw.io architecture diagram showing the main programs, menus, and database files. Save the file as <code>FLGHT4nn-architecture.drawio</code> in <code>$HOME/docs/</code> on IBM i."</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:10px;">In the IFS Browser, navigate to <code>$HOME/docs/</code> and click the <code>.drawio</code> file — the Draw.io extension renders it directly in the editor.</p>
+      <img src="img/drawIo.png" alt="Draw.io architecture diagram" class="screenshot" />
+
+      <h2 class="section-title">1e <span class="section-badge">Optional</span></h2>
+      <h3 class="subsection">Business Rules Extraction</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Drill down on a specific member using the Business Rules Extraction workflow. Click the <strong>workflow icon</strong> at the top of the Bob panel, choose to run the workflow in your library list, and select <strong>Business Rules Extraction</strong>.</p>
+      <img src="img/workflows-icon.png" alt="Workflows icon in the Bob panel" class="screenshot" style="max-width:200px;" />
+      <div class="table-wrap">
+        <table><thead><tr><th>Option</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Library</td><td><code>FLGHT4nn</code></td></tr>
+          <tr><td>Source File</td><td><code>QRPGLESRC</code></td></tr>
+          <tr><td>Member</td><td><code>FRS401.RPGLE</code></td></tr>
+        </tbody></table>
+      </div>
+      <p style="font-size:14px;color:var(--muted);margin-top:10px;">Specify an output path unique to your library number, e.g. <code>/home/ITZUSER/flght4nn/docs/business-rules/FRS401-report.md</code>.</p>
+      <img src="img/IFS-location.png" alt="IFS output path" class="screenshot" />
+      <div class="callout success"><div class="icon">✅</div><p>You now have a living architecture document generated entirely from the legacy codebase — no manual reverse-engineering required!</p></div>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('setup', document.querySelector('[onclick*=setup]'))">← Setup</button>
+      <button class="btn btn-primary" onclick="showPage('ex2', document.querySelector('[onclick*=ex2]'))">Exercise 2 →</button>
+    </div>
+  </div>
+
+  <!-- EXERCISE 2 -->
+  <div class="page" id="page-ex2">
+    <div class="page-hero">
+      <div class="eyebrow">Exercise 2</div>
+      <h1>Program-Level Explanation &amp; Modernization</h1>
+      <p class="subtitle">Understand an old OPM RPG program, then modernize it to free-format ILE RPG using Bob's built-in modernization workflow.</p>
+      <div class="meta-pills"><span class="pill time">⏱ ~15 minutes</span><span class="pill level">IBM i Developer mode</span></div>
+    </div>
+    <div class="page-body">
+
+      <h2 class="section-title">2a <span class="section-badge">Understand FRS409</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Switch to IBM i Developer mode</h3></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Open FRS409</h3><p>In the Object Browser, navigate to <code>FLGHT4nn/QRPGSRC</code> and open <code>FRS409</code>.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Ask Bob to explain it</h3>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"What does this program do?"</div></div>
+          <p style="margin-top:8px;">Bob will explain that <code>FRS409</code> is the <strong>Order Modification Confirmation Window</strong> — an OPM RPG program that displays a confirmation popup when a user modifies an order. It handles F3 (Exit), F12 (Cancel), and Enter via a <code>DOUEQ</code> loop with <code>CASEQ</code> dispatch subroutines.</p>
+        </div></div>
+      </div>
+
+      <h2 class="section-title">2b <span class="section-badge">Modernize FRS409</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Ask Bob to modernize</h3><p>With <code>FRS409</code> still open in the editor:</p>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Can you modernize this program?"</div></div>
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Start the workflow</h3><p>Bob recognizes the fixed-format OPM RPG and offers to run the <strong>RPG Modernization (Fixed to Free Format)</strong> workflow. Choose <strong>Start workflow</strong>.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Fill in the workflow form</h3>
+          <div class="table-wrap"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>
+            <tr><td>Source file</td><td><code>FLGHT4nn/QRPGSRC</code></td></tr>
+            <tr><td>Source member</td><td><code>FRS409</code> (Bob pre-fills from open editor)</td></tr>
+          </tbody></table></div>
+          <p style="font-size:14px;color:var(--muted);margin-top:8px;">Accept the other defaults and click <strong>Analyze Member</strong>. Bob spins up a subagent to convert fixed-format RPG to modern free-format ILE RPG, then runs a <code>CRTBNDRPG</code> compile. Watch the output in the terminal panel.</p>
+        </div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><h3>Confirm output location</h3><p>When Bob prompts <strong>"Confirm Output Member Location"</strong>, ensure the path contains your library number and approve. Bob places the modernized source at <code>FLGHT4nn/QRPGLESRC/FRS409.RPGLE</code>.</p></div></div>
+      </div>
+
+      <h2 class="section-title">2c <span class="section-badge">Review the Summary</span></h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Bob automatically generates a <strong>Modernization Summary Report</strong> in the chat including:</p>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text)">
+        <li>What was changed and why</li>
+        <li>Lines of code before vs. after</li>
+        <li>Opcode-by-opcode conversion notes</li>
+        <li>Compilation result</li>
+      </ul>
+      <div class="callout success"><div class="icon">✅</div><p>At the bottom of the Bob chat panel, click the <strong>File Changed</strong> item to see the diff for <code>FRS409.RPGLE</code>. In the Object Browser, right-click <code>FRS409.PGM</code> → <strong>Detail</strong> to check the new compile timestamp.</p></div>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('ex1', document.querySelector('[onclick*=ex1]'))">← Exercise 1</button>
+      <button class="btn btn-primary" onclick="showPage('ex3', document.querySelector('[onclick*=ex3]'))">Exercise 3 →</button>
+    </div>
+  </div>
+
+  <!-- EXERCISE 3 -->
+  <div class="page" id="page-ex3">
+    <div class="page-hero">
+      <div class="eyebrow">Exercise 3</div>
+      <h1>Field Expansion: Add Total Flight Hours</h1>
+      <p class="subtitle">Use Bob to plan then implement a new business field — Total Flight Hours — from the physical file all the way to the 5250 screen.</p>
+      <div class="meta-pills"><span class="pill time">⏱ ~30 minutes</span><span class="pill level">IBM i Developer mode, Library List scope</span></div>
+    </div>
+    <div class="page-body">
+
+      <div class="callout tip"><div class="icon">💡</div><p><strong>Before you begin:</strong> Switch to <strong>IBM i Developer</strong> mode, set scope to <strong>Library List (QSYS)</strong>, and confirm <code>FLGHT4nn</code> is on the library list. You stay in Developer mode for the whole exercise.</p></div>
+
+      <h3 class="subsection">Field Spec at a Glance</h3>
+      <div class="table-wrap"><table><thead><tr><th>Layer</th><th>Field Name</th><th>Definition</th></tr></thead><tbody>
+        <tr><td>Database (PF)</td><td><code>FLHRS</code></td><td>4P 0 (packed, 4 digits, 0 decimals)</td></tr>
+        <tr><td>Logical / RPG</td><td><code>FHRS</code></td><td><code>RENAME(FLHRS)</code></td></tr>
+        <tr><td>Screen (DDS)</td><td><code>SFLHRS</code></td><td>4/0, input/output, after Mileage</td></tr>
+      </tbody></table></div>
+
+      <h2 class="section-title">3a <span class="section-badge">Create a Custom Rule</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Open Bob settings</h3><p>Click the <strong>settings icon</strong> at the top right of the Bob panel.</p>
+          <img src="img/custom-mode-1.png" alt="Settings icon at the top right of the Bob panel" class="screenshot" />
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Navigate to IBM i Developer mode</h3><p>Click <strong>Modes</strong> on the left sidebar → select <strong>IBM i Developer</strong>.</p>
+          <img src="img/custom-mode-2.png" alt="Modes settings panel with IBM i Developer selected" class="screenshot" />
+        </div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Open the mode editor</h3><p>Click the <strong>pencil (edit) icon</strong> in the top right.</p>
+          <img src="img/custom-mode-3.png" alt="IBM i Developer mode detail page with pencil edit icon highlighted" class="screenshot" />
+        </div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><h3>Add custom instructions</h3><p>Scroll to the <strong>Custom Instructions</strong> section and add the following text, then click <strong>Save</strong>:</p>
+          <div class="code-block"><div class="code-header">Custom Instructions to paste <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>## When a user asks to plan or implement code changes
+- Make insert-only changes using apply_diff with surrounding context; do not use insert_content.
+- When inserting, anchor the diff on the line ABOVE the insertion point and do not include
+  trailing structural lines (DDS key "K ..." or record-format "R ..." lines) in the
+  replacement - leave those lines untouched.
+- When adding a fixed-form entry that mirrors an existing one (RPG I-spec, O-spec, or DDS
+  field), copy the model line's EXACT column positions and change only the field name and
+  value. Re-pad so numbers stay right-justified in their original columns and the data-type
+  letter stays in its column. If the new field name is a different length than the model,
+  adjust the padding so every downstream column is unchanged. Never eyeball the spacing.
+- Preserve exact DDS column positions for field-definition entries (name, length, type).
+  Keyword continuation lines like COLHDG only need to start after position 44.
+- Preserve the existing OPM RPG fixed-column style.
+- Do not add ALWNULL, do not use SQL ALTER TABLE, do not change the field to 5P 1.
+- COLHDG belongs only in the physical file, never in the display file.
+- Always show the diff and wait for my approval before saving; never compile until I say so.</pre></div>
+          <img src="img/custom-mode-4.png" alt="Edit IBM i Developer mode dialog showing custom instructions and Save button" class="screenshot" />
+        </div></div>
+      </div>
+      <div class="callout success"><div class="icon">✅</div><p>Bob will now apply these rules automatically whenever IBM i Developer mode is used.</p></div>
+
+      <h2 class="section-title">3b <span class="section-badge">Explore Flight Maintenance Screen</span></h2>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Preview the display file FRS021DF from FLGHT4nn/QDDSSRCD and list every field on the Flight Maintenance screen, noting the input/output type of each and the screen-field naming convention (e.g. SFLGHT, SMILES, SSEATS, SPRICE). Do not modify anything.</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:10px;">Bob should list fields (Flight Number, From/To City, Departure/Arrival Time, Mileage, Seats, Ticket Price) and identify the <code>S</code>-prefix naming pattern.</p>
+      <img src="img/ACS-green-screen.png" alt="Flight Maintenance screen in 5250 emulator" class="screenshot" />
+      <p class="screenshot-caption">The Flight Maintenance screen in IBM i Access Client Solutions (5250 emulator)</p>
+
+      <h2 class="section-title">3c <span class="section-badge">Plan the Change</span></h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Ask Bob to reason through a step-by-step plan <strong>without writing, editing, saving, or compiling anything</strong>.</p>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt — copy this exactly</div><div class="prompt-text">Let's plan this change together first — do not write, edit, save, or compile any code; just produce the plan with me. Produce a step-by-step implementation plan to add "Total Flight Hours" to the Flight Maintenance application in FLGHT4nn.
+
+Spec: database field FLHRS (4P 0); expose to RPG as FHRS RENAME(FLHRS); screen field SFLHRS (4 digits, 0 decimals, input/output) placed immediately after Mileage with the visible label "Flight Hours".
+
+Base the plan on how the existing Mileage field flows today: FLIGHTS.MILEAGE → FLIGHTSZ.MILES → FRS021 → FRS021DF.SMILES. Mirror that exact path for the new field.
+
+Only these four objects may change: FLIGHTS, FLIGHTSZ, FRS021DF, FRS021. Flag any other impacted programs as follow-up work only.</div></div>
+      <div class="callout warning"><div class="icon">⚠️</div><p><strong>Checkpoint:</strong> Before approving, confirm the plan touches only the four demo objects, uses <code>FLHRS</code>/<code>FHRS</code>/<code>SFLHRS</code> correctly, includes the 233→236 record length bump, and lists any other program as follow-up only. When correct, approve: <em>"I approve this plan — let's implement it."</em></p></div>
+
+      <h2 class="section-title">3d <span class="section-badge">Implement DDS Files</span></h2>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Execute the approved plan for the DDS members only, one at a time: (1) FLIGHTS, (2) FLIGHTSZ, (3) FRS021DF. For each, show the diff, wait for my approval, then save the source member only — do not compile. Follow the standing rules exactly.</div></div>
+      <p style="font-size:14px;color:var(--text);margin:12px 0 6px;font-weight:600;">Verify each diff before approving:</p>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text)">
+        <li><strong>FLIGHTS:</strong> <code>FLHRS 4P 0</code> with <code>COLHDG</code>; the <code>K FLIGH00001</code> key line untouched</li>
+        <li><strong>FLIGHTSZ:</strong> <code>FHRS RENAME(FLHRS)</code> after <code>MILES</code>; the <code>K FLGHTN</code> key line untouched</li>
+        <li><strong>FRS021DF:</strong> <code>SFLHRS</code> 4/0 input/output after Mileage; label "Flight Hours"; <code>CHECK(RZ)</code> present; no <code>COLHDG</code></li>
+      </ul>
+      <div class="callout tip"><div class="icon">💡</div><p>Approve each diff as it's correct: <em>"Approved — save this member, don't compile."</em></p></div>
+
+      <h2 class="section-title">3e <span class="section-badge">Implement RPG Program</span></h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;"><code>FRS021</code> is the most alignment-sensitive member — implement in <strong>three smaller diffs</strong>.</p>
+
+      <h3 class="subsection">5.1 — File &amp; Input specs</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Apply just the F-spec and I-spec changes to FLGHT4nn/QRPGSRC(FRS021): increase the FLIGHTSZ record length from 233 to 236, and add the FHRS input-spec entry at positions 234-236 using data-type P (packed) in column 43. Show the diff and wait for my approval; do not compile.</div></div>
+      <p style="font-size:14px;color:var(--muted);">Confirm: F-spec now reads <code>236</code>; new I-spec line has <code>FHRS</code> at 234-236 with <code>P</code> in the data-type column (not <code>B</code>).</p>
+
+      <h3 class="subsection">5.2 — Calculation specs</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Now apply just the C-spec changes to FRS021: after every successful CHAIN that loads an existing flight, move FHRS to SFLHRS; move SFLHRS to FHRS on both the add and update paths; and add an SFLHRS validation consistent with the SMILES check. Show the diff and wait for my approval; do not compile.</div></div>
+
+      <h3 class="subsection">5.3 — Output specs</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Finally apply just the O-spec changes to FRS021: add FHRS to both the ADDFLT and UPDFLT output records. Copy the exact column positions of the neighboring FMILES O-spec line and change only the field name and end position. Do not eyeball the spacing. Show the diff and wait for my approval; do not compile.</div></div>
+      <div class="callout warning"><div class="icon">⚠️</div><p><strong>Alignment matters.</strong> OPM RPG O-spec end positions are column-sensitive. Verify <code>FHRS</code>'s end position lines up in the same columns as <code>FMILES</code>'s <code>233</code> before approving.</p></div>
+
+      <h2 class="section-title">3f <span class="section-badge">Build</span></h2>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Build only the four demo objects in order: (1) apply DDS for FLIGHTS, (2) rebuild FLIGHTSZ, (3) compile FRS021DF, (4) compile FRS021. Use the correct IBM i command for each source type. If one fails, stop and wait for my direction. Do not touch unrelated programs.</div></div>
+      <p style="font-size:14px;color:var(--text);margin:12px 0 6px;font-weight:600;">Expected commands:</p>
+      <div class="code-block"><div class="code-header">IBM i Commands <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>CHGPF FILE(FLGHT4nn/FLIGHTS)   SRCFILE(FLGHT4nn/QDDSSRCF) SRCMBR(FLIGHTS)
+CRTLF FILE(FLGHT4nn/FLIGHTSZ)  SRCFILE(FLGHT4nn/QDDSSRCF) SRCMBR(FLIGHTSZ)
+CRTDSPF FILE(FLGHT4nn/FRS021DF) SRCFILE(FLGHT4nn/QDDSSRCD) SRCMBR(FRS021DF)
+CRTRPGPGM PGM(FLGHT4nn/FRS021) SRCFILE(FLGHT4nn/QRPGSRC)  SRCMBR(FRS021) REPLACE(*YES)</pre></div>
+
+      <h2 class="section-title">3g <span class="section-badge">Validate</span></h2>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Validate the completed change: confirm FLHRS exists in FLGHT4nn/FLIGHTS, FHRS is available through FLIGHTSZ, SFLHRS appears immediately after Mileage in the FRS021DF Previewer, FRS021 compiled, and FRS021DF has no COLHDG. Finish with a one-line end-to-end field mapping. Do not modify anything.</div></div>
+      <div class="table-wrap"><table><thead><tr><th>Layer</th><th>Object</th></tr></thead><tbody>
+        <tr><td>Database</td><td><code>FLIGHTS.FLHRS</code></td></tr>
+        <tr><td>Logical file</td><td><code>FLIGHTSZ.FHRS</code></td></tr>
+        <tr><td>RPG program</td><td><code>FRS021</code></td></tr>
+        <tr><td>Screen</td><td><code>FRS021DF.SFLHRS</code></td></tr>
+      </tbody></table></div>
+      <img src="img/newfield.png" alt="New Total Flight Hours field visible on the Flight Maintenance screen" class="screenshot" />
+      <p class="screenshot-caption">The new Flight Hours field now appears on the Flight Maintenance screen 🎉</p>
+      <div class="callout success"><div class="icon">✅</div><p><strong>Exercise 3 complete!</strong> Total Flight Hours now flows end-to-end: <code>FLIGHTS.FLHRS</code> → <code>FLIGHTSZ.FHRS</code> → <code>FRS021</code> → <code>FRS021DF.SFLHRS</code></p></div>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('ex2', document.querySelector('[onclick*=ex2]'))">← Exercise 2</button>
+      <button class="btn btn-primary" onclick="showPage('ex4', document.querySelector('[onclick*=ex4]'))">Exercise 4 →</button>
+    </div>
+  </div>
+
+  <!-- EXERCISE 4 -->
+  <div class="page" id="page-ex4">
+    <div class="page-hero">
+      <div class="eyebrow">Exercise 4</div>
+      <h1>Database Query Optimization</h1>
+      <p class="subtitle">Review a complex SQL query written by a junior developer, validate and correct it with Bob, analyze performance bottlenecks, and apply the Index Advisor workflow.</p>
+      <div class="meta-pills"><span class="pill time">⏱ ~15 minutes</span><span class="pill level">IBM i Database mode</span></div>
+    </div>
+    <div class="page-body">
+
+      <h2 class="section-title">4a <span class="section-badge">Switch Mode</span></h2>
+      <p style="font-size:14px;color:var(--muted);">In the Bob chat panel, use the mode selector to switch to <strong>IBM i Database</strong> mode.</p>
+
+      <h2 class="section-title">4b <span class="section-badge">Review the Query</span></h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Type <code>/review</code> first so it highlights in the Bob chat, then paste the query below. <strong>Replace all four occurrences of <code>FLGHT4nn</code> with your library number before sending.</strong></p>
+      <div class="screenshot-group">
+        <img src="img/slash-review-1.jpeg" alt="Typing /review in the Bob chat" class="screenshot" />
+        <img src="img/slash-review-2.jpeg" alt="/review command highlighted in Bob chat" class="screenshot" />
+      </div>
+      <div class="code-block"><div class="code-header">SQL Query — paste after /review <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>SELECT
+    f.FLIGH00001                                    AS FLIGHT_NUMBER,
+    f.DEPARTURE                                     AS FROM_CITY,
+    f.ARRIVAL                                       AS TO_CITY,
+    f.AIRLINES                                      AS AIRLINE,
+    f.DAY_O00001                                    AS DAY_OF_WEEK,
+    f.DEPAR00002                                    AS DEPARTURE_TIME,
+    f.ARRIV00002                                    AS ARRIVAL_TIME,
+    f.MILEAGE,
+    f.TICKE00001                                    AS TICKET_PRICE,
+    f.SEATS00001                                    AS SEATS_AVAILABLE,
+    ag.AGENT_NAME,
+    COUNT(DISTINCT o.CUSTO00001)                    AS UNIQUE_CUSTOMERS,
+    SUM(o.TICKE00001)                               AS TOTAL_TICKETS_SOLD,
+    SUM(CASE WHEN o.CLASS = 'F' THEN o.TICKE00001 ELSE 0 END) AS FIRST_CLASS_TICKETS,
+    SUM(CASE WHEN o.CLASS = 'B' THEN o.TICKE00001 ELSE 0 END) AS BUSINESS_TICKETS,
+    SUM(CASE WHEN o.CLASS = 'E' THEN o.TICKE00001 ELSE 0 END) AS ECONOMY_TICKETS,
+    MIN(o.DEPAR00001)                               AS EARLIEST_BOOKING_DATE,
+    MAX(o.DEPAR00001)                               AS LATEST_BOOKING_DATE
+FROM FLGHT4nn/FLIGHTS       f
+JOIN FLGHT4nn/ORDERS        o  ON o.FLIGH00001  = f.FLIGH00001
+JOIN FLGHT4nn/AGENTS        ag ON ag.AGENT_NO   = o.AGENT_NO
+LEFT JOIN FLGHT4nn/CUSTOMERS c  ON c.CUSTO00001  = o.CUSTO00001
+WHERE o.DEPAR00001 >= TIMESTAMP('2004-02-08-00.00.00')
+  AND o.DEPAR00001 &lt;  TIMESTAMP('2004-02-11-00.00.00')
+GROUP BY
+    f.FLIGH00001, f.DEPARTURE, f.ARRIVAL, f.AIRLINES,
+    f.DAY_O00001, f.DEPAR00002, f.ARRIV00002,
+    f.MILEAGE, f.TICKE00001, f.SEATS00001, ag.AGENT_NAME
+ORDER BY
+    o.DEPAR00001,
+    f.FLIGH00001
+FETCH FIRST 100 ROWS ONLY;</pre></div>
+      <div class="callout warning"><div class="icon">⚠️</div><p><strong>Intentional bug to spot:</strong> <code>o.DEPAR00001</code> appears in <code>ORDER BY</code> but not in <code>GROUP BY</code> — logically incorrect on strict SQL engines. Bob's <code>/review</code> should flag this.</p></div>
+      <p style="font-size:14px;color:var(--text);margin:14px 0 8px;font-weight:600;">Expected findings from Bob:</p>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text)">
+        <li>❌ <code>ORDER BY o.DEPAR00001</code> uses a non-grouped column — may cause SQL0122</li>
+        <li>⚠️ The <code>LEFT JOIN</code> to <code>CUSTOMERS</code> is unused and can be removed</li>
+        <li>⚠️ <code>TICKET_PRICE</code> is stored as <code>VARCHAR(22)</code> — requires validation before numeric calculations</li>
+        <li>✅ The <code>CASE</code>-based class breakdown is a clear, set-based approach</li>
+        <li>✅ <code>FETCH FIRST 100 ROWS ONLY</code> is a good testing safeguard</li>
+      </ul>
+
+      <h2 class="section-title">4c <span class="section-badge">Optional</span></h2>
+      <h3 class="subsection">Performance Bottleneck Analysis</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Is any table a performance bottleneck and why?"</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Bob should identify <code>ORDERS</code> as the largest table, with the <code>DEPARTURE_DATE</code> filter being a strong candidate for index optimization.</p>
+
+      <h2 class="section-title">4d <span class="section-badge">Index Advisor Workflow</span></h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;">Still in IBM i Database mode, click the <strong>workflow icon</strong> at the top of the Bob panel → select <strong>Library List</strong> scope → choose <strong>SQL Index Strategy Advisor</strong>.</p>
+      <img src="img/workflows-icon.png" alt="Workflows icon in the Bob panel" class="screenshot" style="max-width:200px;" />
+      <div class="table-wrap"><table><thead><tr><th>Setting</th><th>Value</th></tr></thead><tbody>
+        <tr><td>Data Source</td><td>Capture New Performance Data</td></tr>
+        <tr><td>Capture Method</td><td><code>DUMP_PLAN_CACHE_TOPN</code></td></tr>
+        <tr><td>Output Library</td><td><code>FLGHT4nn</code></td></tr>
+        <tr><td>Output Object Name</td><td><code>FLGHT4nnP</code></td></tr>
+        <tr><td>Top N Queries</td><td>20</td></tr>
+        <tr><td>Top N Category</td><td>Runtime</td></tr>
+      </tbody></table></div>
+      <div class="callout warning"><div class="icon">⚠️</div><p><strong>Only create indexes in your assigned schema.</strong> When Bob gives suggested indexes, ask: <em>"Apply the highest-priority index only for FLGHT4nn"</em> (replace nn with your number).</p></div>
+      <p style="font-size:14px;color:var(--text);margin:14px 0 8px;font-weight:600;">Expected recommendation:</p>
+      <div class="code-block"><div class="code-header">SQL <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>CREATE INDEX FLGHT4nn.ORDERS_IDX_DEPDT_FLT
+    ON FLGHT4nn.ORDERS (
+        DEPARTURE_DATE,
+        FLIGHT_NUMBER
+    );</pre></div>
+      <div class="callout success"><div class="icon">✅</div><p>You've reviewed, corrected, analyzed, and optimized a Db2 for i SQL statement using Bob's guided Index Advisor workflow — without needing deep expertise in query optimization or Visual Explain.</p></div>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('ex3', document.querySelector('[onclick*=ex3]'))">← Exercise 3</button>
+      <button class="btn btn-primary" onclick="showPage('ex5', document.querySelector('[onclick*=ex5]'))">Exercise 5 →</button>
+    </div>
+  </div>
+
+  <!-- EXERCISE 5 -->
+  <div class="page" id="page-ex5">
+    <div class="page-hero">
+      <div class="eyebrow">Exercise 5</div>
+      <h1>Ask Bob About Your System</h1>
+      <p class="subtitle">Use Bob in IBM i Developer mode to answer system-level questions using plain English — no CL expertise required.</p>
+      <div class="meta-pills"><span class="pill time">⏱ ~10 minutes</span><span class="pill level">IBM i Developer mode</span></div>
+    </div>
+    <div class="page-body">
+      <div class="callout tip"><div class="icon">💡</div><p>Switch back to <strong>IBM i Developer</strong> mode before starting.</p></div>
+
+      <h2 class="section-title">Prompt 1 <span class="section-badge">CPU Usage</span></h2>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Which active jobs have accumulated the most CPU time? For the top jobs, distinguish cumulative CPU time from their current elapsed CPU percentage."</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:10px;">Bob queries <code>QSYS2.ACTIVE_JOB_INFO</code> and returns a summary of active jobs with CPU utilization — an instant health check on your LPAR. You might see the Node.js job if you completed Exercise 7.</p>
+
+      <h2 class="section-title">Prompt 2 <span class="section-badge">Optional</span></h2>
+      <h3 class="subsection">Inspect the Top Job</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Inspect the job ranked first and determine whether it is currently CPU-bound. Check its job log and take one fresh elapsed CPU measurement. If the log is empty and the job is a PASE process, inspect its IFS job information for its executable, working directory, and open application or log files. Stop after that investigation. Distinguish facts from inferences and provide no more than two recommendations."</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:10px;">Bob uses <code>QSYS2.JOBLOG_INFO</code>, <code>QSYS2.ACTIVE_JOB_INFO</code>, and IFS inspection to investigate. The response clearly separates observations from inferences.</p>
+
+      <h2 class="section-title">Prompt 3 <span class="section-badge">Stale Programs</span></h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Replace <code>FLGHT4nn</code> with your library number:</p>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Which programs in the FLGHT4nn library have not been recompiled in the last 5 years?"</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:10px;">Bob queries <code>QSYS2.OBJECT_STATISTICS</code> filtering on <code>*PGM</code> in <code>FLGHT4nn</code> and lists stale programs — perfect input for a modernization backlog.</p>
+      <div class="callout success"><div class="icon">✅</div><p>Exercise 5 complete! Move on to Exercise 6 when ready.</p></div>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('ex4', document.querySelector('[onclick*=ex4]'))">← Exercise 4</button>
+      <button class="btn btn-primary" onclick="showPage('ex6', document.querySelector('[onclick*=ex6]'))">Exercise 6 →</button>
+    </div>
+  </div>
+
+  <!-- EXERCISE 6 -->
+  <div class="page" id="page-ex6">
+    <div class="page-hero">
+      <div class="eyebrow">Exercise 6</div>
+      <h1>RPGUnit Test Planning &amp; Implementation</h1>
+      <p class="subtitle">Use Bob's guided RPGUnit workflows to build a structured test plan, then implement and run test suites — without writing test boilerplate by hand.</p>
+      <div class="meta-pills"><span class="pill time">⏱ ~20 minutes</span><span class="pill level">IBM i Developer mode</span></div>
+    </div>
+    <div class="page-body">
+
+      <div class="callout info"><div class="icon">📋</div><p>Two workflows work in sequence: <strong>RPGUnit Test Plan Creation</strong> analyzes exported procedures and generates templates. <strong>RPGUnit Test Suite Implementation</strong> writes the source members, runs the suites, and iterates until tests pass.</p></div>
+
+      <h2 class="section-title">Prerequisites <span class="section-badge">Install RPGUnit</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Verify the IBM i Testing Extension</h3><p>Open the Extensions panel (<code>Cmd+Shift+X</code>), search for <strong>"IBM i Testing"</strong>, and confirm it shows as <em>Installed</em>. This is included in the IBM Bob Premium Package for i.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Install RPGUnit to IBM i</h3><p>Connect to your IBM i. Right-click your connection in the IBM i panel → open its settings → <strong>Components</strong> tab → <strong>Add Component</strong> → select <strong>RPGUnit</strong> → <strong>Install</strong>.</p>
+          <div class="screenshot-group">
+            <img src="img/components-1.png" alt="Connection settings gear icon" class="screenshot" />
+            <img src="img/components-2.png" alt="Components tab" class="screenshot" />
+            <img src="img/components-3.png" alt="Add Component dialog" class="screenshot" />
+            <img src="img/components-4.png" alt="RPGUnit installation" class="screenshot" />
+          </div>
+        </div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Update your library list</h3><p>Add <code>RPGUNIT</code> and <code>QDEVTOOLS</code> to your User Library List the same way you added <code>FLGHT4nn</code> during Setup. Your list should include all three.</p>
+          <img src="img/testing-libraries.png" alt="Library list with testing libraries added" class="screenshot" />
+        </div></div>
+      </div>
+
+      <h2 class="section-title">6a <span class="section-badge">Create CUSTCHK Member</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Create the source member</h3><p>In the Object Browser, find <code>QRPGLESRC</code> in your <code>FLGHT4nn</code> library. Right-click → <strong>New Member</strong>. Enter the name <code>CUSTCHK.SQLRPGLE</code> and confirm.</p>
+          <img src="img/add-member.png" alt="New member dialog" class="screenshot" />
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Paste and save the source</h3><p>Paste the following into the new member and save with <code>Ctrl/Cmd + S</code>:</p>
+          <div class="code-block"><div class="code-header">CUSTCHK.SQLRPGLE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>**free
+ctl-opt nomain;
+
+dcl-proc checkCustomerExists export;
+  dcl-pi *n ind;
+    custId packed(9:0) const;
+  end-pi;
+
+  dcl-s rowCount int(10);
+
+  exec sql
+    select count(*)
+      into :rowCount
+      from CUSTOMRZ
+      where CUSTNO = :custId;
+
+  return (SQLCODE = 0 and rowCount > 0);
+end-proc;</pre></div>
+        </div></div>
+      </div>
+
+      <h2 class="section-title">6b <span class="section-badge">Test Plan Creation Workflow</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Launch the workflow</h3><p>Click the <strong>workflow icon</strong> at the top of the Bob panel → choose <strong>RPGUnit Test Plan Creation</strong> in your library list.</p>
+          <img src="img/workflows-icon.png" alt="Workflows icon in the Bob panel" class="screenshot" style="max-width:200px;" />
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Configure it</h3><ul><li>Click <strong>Get Started</strong> and select your library <code>FLGHT4nn</code></li><li>Enter an IFS project directory unique to your number, e.g. <code>/home/&lt;user&gt;/flght4nn</code></li><li>Tell Bob to <strong>create a new test plan</strong>. Select the default recommended path. Let Bob locate testable files — it should find <code>CUSTCHK.SQLRPGLE</code>. Select the exported procedure and proceed.</li><li>Choose to <strong>validate the environment</strong>.</li></ul></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Review output files</h3><p>Bob writes test plan documents to your IFS directory. At the bottom of the chat panel, review the files it created — these Markdown documents are used in step 6c.</p>
+          <div class="callout tip"><div class="icon">💡</div><p>If Bob asks to run the Test Plan Creation workflow again, select <strong>No thanks</strong>.</p></div>
+        </div></div>
+      </div>
+
+      <h2 class="section-title">6c <span class="section-badge">Test Suite Implementation Workflow</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Launch the workflow</h3><p>Click the <strong>workflow icon</strong> → choose <strong>RPGUnit Test Suite Implementation</strong> in your library list. Click <strong>Proceed</strong>.</p>
+          <img src="img/workflows-icon.png" alt="Workflows icon in the Bob panel" class="screenshot" style="max-width:200px;" />
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Configure it</h3><ul><li>Select your library <code>FLGHT4nn</code></li><li>Enter the <strong>same IFS project directory</strong> used in 6b</li><li>Confirm the path to the test suites (Bob should pre-fill the correct default)</li><li>Choose to <strong>validate the environment</strong></li></ul></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Watch it run</h3><p>Bob generates the test source members, runs the suites, and iterates until tests pass or an error is discovered.</p>
+          <img src="img/tests-pass.png" alt="Tests passing in the RPGUnit test runner" class="screenshot" />
+          <div class="callout tip"><div class="icon">💡</div><p>If Bob prompts to download RPGUnit again, click <strong>Install</strong>, then <strong>Cancel</strong> on the follow-up popup that asks to delete the existing version.</p></div>
+          <div class="callout tip"><div class="icon">💡</div><p>If any tests fail, ask Bob: <em>"Explain the failure and help me fix it."</em></p></div>
+        </div></div>
+      </div>
+      <div class="callout success"><div class="icon">✅</div><p>You've used Bob's guided workflows to go from untested legacy RPG to a structured, executed RPGUnit test suite — without writing test boilerplate by hand.</p></div>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('ex5', document.querySelector('[onclick*=ex5]'))">← Exercise 5</button>
+      <button class="btn btn-primary" onclick="showPage('ex7', document.querySelector('[onclick*=ex7]'))">Exercise 7 (Optional) →</button>
+    </div>
+  </div>
+
+  <!-- EXERCISE 7 -->
+  <div class="page" id="page-ex7">
+    <div class="page-hero">
+      <img src="img/Flight-react-agentic.png" alt="Flight400 React app generated by Bob" class="screenshot" style="max-height:240px;object-fit:cover;width:100%;margin-bottom:16px;" />
+      <div class="eyebrow">Exercise 7 — Optional</div>
+      <h1>Generate a React Carbon App from a Green Screen</h1>
+      <p class="subtitle">Use Bob to analyze the FLIGHT400 5250 screen and generate a modern React web application styled with IBM Carbon, running directly on IBM i PASE.</p>
+      <div class="meta-pills"><span class="pill time">⏱ ~30 minutes</span><span class="pill optional">Optional exercise</span><span class="pill level">IBM i Developer mode</span></div>
+    </div>
+    <div class="page-body">
+      <div class="callout warning"><div class="icon">⚠️</div><p>This exercise requires the SSH tunnel from Setup Step 5 to be active, with your assigned Dev Port included in the tunnel command.</p></div>
+
+      <h2 class="section-title">Step 1 <span class="section-badge">Create a Helper Skill</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Switch to Agent mode</h3><p>Click the <strong>+</strong> button (top right) and select <strong>Local Workspace</strong> as the task context.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Create the skill</h3><p>Open <code>SAMPLE-SKILL.md</code> in the workspace, copy its entire content, paste it into the Bob chat, then append this instruction and send:</p>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Create a skill from the pasted text."</div></div>
+        </div></div>
+      </div>
+
+      <h2 class="section-title">Step 2 <span class="section-badge">Generate the React App</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Switch to IBM i Developer mode</h3><p>Click the <strong>+</strong> button and select your <code>FLGHT4nn</code> library list as the context.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Send the generation prompt</h3><p>Drag or paste the <code>flight400.png</code> screenshot into the Bob chat, then replace <code>4nn</code> and <code>30nn</code> with your assigned numbers and send:</p>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Given this screenshot of the 5250 flight order screen from the Application Flight4nn in @FLGHT4nn, Build a single-page React 18 + Vite 4 app on IBM i (PASE) using @carbon/react ^1.x with the g100 dark theme that modernises the IBM i 5250 screen shown in the attached screenshot. Create the app in the IFS at $HOME/flight4nn-frontend-apps/screen-name/. Use the g100 dark theme. All fields should have a list of values to select from. The dev server must run in the background using nohup … &amp; and write output to /tmp/vite-dev.log. Pin the Vite dev server to port 30nn if available."</div></div>
+        </div></div>
+      </div>
+
+      <h2 class="section-title">Step 3 <span class="section-badge">Start &amp; View the App</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Start the dev server</h3>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Please start the dev server for the app you just created."</div></div>
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Open in your browser</h3><p>Open <code>http://localhost:30nn</code> in your browser — replacing <code>30nn</code> with your Dev Port from the Setup table.</p>
+          <div class="callout tip"><div class="icon">💡</div><p>Nothing showing? Make sure Setup Step 5 (SSH tunnel) is complete and includes your port number.</p></div>
+        </div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>When finished — stop the server</h3>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Stop the web service for FLGHT4nn on port 30nn"</div></div>
+        </div></div>
+      </div>
+
+      <h2 class="section-title">Skills Used Behind the Scenes</h2>
+      <div class="table-wrap"><table><thead><tr><th>Tool / Skill</th><th>Role</th></tr></thead><tbody>
+        <tr><td><code>dds-primer-basics</code> skill</td><td>Parses <code>FRS001DF.DSPF</code> — screen layout, field names, subfile windows</td></tr>
+        <tr><td><code>rpg-primer-basics</code> skill</td><td>Reads <code>FRS001.RPG</code> — extracts pricing logic and field definitions</td></tr>
+        <tr><td>IFS write tools</td><td>Creates project files directly in <code>$HOME/flight4nn-react/</code> on IBM i</td></tr>
+        <tr><td>IBM i PASE</td><td>Runs <code>npm install</code>, <code>npm run build</code>, <code>npm start</code> natively on IBM i</td></tr>
+      </tbody></table></div>
+      <div class="callout warning"><div class="icon">⚠️</div><p>This app runs with sample data only. The natural next step is to add a REST / Web Services layer connecting the React front end to the real IBM i business logic and Db2 for i database.</p></div>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('ex6', document.querySelector('[onclick*=ex6]'))">← Exercise 6</button>
+      <button class="btn btn-primary" onclick="showPage('summary', document.querySelector('[onclick*=summary]'))">Summary →</button>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="page" id="page-summary">
+    <div class="page-hero">
+      <div class="eyebrow">Wrap-Up</div>
+      <h1>Congratulations! 🎉</h1>
+      <p class="subtitle">You've completed the FLIGHT400 Bobathon lab. Here's a recap of everything you accomplished today.</p>
+    </div>
+    <div class="page-body">
+      <div class="table-wrap"><table><thead><tr><th>Exercise</th><th>What You Did</th></tr></thead><tbody>
+        <tr><td><strong>Setup</strong></td><td>Installed Bob, connected to IBM i, and found your assigned library</td></tr>
+        <tr><td><strong>Exercise 1</strong></td><td>Generated architecture docs and an ERD from legacy code with Bob</td></tr>
+        <tr><td><strong>Exercise 2</strong></td><td>Explained and modernized OPM RPG <code>FRS409</code> to free-format ILE RPG</td></tr>
+        <tr><td><strong>Exercise 3</strong></td><td>Added a new field end-to-end through DDS and RPG with Bob's help</td></tr>
+        <tr><td><strong>Exercise 4</strong></td><td>Reviewed and optimized a SQL query using Bob's database tools</td></tr>
+        <tr><td><strong>Exercise 5</strong></td><td>Queried your IBM i system using natural language</td></tr>
+        <tr><td><strong>Exercise 6</strong></td><td>Created and implemented an RPGUnit test suite with Bob's guided workflows</td></tr>
+        <tr><td><strong>Exercise 7</strong></td><td>Optional: Generated a React Carbon app from a 5250 green screen</td></tr>
+      </tbody></table></div>
+
+      <h2 class="section-title">Next Steps</h2>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--text);margin-top:8px;">
+        <li>Explore connecting the React app to live IBM i data via a Node.js or Java REST API</li>
+        <li>Dive deeper into the RPG modernization workflow for other FLIGHT4nn programs</li>
+        <li>Use Bob's business rules extraction on more members in your library</li>
+        <li>Try the Index Advisor with your own application's most expensive queries</li>
+      </ul>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('ex7', document.querySelector('[onclick*=ex7]'))">← Exercise 7</button>
+      <button class="btn btn-primary" onclick="showPage('overview', document.querySelector('[onclick*=overview]'))">Back to Overview</button>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ANSIBLE TRACK PAGES                                 -->
+  <!-- ═══════════════════════════════════════════════════ -->
+
+  <!-- ANSIBLE OVERVIEW -->
+  <div class="page" id="page-ansible-overview">
+    <div class="page-hero">
+      <img src="../IBMI-Bob-UHG.png" alt="UnitedHealth Group × IBM Bob × IBM i Technical Lab" class="screenshot" style="max-height:220px;object-fit:cover;width:100%;margin-bottom:16px;" />
+      <div class="eyebrow">Ansible Track</div>
+      <h1>IBM i Automation with Bob &amp; Ansible</h1>
+      <p class="subtitle">Use IBM Bob's AI capabilities together with Ansible's <code>ibm.power_ibmi</code> collection to automate PTF management, security compliance, and system operations on IBM i — no manual green-screen work required.</p>
+      <div class="meta-pills">
+        <span class="pill time">⏱ ~1.5 hours total</span>
+        <span class="pill level">Intermediate</span>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="callout tip"><div class="icon">💡</div><p>Complete <strong>Lab 4</strong> first — it sets up the MCP server and Bob modes that Labs 5 and 6 depend on. Lab 200 can be done independently.</p></div>
+
+      <h2 class="section-title">Labs in this Track</h2>
+      <div class="card-grid">
+        <div class="ex-card" onclick="showPage('lab4', document.querySelector('[onclick*=lab4]'))">
+          <div class="ex-num">Lab 4</div>
+          <h3>IBM i Modes, MCP &amp; Bob Shell</h3>
+          <div class="ex-time">⏱ ~15 min</div>
+        </div>
+        <div class="ex-card" onclick="showPage('lab5', document.querySelector('[onclick*=lab5]'))">
+          <div class="ex-num">Lab 5</div>
+          <h3>PTF Management Assistant</h3>
+          <div class="ex-time">⏱ ~20 min</div>
+        </div>
+        <div class="ex-card" onclick="showPage('lab6', document.querySelector('[onclick*=lab6]'))">
+          <div class="ex-num">Lab 6</div>
+          <h3>Security Auditing &amp; Remediation</h3>
+          <div class="ex-time">⏱ ~25 min</div>
+        </div>
+        <div class="ex-card" onclick="showPage('lab200', document.querySelector('[onclick*=lab200]'))">
+          <div class="ex-num">Lab 200</div>
+          <h3>Ops &amp; System Admin</h3>
+          <div class="ex-time">⏱ ~45 min</div>
+        </div>
+      </div>
+
+      <h2 class="section-title">Prerequisites for All Ansible Labs</h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">✓</div><div class="step-content"><h3>IBM Bob IDE installed and running</h3></div></div>
+        <div class="step"><div class="step-num">✓</div><div class="step-content"><h3>Access to an IBM i system</h3><p>IBM i 7.3+, SSH daemon running (<code>STRTCPSVR SERVER(*SSHD)</code>), user profile with appropriate authorities.</p></div></div>
+        <div class="step"><div class="step-num">✓</div><div class="step-content"><h3>Ansible installed on your workstation</h3>
+          <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>pip install ansible
+ansible-galaxy collection install ibm.power_ibmi:3.3.0 --force
+ansible-galaxy collection install ibm.power_hmc</pre></div>
+          <div class="callout warning"><div class="icon">⚠️</div><p>Install <code>ibm.power_ibmi</code> at <strong>v3.3.0 specifically</strong>. v3.5.0 switches SQL drivers and breaks on IBM i PASE sessions with a <code>CWBNL0203</code> error.</p></div>
+        </div></div>
+        <div class="step"><div class="step-num">✓</div><div class="step-content"><h3>Python 3.9 on the IBM i target</h3>
+          <div class="code-block"><div class="code-header">IBM i PASE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>/QOpenSys/pkgs/bin/yum install python3.9
+/QOpenSys/pkgs/bin/yum install python39-itoolkit
+/QOpenSys/pkgs/bin/yum install python39-ibm_db</pre></div>
+        </div></div>
+        <div class="step"><div class="step-num">✓</div><div class="step-content"><h3>SSH key-based auth to IBM i</h3><p>No password prompts — Ansible requires key-based authentication to your IBM i system.</p></div></div>
+      </div>
+    </div>
+    <div class="page-nav">
+      <span></span>
+      <button class="btn btn-primary" onclick="showPage('lab4', document.querySelector('[onclick*=lab4]'))">Start Lab 4 →</button>
+    </div>
+  </div>
+
+  <!-- LAB 4 — IBM i MCP MODE -->
+  <div class="page" id="page-lab4">
+    <div class="page-hero">
+      <div class="eyebrow">Lab 4 — Ansible Track</div>
+      <h1>IBM i Modes, IBM i MCP &amp; Bob Shell</h1>
+      <p class="subtitle">Configure IBM Bob to work with IBM i systems using the Model Context Protocol (MCP). Set up custom modes, connect to your IBM i system, and execute your first queries using Bob's AI-powered interface.</p>
+      <div class="meta-pills">
+        <span class="pill time">⏱ ~15 minutes</span>
+        <span class="pill level">Intermediate</span>
+      </div>
+    </div>
+    <div class="page-body">
+
+      <h2 class="section-title">What is MCP?</h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">The <strong>Model Context Protocol (MCP)</strong> is an open protocol that standardizes how AI applications interact with external data sources and tools — a universal adapter that allows Bob to:</p>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text);margin-bottom:16px;">
+        <li><strong>Access Data Sources</strong> — Connect to databases, APIs, and file systems</li>
+        <li><strong>Execute Tools</strong> — Run SQL queries, system commands, and custom operations</li>
+        <li><strong>Maintain Context</strong> — Keep track of conversation state across interactions</li>
+      </ul>
+      <div class="table-wrap"><table><thead><tr><th>Concept</th><th>Description</th></tr></thead><tbody>
+        <tr><td><strong>MCP Server</strong></td><td>A service that exposes tools and resources to AI agents</td></tr>
+        <tr><td><strong>Transport</strong></td><td>Communication method (HTTP for remote, Stdio for local)</td></tr>
+        <tr><td><strong>Tools</strong></td><td>Executable operations (SQL queries, system commands)</td></tr>
+        <tr><td><strong>Resources</strong></td><td>Data sources (databases, files, APIs)</td></tr>
+        <tr><td><strong>Authentication</strong></td><td>Security layer (tokens, credentials)</td></tr>
+      </tbody></table></div>
+
+      <h2 class="section-title">Part 1 <span class="section-badge">MCP Server Setup on IBM i</span></h2>
+      <div class="callout tip"><div class="icon">💡</div><p>Skip Part 1 if your MCP server is already running on IBM i.</p></div>
+
+      <h3 class="subsection">Step 1 — Install Prerequisites on IBM i</h3>
+      <div class="code-block"><div class="code-header">IBM i PASE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre># Install Node.js 22+
+yum install nodejs22
+
+# Verify
+node --version   # Should show v22.x.x or higher
+
+# Install git if needed
+yum install git</pre></div>
+
+      <h3 class="subsection">Step 2 — Install &amp; Start Mapepire Service</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Connect via 5250</h3><p>Connect with <a href="https://www.ibm.com/support/pages/ibm-i-access-client-solutions" style="color:var(--accent)">Access Client Solutions</a> and start SSH: <code>STRTCPSVR *SSHD</code></p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Install and start Mapepire via SSH</h3>
+          <div class="code-block"><div class="code-header">IBM i PASE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>/QOpenSys/pkgs/bin/yum install mapepire-server
+/QOpenSys/pkgs/bin/yum install service-commander
+/QOpenSys/pkgs/bin/sc start mapepire</pre></div>
+        </div></div>
+      </div>
+
+      <h3 class="subsection">Step 3 — Configure MCP Server</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">In PASE, create a <code>.env</code> file in your home directory:</p>
+      <div class="code-block"><div class="code-header">~/.env <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>DB2i_HOST=localhost
+DB2i_PORT=8076
+DB2i_IGNORE_UNAUTHORIZED=true
+DB2i_USER=&lt;YOUR-USER&gt;
+DB2i_PASS=&lt;YOUR-PASSWORD&gt;
+
+MCP_TRANSPORT_TYPE=http
+MCP_HTTP_PORT=3010
+MCP_LOG_LEVEL=info
+IBMI_AUTH_ALLOW_HTTP=true</pre></div>
+      <div class="callout warning"><div class="icon">⚠️</div><p>Replace <code>&lt;YOUR-USER&gt;</code> and <code>&lt;YOUR-PASSWORD&gt;</code> with your IBM i OS credentials. <code>DB2i_HOST=localhost</code> because Mapepire runs on the same system.</p></div>
+
+      <h3 class="subsection">Step 4 — Start the MCP Server</h3>
+      <div class="code-block"><div class="code-header">IBM i PASE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>export MCP_SERVER_CONFIG=.env && npx -y @ibm/ibmi-mcp-server@latest --transport http --builtin-tools</pre></div>
+
+      <h3 class="subsection">Step 5 — (Optional) Run as a Background Service</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Create <code>~/.sc/services/ibmi-mcp-server.yaml</code> to manage the server with Service Commander:</p>
+      <div class="code-block"><div class="code-header">~/.sc/services/ibmi-mcp-server.yaml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>name: IBM i MCP Server
+dir: /home/&lt;USERNAME&gt;/MCP/ibmi-mcp-server
+start_cmd: npx -y @ibm/ibmi-mcp-server@latest --transport http --tools ./tools
+
+check_alive: port
+check_alive_criteria: 3010
+
+batch_mode: yes
+sbmjob_jobname: MCPSERVER
+sbmjob_opts: JOBQ(QUSRNOMAX) CCSID(37)
+
+environment_vars:
+  - "PATH=/QOpenSys/pkgs/bin:/QOpenSys/usr/bin:/usr/bin"
+  - "HOME=/home/&lt;USERNAME&gt;"
+
+groups:
+  - "mcp"
+  - "default"</pre></div>
+
+      <h3 class="subsection">Step X — SSH Tunnel (if IBM i traffic is filtered)</h3>
+      <div class="code-block"><div class="code-header">bash — run on your laptop <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ssh -L 50000:localhost:23 -L 8076:localhost:8076 -L 3010:localhost:3010 \
+  -o ExitOnForwardFailure=yes -o ServerAliveInterval=15 -o ServerAliveCountMax=3 \
+  &lt;myuser&gt;@&lt;myIPaddress&gt;</pre></div>
+      <div class="callout tip"><div class="icon">💡</div><p>Port 8076 = Mapepire. Port 3010 = MCP server. Update these if you changed the defaults in your <code>.env</code>.</p></div>
+
+      <h2 class="section-title">Part 2 <span class="section-badge">Bob Setup (5 min)</span></h2>
+
+      <h3 class="subsection">Step 1 — Open your project in Bob</h3>
+      <p style="font-size:14px;color:var(--muted);">Open up your participant working directory in a new Bob window.</p>
+
+      <h3 class="subsection">Step 2 — Update MCP Configuration</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Edit <code>.bob/mcp.json</code> — replace <code>&lt;IBMi_IP&gt;</code> with <code>localhost</code> if using SSH tunnel, or your IBM i's IP address directly:</p>
+      <div class="code-block"><div class="code-header">.bob/mcp.json <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>{
+    "mcpServers": {
+        "ibmi-mcp-server": {
+            "type": "streamable-http",
+            "url": "http://&lt;IBMi_IP&gt;:3010/mcp"
+        },
+        "ibmi-mcp-docs": {
+            "type": "streamable-http",
+            "url": "https://ibm-d95bab6e.mintlify.app/mcp",
+            "alwaysAllow": []
+        }
+    }
+}</pre></div>
+
+      <h3 class="subsection">Step 3 — Check Configuration</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Restart Bob</h3><p>Reload the window: <code>F1</code> → <strong>Reload Window</strong></p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Open Bob settings → MCP list</h3><p>Confirm <code>ibmi-mcp-server</code> and <code>ibmi-mcp-docs</code> show as <strong>connected</strong>.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Check available tools</h3><p>Click on <code>ibmi-mcp-server</code> in the MCP list and review the list of exposed tools.</p></div></div>
+      </div>
+
+      <h2 class="section-title">Exercise 1 <span class="section-badge">~3 min</span></h2>
+      <h3 class="subsection">Switch to a Mode &amp; Query System Status</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Switch to a mode that can use MCP tools</h3><p>Expand the modes dropdown beneath the chat input and select <strong>Advanced</strong> or <strong>IBM i Agent</strong>.</p>
+          <img src="../pics/select-ibmi-agent.png" alt="Select IBM i Agent mode" class="screenshot" style="max-width:340px;" onerror="this.style.display='none'" />
+          <div class="callout tip"><div class="icon">💡</div><p>You can also import custom modes from the <a href="https://github.com/IBM/ibmi-mcp-server/blob/main/.bob/custom_modes.yaml" style="color:var(--accent)">ibmi-mcp-server examples</a> into your <code>.bob/</code> directory.</p></div>
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Ask Bob about system status</h3>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Show me the current system status"</div></div>
+          <p style="font-size:14px;color:var(--muted);margin-top:8px;">Bob executes the <code>system_status</code> tool and returns CPU utilization, memory usage, I/O statistics, and active job count.</p>
+        </div></div>
+      </div>
+      <p style="font-size:14px;color:var(--text);margin:12px 0 6px;font-weight:600;">More prompts to try:</p>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px;color:var(--text);">
+        <li><em>"What is the current CPU usage?"</em></li>
+        <li><em>"How many jobs are currently active?"</em></li>
+        <li><em>"Show me memory pool information"</em></li>
+      </ul>
+      <div class="callout success"><div class="icon">✅</div><p>Bob returns formatted system performance data from your IBM i system.</p></div>
+
+      <h2 class="section-title">Exercise 2 <span class="section-badge">~3 min</span></h2>
+      <h3 class="subsection">Explore Database Objects</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>List service categories</h3>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"List all service categories available on IBM i"</div></div>
+          <p style="font-size:14px;color:var(--muted);">Bob shows categories like "System Administration", "Performance", "Security", etc.</p>
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Search for job-related services</h3>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Search for services related to 'job' in their name"</div></div>
+        </div></div>
+      </div>
+      <p style="font-size:14px;color:var(--text);margin:12px 0 6px;font-weight:600;">More prompts to try:</p>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px;color:var(--text);">
+        <li><em>"What services are available in the Performance category?"</em></li>
+        <li><em>"Show me an example of using the ACTIVE_JOB_INFO service"</em></li>
+        <li><em>"List tables in the QSYS2 schema"</em></li>
+      </ul>
+      <div class="callout success"><div class="icon">✅</div><p>Bob successfully queries and displays IBM i service information.</p></div>
+
+      <h2 class="section-title">Exercise 3 <span class="section-badge">Optional — ~2 min</span></h2>
+      <h3 class="subsection">Security Analysis</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Show me users with limited capabilities"</div></div>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Are there any database files readable by any user?"</div></div>
+      <div class="callout warning"><div class="icon">⚠️</div><p>These queries require appropriate security authorities on your IBM i system.</p></div>
+
+      <h2 class="section-title">Exercise 4 <span class="section-badge">Custom Tools</span></h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Create your own SQL tools by adding YAML files to the <code>tools/</code> directory on IBM i.</p>
+      <div class="code-block"><div class="code-header">tools/custom/my-tools.yaml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>sources:
+  ibmi-system:
+    host: ${DB2i_HOST}
+    user: ${DB2i_USER}
+    password: ${DB2i_PASS}
+    port: 8076
+    ignore-unauthorized: true
+
+tools:
+  get_customer_orders:
+    source: ibmi-system
+    description: "Get all orders for a specific customer"
+    parameters:
+      - name: customer_id
+        type: string
+        description: "Customer ID"
+        required: true
+    statement: |
+      SELECT o.ORDER_ID, o.ORDER_DATE, o.ORDER_AMOUNT, c.CUSTOMER_NAME
+      FROM ORDERS o
+      JOIN CUSTOMERS c ON o.CUSTOMER_ID = c.CUSTOMER_ID
+      WHERE c.CUSTOMER_ID = ?
+      ORDER BY o.ORDER_DATE DESC</pre></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:10px;">Then restart the MCP server to load the new tool:</p>
+      <div class="code-block"><div class="code-header">IBM i PASE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>export MCP_SERVER_CONFIG=.env && npx -y @ibm/ibmi-mcp-server@latest --transport http --tools ./tools</pre></div>
+
+      <h2 class="section-title">Exercise 4b <span class="section-badge">Optional — Bob Shell</span></h2>
+      <h3 class="subsection">Using Bob from the Command Line</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Verify Bob CLI is available</h3>
+          <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>bob --version</pre></div>
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Start Bob shell</h3>
+          <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>bob</pre></div>
+          <img src="../pics/bobshell.png" alt="Bob shell terminal interface" class="screenshot" onerror="this.style.display='none'" />
+        </div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Switch mode and run a query</h3>
+          <div class="code-block"><div class="code-header">Bob Shell</div><pre>/mode advanced
+Show me the current system status</pre></div>
+          <img src="../pics/wrksyssts-bob.png" alt="System status output in Bob shell" class="screenshot" onerror="this.style.display='none'" />
+        </div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><h3>Run one-shot CLI queries</h3>
+          <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>bob -p "Show me the current system status" --chat-mode advanced
+bob -p "Show me the top 5 CPU consumers" --chat-mode advanced
+bob -p "List tables in the SAMPLE schema" --chat-mode advanced</pre></div>
+        </div></div>
+      </div>
+
+      <h2 class="section-title">Lab Completion Checklist</h2>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--text);">
+        <li>☐ Bob is configured with IBM i custom modes</li>
+        <li>☐ MCP servers are connected and working</li>
+        <li>☐ Successfully switched to IBM i Agent mode</li>
+        <li>☐ Retrieved system status information</li>
+        <li>☐ Explored IBM i services and database objects</li>
+        <li>☐ (Optional) Ran security analysis queries</li>
+        <li>☐ (Optional) Used Bob CLI from the command line</li>
+      </ul>
+
+      <h2 class="section-title">Troubleshooting</h2>
+      <div class="table-wrap"><table><thead><tr><th>Problem</th><th>Fix</th></tr></thead><tbody>
+        <tr><td>Bob doesn't show custom modes</td><td>Verify <code>.bobmodes</code> file is in project root; restart Bob; check YAML syntax</td></tr>
+        <tr><td>MCP server connection fails</td><td>Verify <code>.env</code> credentials; ensure Mapepire is running on port 8076; check firewall</td></tr>
+        <tr><td>Tools return errors</td><td>Verify IBM i user authorities; check Mapepire logs; ensure QSYS2 services are available</td></tr>
+        <tr><td>No data returned</td><td>Confirm you're querying existing objects; check SQL syntax; verify database authorities</td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('ansible-overview', document.querySelector('[onclick*=ansible-overview]'))">← Overview</button>
+      <button class="btn btn-primary" onclick="showPage('lab5', document.querySelector('[onclick*=lab5]'))">Lab 5 →</button>
+    </div>
+  </div>
+
+  <!-- LAB 5 — PTF MANAGEMENT -->
+  <div class="page" id="page-lab5">
+    <div class="page-hero">
+      <div class="eyebrow">Lab 5 — Ansible Track</div>
+      <h1>Building a PTF Management Assistant</h1>
+      <p class="subtitle">Create an automated assistant to manage Program Temporary Fixes (PTFs) on IBM i systems using Ansible with Bob AI integration — no manual green-screen PTF work required.</p>
+      <div class="meta-pills">
+        <span class="pill time">⏱ ~20 minutes</span>
+        <span class="pill level">Intermediate</span>
+      </div>
+    </div>
+    <div class="page-body">
+
+      <div class="callout info"><div class="icon">📋</div><p><strong>Builds on Lab 4.</strong> The <code>ansible-for-i</code> custom mode and Ansible collection installed in Lab 4 are required here.</p></div>
+
+      <h2 class="section-title">Prerequisites</h2>
+      <div class="callout tip"><div class="icon">💡</div><p>Verify your setup before starting:</p></div>
+      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre># Verify Ansible
+ansible --version
+
+# Check IBM i collection is at v3.3.0
+ansible-galaxy collection list | grep ibm.power_ibmi</pre></div>
+      <div class="callout warning"><div class="icon">⚠️</div><p>Set <code>ansible_python_interpreter</code> to <code>/QOpenSys/pkgs/bin/python3.9</code> explicitly in your inventory. The default <code>python3</code> symlink may point to a version without <code>ibm_db</code> installed.</p></div>
+
+      <h2 class="section-title">Custom Mode Configuration</h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Add the <code>ansible-for-i</code> custom mode to <code>.bob/custom_modes.yaml</code>:</p>
+      <div class="code-block"><div class="code-header">.bob/custom_modes.yaml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- slug: ansible-for-i
+  name: ℹ️ Ansible for i
+  whenToUse: an agent who specializes IBM i with Ansible
+  roleDefinition: |
+    You are an expert in IBM i system administration and Ansible automation.
+    Focus on:
+    - IBM i-specific Ansible modules (ibm.power_ibmi collection)
+    - PTF management and system currency
+    - YAML playbook best practices
+    - IBM i object authorities and security
+  groups:
+    - read
+    - edit
+    - mcp
+    - command</pre></div>
+
+      <h2 class="section-title">Part 1 <span class="section-badge">Generate the Playbook with Bob</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Activate the mode</h3><p>Expand the modes dropdown beneath the chat input and select <strong>ℹ️ Ansible for i</strong>.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Ask Bob to create the PTF currency check automation</h3>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt — copy this exactly</div><div class="prompt-text">Create an Ansible automation project for IBM i PTF management with the following:
+
+1. Directory structure: ./ansible with subdirectories for inventories/development, playbooks, and templates
+2. A playbook called check_ptf_currency.yml that:
+   - Queries IBM i system information using ibmi_sql_query
+   - Checks PTF group levels (SF99740, SF99738) using ibmi_fix_group_check
+   - Lists installed PTFs from QSYS2.PTF_INFO
+   - Compares against missing critical PTFs
+   - Calculates compliance statistics
+   - Generates an HTML report using a Jinja2 template, save to ./ansible/reports
+3. An inventory file for development environment with ibmi_systems group
+4. A Jinja2 template for the PTF currency report with system info, PTF group status, missing PTFs, and compliance metrics
+
+Use IBM i Ansible collection modules (ibm.power_ibmi) and follow best practices.</div></div>
+        </div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Review Bob's generated files</h3><p>Bob will create:</p>
+          <ul style="padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px;color:var(--text);margin-top:6px;">
+            <li><code>./ansible/inventories/development/hosts.yml</code> — Inventory configuration</li>
+            <li><code>./ansible/playbooks/check_ptf_currency.yml</code> — Main playbook</li>
+            <li><code>./ansible/templates/ptf_currency_report.j2</code> — Report template</li>
+          </ul>
+        </div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><h3>Customize the inventory</h3><p>Update the inventory file with your actual IBM i system details:</p>
+          <div class="code-block"><div class="code-header">ansible/inventories/development/hosts.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>all:
+  children:
+    ibmi_systems:
+      hosts:
+        ibmi_dev01:
+          ansible_host: &lt;YOUR_IBM_I_IP&gt;
+          ansible_user: ITZUSER
+          ansible_ssh_private_key_file: /path/to/ssh_private_key.pem
+          ansible_python_interpreter: /QOpenSys/pkgs/bin/python3.9
+          ansible_connection: ssh
+          ansible_env:
+            LANG: EN_US
+            PASE_LANG: EN_US
+            QIBM_MULTI_THREADED: "Y"</pre></div>
+        </div></div>
+      </div>
+
+      <h2 class="section-title">Part 2 <span class="section-badge">Preview the Report Template</span></h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Duplicate the Jinja2 template at <code>./ansible/templates/ptf_currency_report.html.j2</code>, convert it to <code>ptf_currency_report.html</code>, and open it in your browser to preview the unfilled layout:</p>
+      <img src="../pics/PTF_report_unfilled.png" alt="Unfilled PTF currency report template" class="screenshot" onerror="this.style.display='none'" />
+
+      <h2 class="section-title">Part 3 <span class="section-badge">Run the Playbook</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Run through Bob</h3>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Run the PTF currency check playbook"</div></div>
+          <div class="callout tip"><div class="icon">💡</div><p>Bob may iterate on the playbook a few times to adapt to your system — this is normal. Let it self-correct.</p></div>
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Review output &amp; open the report</h3><p>Check the PLAY RECAP for success/failure. Then open the generated HTML report in your browser:</p>
+          <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>open ./ansible/reports/&lt;REPORT_NAME&gt;</pre></div>
+          <img src="../pics/PTF_report_filled.png" alt="Filled PTF currency report with real data" class="screenshot" onerror="this.style.display='none'" />
+        </div></div>
+      </div>
+
+      <h2 class="section-title">Common Troubleshooting</h2>
+      <div class="table-wrap"><table><thead><tr><th>Symptom</th><th>Fix</th></tr></thead><tbody>
+        <tr><td>SSH authentication failures</td><td>Verify key-based auth setup on IBM i</td></tr>
+        <tr><td>Module not found</td><td>Reinstall: <code>ansible-galaxy collection install ibm.power_ibmi:3.3.0 --force</code></td></tr>
+        <tr><td>Permission denied</td><td>Check user authorities on IBM i</td></tr>
+        <tr><td><code>CWBNL0203</code> / ODBC errors</td><td>You have v3.5.0 — downgrade to v3.3.0</td></tr>
+        <tr><td><code>SQL0206 - Column not found</code></td><td>Remove <code>SERIAL_NUMBER</code>/<code>PARTITION_NAME</code> from <code>ENV_SYS_INFO</code> query — they don't exist on IBM i 7.6 VMs</td></tr>
+      </tbody></table></div>
+
+      <h2 class="section-title">Additional Use Cases</h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Explore more Ansible automation patterns for IBM i:</p>
+      <div class="code-block"><div class="code-header">Automated PTF Application <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Apply PTF package
+  ibm.power_ibmi.ibmi_fix:
+    product_id: "5770SS1"
+    fix_list: ["SI12345", "SI67890"]
+    operation: "apply"</pre></div>
+      <div class="code-block"><div class="code-header">System Health Monitoring <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Monitor system resources
+  ibm.power_ibmi.ibmi_sql_query:
+    sql: "SELECT * FROM QSYS2.SYSTEM_STATUS_INFO"
+  register: health_metrics</pre></div>
+      <div class="code-block"><div class="code-header">User Authority Management <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Grant object authority
+  ibm.power_ibmi.ibmi_object_authority:
+    object_name: "MYLIB/MYFILE"
+    user: "APPUSER"
+    authority: "*CHANGE"</pre></div>
+      <div class="callout success"><div class="icon">✅</div><p>You've created an Ansible-based PTF management assistant with Bob AI integration — automated currency checking, compliance reporting, and a foundation for IBM i automation.</p></div>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('lab4', document.querySelector('[onclick*=lab4]'))">← Lab 4</button>
+      <button class="btn btn-primary" onclick="showPage('lab6', document.querySelector('[onclick*=lab6]'))">Lab 6 →</button>
+    </div>
+  </div>
+
+  <!-- LAB 6 — SECURITY COMPLIANCE -->
+  <div class="page" id="page-lab6">
+    <div class="page-hero">
+      <div class="eyebrow">Lab 6 — Ansible Track</div>
+      <h1>Automated Security Auditing &amp; Active Remediation</h1>
+      <p class="subtitle">Audit IBM i system configurations against security guidelines (CIS IBM i Benchmark) and automatically remediate vulnerabilities — all driven by Bob's Ansible mode.</p>
+      <div class="meta-pills">
+        <span class="pill time">⏱ ~25 minutes</span>
+        <span class="pill level">Advanced-Beginner to Intermediate</span>
+      </div>
+    </div>
+    <div class="page-body">
+
+      <div class="callout info"><div class="icon">📋</div><p><strong>Builds on Lab 5.</strong> The <code>ansible-for-i</code> mode, Ansible collection, and <code>./ansible</code> project structure from Lab 5 are all required here.</p></div>
+
+      <h2 class="section-title">Lab Objectives</h2>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--text);margin-bottom:8px;">
+        <li>Audit critical IBM i system values (<code>QSECURITY</code>, <code>QINACTMSGQ</code>, <code>QMAXSIGN</code>, <code>QALWOBJRST</code>) using <code>ibmi_sysval</code></li>
+        <li>Audit user profiles for default password vulnerabilities using <code>ibmi_user_compliance_check</code></li>
+        <li>Inspect and restrict public authorities on a critical library using <code>ibmi_object_authority</code></li>
+        <li>Execute dynamic "self-healing" remediation to restore compliance automatically</li>
+      </ul>
+
+      <h2 class="section-title">Instructor Setup <span class="section-badge">Run before students arrive</span></h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Create the non-compliant baseline that students will audit and remediate:</p>
+      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre># Create test library in non-compliant state
+ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
+  -m ibm.power_ibmi.ibmi_cl_command \
+  -a "cmd='CRTLIB LIB(MYAPP_DB) TEXT(''Lab 6 Test Library'')'"
+
+ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
+  -m ibm.power_ibmi.ibmi_object_authority \
+  -a "object_name=MYAPP_DB object_type=*LIB user=*PUBLIC operation=grant authority=*CHANGE"
+
+# Set QINACTMSGQ non-compliant
+ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
+  -m ibm.power_ibmi.ibmi_cl_command \
+  -a "cmd='CHGSYSVAL SYSVAL(QINACTMSGQ) VALUE(*ENDJOB)'"</pre></div>
+
+      <h2 class="section-title">Part 1 <span class="section-badge">Generate the Playbooks with Bob</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Activate Ansible for i mode</h3><p>Expand the modes dropdown and select <strong>ℹ️ Ansible for i</strong>.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Ask Bob to generate the security compliance project</h3>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt — copy this exactly</div><div class="prompt-text">Create a security compliance automation project for IBM i using the ibm.power_ibmi collection (version 3.3.0).
+
+Generate two playbooks and a reporting template:
+
+1. A playbook called audit_security.yml that:
+   - Audits system values QSECURITY, QINACTMSGQ, QMAXSIGN, QALWOBJRST using ibmi_sysval
+     (parameter is 'sysvalue', a list of dicts with 'name' and 'expect' keys)
+   - Audits user profiles for default/blank passwords using ibmi_user_compliance_check
+     (parameters: 'users' list and 'fields' list of dicts with 'name' and 'expect' keys)
+   - Inspects the public authority of library MYAPP_DB using ibmi_object_authority
+     with operation=display (NOT 'query')
+   - Saves a JSON compliance report locally using ansible.builtin.template with delegate_to: localhost
+
+2. A playbook called remediate_security.yml that:
+   - Sets QINACTMSGQ=*DSCJOB and QALWOBJRST=*NONE using ibmi_cl_command with CHGSYSVAL
+   - Revokes *PUBLIC *CHANGE on MYAPP_DB then grants *PUBLIC *EXCLUDE
+   - Uses become_user and become_user_password module arguments for tasks requiring *SECADM
+
+3. A Jinja2 template at ./ansible/templates/security_report.json.j2 that outputs a structured compliance scorecard.</div></div>
+        </div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Verify Bob's generated files</h3>
+          <div class="table-wrap"><table><thead><tr><th>File</th><th>Purpose</th></tr></thead><tbody>
+            <tr><td><code>./ansible/playbooks/audit_security.yml</code></td><td>Checks system values, user profiles, and library authority</td></tr>
+            <tr><td><code>./ansible/playbooks/remediate_security.yml</code></td><td>Applies corrective changes to bring the system into compliance</td></tr>
+            <tr><td><code>./ansible/templates/security_report.json.j2</code></td><td>Jinja2 template that renders the compliance scorecard as JSON</td></tr>
+          </tbody></table></div>
+        </div></div>
+      </div>
+
+      <h2 class="section-title">Part 2 <span class="section-badge">Key Module Patterns</span></h2>
+      <div class="callout warning"><div class="icon">⚠️</div><p><strong>Common mistakes Bob may need to self-correct:</strong></p></div>
+
+      <h3 class="subsection">System Value Auditing — use <code>sysvalue</code> not <code>sysval</code></h3>
+      <div class="code-block"><div class="code-header">audit_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Audit system security values
+  ibm.power_ibmi.ibmi_sysval:
+    sysvalue:
+      - {name: 'QSECURITY',  expect: '50'}
+      - {name: 'QINACTMSGQ', expect: '*DSCJOB',  check: 'equal_as_list'}
+      - {name: 'QMAXSIGN',   expect: '000003'}
+      - {name: 'QALWOBJRST', expect: '*NONE',    check: 'equal_as_list'}
+  register: sysval_audit
+  failed_when: false</pre></div>
+
+      <h3 class="subsection">Library Permissions — use <code>operation: display</code> not <code>query</code></h3>
+      <div class="code-block"><div class="code-header">audit_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Audit public authority on MYAPP_DB
+  ibm.power_ibmi.ibmi_object_authority:
+    object_name: 'MYAPP_DB'
+    object_type: '*LIB'
+    user: '*PUBLIC'
+    operation: display
+  register: myapp_public_auth
+  failed_when: false</pre></div>
+
+      <h3 class="subsection">Setting System Values — use <code>ibmi_cl_command</code> not <code>ibmi_sysval</code></h3>
+      <div class="callout info"><div class="icon">📋</div><p><code>ibmi_sysval</code> is <strong>read-only</strong>. To change a system value, use <code>ibmi_cl_command</code> with <code>CHGSYSVAL</code> in the remediation playbook.</p></div>
+      <div class="code-block"><div class="code-header">remediate_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Set QINACTMSGQ to disconnect inactive sessions
+  ibm.power_ibmi.ibmi_cl_command:
+    cmd: "CHGSYSVAL SYSVAL(QINACTMSGQ) VALUE(*DSCJOB)"</pre></div>
+
+      <h3 class="subsection">Privilege Elevation — use module-level <code>become_user</code></h3>
+      <div class="callout warning"><div class="icon">⚠️</div><p>Standard Ansible <code>become:</code> does NOT work on IBM i. Use <code>become_user</code> and <code>become_user_password</code> as module-level arguments instead.</p></div>
+      <div class="code-block"><div class="code-header">remediate_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Remediate QINACTMSGQ (requires *SECADM)
+  ibm.power_ibmi.ibmi_cl_command:
+    cmd: "CHGSYSVAL SYSVAL(QINACTMSGQ) VALUE(*DSCJOB)"
+    become_user: 'QSECOFR'
+    become_user_password: '{{ qsecofr_password }}'</pre></div>
+      <div class="callout tip"><div class="icon">💡</div><p>For this lab, <code>ITZUSER</code> already has <code>*ALLOBJ</code> and <code>*SECADM</code> — you can omit <code>become_user</code>/<code>become_user_password</code> entirely.</p></div>
+
+      <h2 class="section-title">Playbook Execution &amp; Self-Healing</h2>
+
+      <h3 class="subsection">Step 1 — Run the Audit Playbook</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Run the security audit playbook"</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Or run directly:</p>
+      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-playbook -i ansible/inventories/development/hosts.yml \
+  ansible/playbooks/audit_security.yml</pre></div>
+      <p style="font-size:14px;color:var(--text);margin:12px 0 8px;font-weight:600;">Expected findings with the non-compliant baseline:</p>
+      <div class="table-wrap"><table><thead><tr><th>Item</th><th>Current</th><th>Target</th><th>Status</th></tr></thead><tbody>
+        <tr><td><code>QSECURITY</code></td><td><code>50</code></td><td><code>&gt;= 50</code></td><td>✅ PASS</td></tr>
+        <tr><td><code>QINACTMSGQ</code></td><td><code>*ENDJOB</code></td><td><code>*DSCJOB</code></td><td>❌ FAIL</td></tr>
+        <tr><td><code>QMAXSIGN</code></td><td><code>000003</code></td><td><code>000003</code></td><td>✅ PASS</td></tr>
+        <tr><td><code>QALWOBJRST</code></td><td><code>*ALL</code></td><td><code>*NONE</code></td><td>❌ FAIL</td></tr>
+        <tr><td><code>MYAPP_DB *PUBLIC</code></td><td><code>*CHANGE</code></td><td><code>*EXCLUDE</code></td><td>❌ FAIL</td></tr>
+      </tbody></table></div>
+
+      <h3 class="subsection">Step 2 — Run the Remediation Playbook</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Run the remediation playbook to fix the non-compliant findings"</div></div>
+      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-playbook -i ansible/inventories/development/hosts.yml \
+  ansible/playbooks/remediate_security.yml</pre></div>
+      <p style="font-size:14px;color:var(--text);margin:12px 0 8px;font-weight:600;">What this changes:</p>
+      <div class="table-wrap"><table><thead><tr><th>Setting</th><th>Before</th><th>After</th></tr></thead><tbody>
+        <tr><td><code>QINACTMSGQ</code></td><td><code>*ENDJOB</code></td><td><code>*DSCJOB</code></td></tr>
+        <tr><td><code>QALWOBJRST</code></td><td><code>*ALL</code></td><td><code>*NONE</code></td></tr>
+        <tr><td><code>MYAPP_DB *PUBLIC</code></td><td><code>*CHANGE</code></td><td><code>*EXCLUDE</code></td></tr>
+      </tbody></table></div>
+
+      <h3 class="subsection">Step 3 — Re-Audit and Verify Compliance</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Run the audit a second time to confirm all items now pass:</p>
+      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-playbook -i ansible/inventories/development/hosts.yml \
+  ansible/playbooks/audit_security.yml</pre></div>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Compare the two compliance report files and summarize what changed"</div></div>
+      <div class="callout success"><div class="icon">✅</div><p>All three previously failing items should now show <strong>PASS</strong> and the overall compliance score should read <strong>100%</strong> for the audited controls.</p></div>
+
+      <h3 class="subsection">Step 4 — Reset the Environment (Optional)</h3>
+      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre># Restore non-compliant baseline for the next session
+ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
+  -m ibm.power_ibmi.ibmi_cl_command \
+  -a "cmd='CHGSYSVAL SYSVAL(QINACTMSGQ) VALUE(*ENDJOB)'"
+
+ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
+  -m ibm.power_ibmi.ibmi_cl_command \
+  -a "cmd='CHGSYSVAL SYSVAL(QALWOBJRST) VALUE(*ALL)'"
+
+ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
+  -m ibm.power_ibmi.ibmi_object_authority \
+  -a "object_name=MYAPP_DB object_type=*LIB user=*PUBLIC operation=grant authority=*CHANGE"</pre></div>
+
+      <h2 class="section-title">Common Troubleshooting</h2>
+      <div class="table-wrap"><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
+        <tr><td><code>CWBNL0203</code></td><td><code>ibm.power_ibmi</code> 3.5.x pyodbc fails in PASE sessions</td><td>Pin to <code>ibm.power_ibmi:3.3.0</code></td></tr>
+        <tr><td><code>parameter 'sysval' not supported</code></td><td>Wrong parameter name</td><td>Use <code>sysvalue</code> (list of dicts)</td></tr>
+        <tr><td><code>invalid operation: query</code></td><td>Wrong operation on <code>ibmi_object_authority</code></td><td>Use <code>operation: display</code></td></tr>
+        <tr><td><code>MYAPP_DB not found / CPF9801</code></td><td>Library not created before audit runs</td><td>Run the instructor setup block first</td></tr>
+        <tr><td><code>become_user</code> has no effect</td><td>Standard Ansible <code>become:</code> not supported on IBM i</td><td>Use <code>become_user</code>/<code>become_user_password</code> as module arguments</td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('lab5', document.querySelector('[onclick*=lab5]'))">← Lab 5</button>
+      <button class="btn btn-primary" onclick="showPage('lab200', document.querySelector('[onclick*=lab200]'))">Lab 200 →</button>
+    </div>
+  </div>
+
+  <!-- LAB 200 — OPS & SYSADMIN -->
+  <div class="page" id="page-lab200">
+    <div class="page-hero">
+      <div class="eyebrow">Lab 200 — Ansible Track</div>
+      <h1>Premium Package for i — Ops &amp; System Admin</h1>
+      <p class="subtitle">Use Bob's Premium Package for IBM i to perform Operations and System Administration tasks using natural language — PTF reporting, security audits, CPU troubleshooting, and database optimization — no green screen required.</p>
+      <div class="meta-pills">
+        <span class="pill time">⏱ ~45 minutes</span>
+        <span class="pill level">IBM i Database + IBM i Developer mode</span>
+      </div>
+    </div>
+    <div class="page-body">
+
+      <div class="callout tip"><div class="icon">💡</div><p><strong>Can be done independently</strong> — this lab does not depend on Labs 4–6. You only need an active IBM i connection in Bob with the <strong>IBM Bob Premium Package for i</strong> installed.</p></div>
+
+      <div class="table-wrap" style="margin-bottom:20px;"><table><thead><tr><th>#</th><th>Exercise</th><th>Bob Tools &amp; Skills</th><th>IBM i Service</th></tr></thead><tbody>
+        <tr><td>1.1</td><td>PTF Status Report</td><td><code>execute_sql_statement</code>, <code>db2-sql-primer</code></td><td><code>QSYS2.PTF_INFO</code>, <code>QSYS2.GROUP_PTF_INFO</code></td></tr>
+        <tr><td>1.2</td><td>Security Audit</td><td><code>execute_sql_statement</code>, <code>db2-security-best-practices</code></td><td><code>QSYS2.USER_INFO</code>, <code>QSYS2.OBJECT_PRIVILEGES</code></td></tr>
+        <tr><td>1.3</td><td>Save Report to IFS</td><td><code>write_stream_file</code>, <code>execute_pase_command</code></td><td>IFS home directory</td></tr>
+        <tr><td>2.1</td><td>Top CPU Jobs</td><td><code>execute_sql_statement</code></td><td><code>QSYS2.ACTIVE_JOB_INFO</code></td></tr>
+        <tr><td>2.2</td><td>Job Investigation</td><td><code>execute_sql_statement</code>, <code>read_stream_file</code></td><td><code>QSYS2.JOBLOG_INFO</code></td></tr>
+        <tr><td>2.3</td><td>Performance Collection</td><td><code>execute_sql_statement</code>, <code>execute_cl_command</code></td><td><code>QSYS2.COLLECTION_SERVICES_INFO</code></td></tr>
+        <tr><td>3.1</td><td>Top SQL by CPU</td><td><code>execute_sql_statement</code>, <code>db2-sql-performance-analysis</code></td><td>Plan Cache</td></tr>
+        <tr><td>3.2</td><td>Index Recommendations</td><td><code>execute_sql_statement</code>, <code>db2-index-strategy</code></td><td><code>QSYS2.SYSIXADV</code></td></tr>
+      </tbody></table></div>
+
+      <h2 class="section-title">Exercise 1 <span class="section-badge">Security &amp; PTF Reporting</span></h2>
+
+      <h3 class="subsection">1.1 — PTF Status Report</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt — IBM i Database mode</div><div class="prompt-text">"Generate a PTF status report for my IBM i system. Show me missing PTFs, their descriptions, and whether they require an IPL."</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected:</strong> PTFs ranked by status (<code>NOT APPLIED</code>, <code>APPLY PENDING</code>, <code>APPLIED</code>) with IPL-required flags. Group PTF levels (e.g., SF99xxx Db2, SF99722 Java).</p>
+      <p style="font-size:14px;color:var(--text);margin:10px 0 6px;font-weight:600;">Refinements to try:</p>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px;color:var(--text);">
+        <li><em>"Which PTFs are loaded but not yet applied?"</em></li>
+        <li><em>"Show me the current Group PTF levels for Db2 and Java."</em></li>
+        <li><em>"Are there any PTFs that require an IPL to take effect?"</em></li>
+      </ul>
+
+      <h3 class="subsection">1.2 — Security Audit Report</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Run a security audit on my IBM i. Check for user profiles with default passwords, profiles with *ALLOBJ authority, and any publicly accessible sensitive objects."</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected:</strong> User profiles with expired/default passwords or inactive for 90+ days. Profiles holding <code>*ALLOBJ</code>, <code>*SECADM</code>, or <code>*JOBCTL</code>. Objects with <code>*PUBLIC *CHANGE</code> or <code>*PUBLIC *ALL</code> flagged as risks.</p>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px;color:var(--text);margin-top:8px;">
+        <li><em>"Which user profiles have not logged in for more than 90 days?"</em></li>
+        <li><em>"Show me all profiles with *ALLOBJ authority that are not IBM-supplied."</em></li>
+        <li><em>"Are there any objects in production libraries accessible to *PUBLIC?"</em></li>
+      </ul>
+
+      <h3 class="subsection">1.3 — Generate a Markdown Report</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Write a concise Markdown security and PTF summary report and save it to the IFS under my home directory."</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected:</strong> A <code>.md</code> file saved to <code>/home/&lt;your_user&gt;/</code> containing PTF gap and security findings tables, ready to share with your team.</p>
+
+      <h2 class="section-title">Exercise 2 <span class="section-badge">CPU Troubleshooting</span></h2>
+
+      <h3 class="subsection">2.1 — Identify the Top CPU Consumers</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Show me the top 10 jobs consuming the most CPU on this system."</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected:</strong> Ranked active jobs with <code>CPU_TIME</code>, <code>THREAD_COUNT</code>, <code>TEMPORARY_STORAGE</code>, job name/user/type/status.</p>
+      <div class="callout tip"><div class="icon">💡</div><p><code>CPU_TIME</code> is cumulative since job start. Check <code>ELAPSED_CPU_PERCENTAGE</code> for real-time activity.</p></div>
+
+      <h3 class="subsection">2.2 — Drill Down on a Suspicious Job</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Pick the top CPU-consuming non-system job, then ask:</p>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"What is going on with job [JOB_NAME]? Investigate its logs, runtime context, and give me recommendations."</div></div>
+      <div class="table-wrap"><table><thead><tr><th>Area</th><th>What to look for</th></tr></thead><tbody>
+        <tr><td><strong>Runtime</strong></td><td>Language/framework, JVM version, server type</td></tr>
+        <tr><td><strong>Job details</strong></td><td>Thread count, memory, subsystem, pool</td></tr>
+        <tr><td><strong>Job log errors</strong></td><td>Escape messages (<code>*ESCAPE</code>), FFDC incidents</td></tr>
+        <tr><td><strong>Recommendations</strong></td><td>Concrete fixes ranked by priority</td></tr>
+      </tbody></table></div>
+
+      <h3 class="subsection">2.3 — Check Performance Collection Status</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Is there a performance data collection running on this system?"</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected:</strong> Active collection name, profile (<code>*STANDARDP</code>, <code>*EXTD2</code>), start time, interval, and categories collected.</p>
+      <div class="callout tip"><div class="icon">💡</div><p>Collection Services data is stored as <code>*MGTCOL</code> objects in <code>QPFRDATA</code>.</p></div>
+
+      <h2 class="section-title">Exercise 3 <span class="section-badge">Database Troubleshooting</span></h2>
+
+      <h3 class="subsection">3.1 — Top SQL Statements by CPU</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Which SQL queries have consumed the most CPU over the last 10 minutes?"</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected:</strong> Ranked SQL statements with job name, CPU time, I/O counts, statement status (<code>ACTIVE</code>, <code>COMPLETE</code>), and actual SQL text.</p>
+
+      <h3 class="subsection">3.2 — Interpret &amp; Tune</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">For each top statement, ask Bob:</p>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"This query is doing a full table scan with ORDER BY on an unindexed column. What do you recommend?"</div></div>
+      <div class="table-wrap"><table><thead><tr><th>Finding</th><th>Recommendation</th></tr></thead><tbody>
+        <tr><td><code>ORDER BY</code> on unindexed column</td><td>Create an index on the sort column</td></tr>
+        <tr><td>Large JOIN with no index</td><td>Review Index Advisor suggestions in <code>QSYS2.SYSIXADV</code></td></tr>
+        <tr><td>High <code>ELAPSED_SYNC_DISK_IO</code></td><td>Review disk tier, consider result caching</td></tr>
+        <tr><td>Repeated identical statements</td><td>Enable statement caching in the connection pool</td></tr>
+      </tbody></table></div>
+
+      <h2 class="section-title">Exercise 4 <span class="section-badge">PTF Automation with Ansible</span></h2>
+      <div class="callout info"><div class="icon">📘</div><p>This exercise is a summary of Lab 5. For full step-by-step instructions, go back to <button class="btn btn-ghost" style="padding:2px 8px;font-size:13px;" onclick="showPage('lab5', document.querySelector('[onclick*=lab5]'))">Lab 5</button>.</p></div>
+
+      <h3 class="subsection">4.1 — Configure Ansible for i Mode</h3>
+      <p style="font-size:14px;color:var(--muted);">Add the <code>ansible-for-i</code> custom mode to <code>.bob/custom_modes.yaml</code> as defined in Lab 5. Switch to the mode, then:</p>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Create an Ansible playbook that checks PTF currency on my IBM i and generates a compliance report."</div></div>
+
+      <h3 class="subsection">4.2 — Automate and Schedule</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"How can I schedule this PTF compliance check to run nightly and email the report?"</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected:</strong> A CL command or PASE cron job to schedule the playbook. Guidance on using <code>SNDDST</code> or SMTP to distribute the report.</p>
+
+      <h2 class="section-title">Exercise 5 <span class="section-badge">HMC Operations</span></h2>
+      <div class="callout info"><div class="icon">📘</div><p>IBM i often runs as an LPAR on IBM Power Systems managed by an HMC. Bob can assist with the <strong>infrastructure layer</strong> — querying LPAR states, checking VIOS health, and performing dynamic resource operations — all through the HMC REST API.</p></div>
+      <p style="font-size:14px;color:var(--muted);">Full instructions are in the dedicated HMC lab (<code>lab201-hmc.md</code>). This exercise uses Bob in default Agent mode with an optional custom <code>hmc-operator</code> mode for deeper Power Systems infrastructure work.</p>
+
+      <div class="callout success"><div class="icon">✅</div><p>All exercises in Lab 200 use IBM Bob <strong>Premium Package for i</strong> capabilities — IBM i Database and IBM i Developer modes, purpose-built tools, and auto-activated skills. See the <a href="https://bob.ibm.com/docs/ide/premium-packages/bob-for-i/bob-for-i-index" style="color:var(--accent)">full reference</a>.</p></div>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('lab6', document.querySelector('[onclick*=lab6]'))">← Lab 6</button>
+      <button class="btn btn-primary" onclick="showPage('ansible-overview', document.querySelector('[onclick*=ansible-overview]'))">Back to Ansible Overview</button>
+    </div>
+  </div>
+
+
+</main>
+
+<script>
+// ── TRACK SWITCHING ───────────────────────────────────
+const devPages     = ['overview','setup','ex1','ex2','ex3','ex4','ex5','ex6','ex7','summary'];
+const ansiblePages = ['ansible-overview','lab4','lab5','lab6','lab200'];
+let currentTrack = 'dev';
+let visited = { dev: new Set(['overview']), ansible: new Set() };
+
+function switchTrack(track) {
+  currentTrack = track;
+  document.getElementById('nav-dev').classList.toggle('active', track === 'dev');
+  document.getElementById('nav-ansible').classList.toggle('active', track === 'ansible');
+  document.getElementById('tab-dev').classList.toggle('active', track === 'dev');
+  document.getElementById('tab-ansible').classList.toggle('active', track === 'ansible');
+  // Show the first page of the selected track
+  const firstPage = track === 'dev' ? 'overview' : 'ansible-overview';
+  const firstNav  = document.querySelector(`#nav-${track} .nav-item`);
+  showPage(firstPage, firstNav);
+}
+
+// ── PAGE NAVIGATION ──────────────────────────────────
+function showPage(id, navEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (page) { page.classList.add('active'); document.getElementById('main').scrollTo(0,0); }
+  if (navEl) navEl.classList.add('active');
+  visited[currentTrack].add(id);
+  updateProgress();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function updateProgress() {
+  const trackPages = currentTrack === 'dev' ? devPages : ansiblePages;
+  const pct = Math.round((visited[currentTrack].size / trackPages.length) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+}
+
+// ── LIBRARY PICKER ────────────────────────────────────
+function updateLib() {
+  const n = parseInt(document.getElementById('student-num').value, 10);
+  const libEl = document.getElementById('lib-display');
+  const portEl = document.getElementById('port-display');
+  if (n >= 1 && n <= 50) {
+    const nn = String(n).padStart(2, '0');
+    libEl.textContent = 'FLGHT4' + nn;
+    portEl.textContent = '30' + nn;
+  } else {
+    libEl.textContent = 'FLGHT4nn';
+    portEl.textContent = '30nn';
+  }
+}
+
+// ── BUILD LIBRARY TABLE ───────────────────────────────
+(function buildTable() {
+  const tbody = document.getElementById('lib-table');
+  for (let i = 1; i <= 50; i++) {
+    const nn = String(i).padStart(2,'0');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${i}</td><td><code>FLGHT4${nn}</code></td><td>${3000+i}</td><td><code>http://localhost:${3000+i}</code></td>`;
+    tbody.appendChild(tr);
+  }
+})();
+
+// ── COPY BUTTON ───────────────────────────────────────
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+updateProgress();
+</script>
+</body>
+</html>
