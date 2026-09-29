@@ -2066,7 +2066,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
 
       <!-- jump grid -->
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:28px;">
-        <a data-scrollto="ohpkg-1" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Steps 1–2</div><div style="font-size:13px;font-weight:700;color:var(--text);">Install the Package</div><div style="font-size:11px;color:var(--muted);margin-top:3px;">Extensions → Search &amp; Install</div></a>
+        <a data-scrollto="ohpkg-1" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Steps 1–2</div><div style="font-size:13px;font-weight:700;color:var(--text);">Install &amp; Verify Packages</div><div style="font-size:11px;color:var(--muted);margin-top:3px;">Extensions → Search &amp; Install</div></a>
         <a data-scrollto="ohpkg-3" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Steps 3–4</div><div style="font-size:13px;font-weight:700;color:var(--text);">Verify the Package</div><div style="font-size:11px;color:var(--muted);margin-top:3px;">Settings Icon → Modes</div></a>
       </div>
 
@@ -2087,6 +2087,10 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
             <h3 id="ohpkg-2">IBM i Premium Package Search</h3>
             <div class="callout tip"><div class="icon">💡</div><p>Type <strong>IBM i Premium Package</strong> into the search bar and install this option.</p></div>
             <img src="img/oh-package.png" alt="IBM i Premium Package search" class="screenshot" style="max-width:700px;" />
+            <div class="callout tip" style="margin-top:16px;"><div class="icon">✅</div><p>Verify the following packages are installed. You should see <strong>Code for IBM i</strong>, <strong>Db2 for IBM i</strong>, and <strong>IBM i Testing</strong> in your Extensions panel.</p></div>
+            <img src="img/codeibmi.png" alt="Code for IBM i installed" class="screenshot" style="max-width:700px;margin-top:12px;" />
+            <img src="img/db2ibmi.png" alt="Db2 for IBM i installed" class="screenshot" style="max-width:700px;margin-top:12px;" />
+            <img src="img/ibmitesting.png" alt="IBM i Testing installed" class="screenshot" style="max-width:700px;margin-top:12px;" />
           </div>
         </div>
 
