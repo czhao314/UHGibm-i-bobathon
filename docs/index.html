@@ -2365,7 +2365,95 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
       <p class="subtitle">Set up your VS Code workspace for the IBM i lab — folder structure, library list, and workspace settings.</p>
     </div>
     <div class="page-body">
-      <div class="callout tip"><div class="icon">💡</div><p>Content coming soon — descriptions and screenshots will be added here.</p></div>
+
+      <!-- jump grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:28px;">
+        <a data-scrollto="ohws-0" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 1</div><div style="font-size:13px;font-weight:700;color:var(--text);">Open Explorer</div></a>
+        <a data-scrollto="ohws-1" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 2</div><div style="font-size:13px;font-weight:700;color:var(--text);">Create Workspace</div></a>
+        <a data-scrollto="ohws-2" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 3</div><div style="font-size:13px;font-weight:700;color:var(--text);">Create Folder</div></a>
+        <a data-scrollto="ohws-3" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 4</div><div style="font-size:13px;font-weight:700;color:var(--text);">Download SSH Key</div></a>
+        <a data-scrollto="ohws-4" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 5</div><div style="font-size:13px;font-weight:700;color:var(--text);">Insert SSH</div></a>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3 id="ohws-0">Open Explorer</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Click the Explorer icon in the VS Code activity bar to open the file explorer. This is where you will manage your workspace folders and files throughout the lab.</p></div>
+            <img src="img/oh-open-explorer.png" alt="Open Explorer" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Create Workspace</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3 id="ohws-1">Create Workspace</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>In VS Code, go to <strong>File → Open Folder</strong> and select or create a folder to use as your workspace for the lab. This keeps all your project files organised in one place.</p></div>
+            <img src="img/oh-workspace-create.png" alt="Create workspace" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Create Folder</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3 id="ohws-2">Create Folder</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Inside your workspace, create a new folder to store your lab files. Right-click in the Explorer panel and select <strong>New Folder</strong>, then give it a name relevant to your project.</p></div>
+            <img src="img/oh-create-folder.png" alt="Create folder" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Download SSH Key</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h3 id="ohws-3">Download SSH Key</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Download the SSH private key from your TechZone reservation details. Save it into the folder you just created — this key is required to authenticate your IBM i connection.</p></div>
+            <img src="img/oh-download-ssh.png" alt="Download SSH key" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Insert SSH</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <h3 id="ohws-4">Insert SSH</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>In the IBM i connection settings, navigate to the <strong>Private Key</strong> field and select the SSH key file you downloaded. This links your workspace to the IBM i system securely.</p></div>
+            <img src="img/oh-insert-ssh.png" alt="Insert SSH key" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+      </div>
+
       <div style="padding:24px 0 0;border-top:1px solid var(--border);margin-top:24px;display:flex;justify-content:flex-start;">
         <button class="btn btn-secondary" onclick="showPage('oh-bob101', document.querySelector('[onclick*=oh-bob101]'))">← Bob 101</button>
       </div>
@@ -2405,14 +2493,16 @@ function showPage(id, navEl) {
   const page = document.getElementById('page-' + id);
   if (page) { page.classList.add('active'); document.getElementById('main').scrollTo(0,0); }
   if (navEl) navEl.classList.add('active');
-  visited[currentTrack].add(id);
+  const trackPages = currentTrack === 'dev' ? devPages : currentTrack === 'ansible' ? ansiblePages : ohPages;
+  if (trackPages.includes(id)) visited[currentTrack].add(id);
   updateProgress();
   document.getElementById('sidebar').classList.remove('open');
 }
 
 function updateProgress() {
   const trackPages = currentTrack === 'dev' ? devPages : currentTrack === 'ansible' ? ansiblePages : ohPages;
-  const pct = Math.round((visited[currentTrack].size / trackPages.length) * 100);
+  const count = [...visited[currentTrack]].filter(p => trackPages.includes(p)).length;
+  const pct = Math.round((count / trackPages.length) * 100);
   document.getElementById('prog-fill').style.width = pct + '%';
   document.getElementById('prog-pct').textContent = pct + '%';
 }
