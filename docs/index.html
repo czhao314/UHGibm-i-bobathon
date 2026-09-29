@@ -959,10 +959,10 @@ CRTRPGPGM PGM(FLGHT4nn/FRS021) SRCFILE(FLGHT4nn/QRPGSRC)  SRCMBR(FRS021) REPLACE
       <h2 class="section-title">4b <span class="section-badge">Review the Query</span></h2>
       <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Type <code>/review</code> first so it highlights in the Bob chat, then paste and send the query below.</p>
       <div class="screenshot-group">
-        <img src="img/slash-review-1.jpeg" alt="Typing /review in the Bob chat" class="screenshot" />
-        <img src="img/slash-review-2.jpeg" alt="/review command highlighted in Bob chat" class="screenshot" />
+        <img src="img/review-sql.png" alt="Typing /review in the Bob chat" class="screenshot" />
+        <img src="img/review-sql-pasted.png" alt="/review command with pasted SQL" class="screenshot" />
       </div>
-      <div class="code-block"><div class="code-header">SQL Query — paste after /review <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>SELECT
+      <div class="prompt-block"><div class="prompt-label">SQL Query — paste after /review</div><div class="prompt-text" style="font-family:monospace;font-size:13px;white-space:pre;">SELECT
     f.FLIGH00001                                    AS FLIGHT_NUMBER,
     f.DEPARTURE                                     AS FROM_CITY,
     f.ARRIVAL                                       AS TO_CITY,
@@ -994,7 +994,7 @@ GROUP BY
 ORDER BY
     o.DEPAR00001,
     f.FLIGH00001
-FETCH FIRST 100 ROWS ONLY;</pre></div>
+FETCH FIRST 100 ROWS ONLY;</div></div>
       <div class="callout warning"><div class="icon">⚠️</div><p><strong>Intentional bug to spot:</strong> <code>o.DEPAR00001</code> appears in <code>ORDER BY</code> but not in <code>GROUP BY</code> — logically incorrect on strict SQL engines. Bob's <code>/review</code> should flag this.</p></div>
       <p style="font-size:14px;color:var(--text);margin:14px 0 8px;font-weight:600;">Expected findings from Bob:</p>
       <ul style="padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text)">
