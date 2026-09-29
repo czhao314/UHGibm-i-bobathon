@@ -675,15 +675,16 @@
         </div></div>
         <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Open the SSH tunnel</h3><p>Replace <code>&lt;myuser&gt;@&lt;myIPaddress&gt;</code> with your TechZone values. On macOS/Linux you may need <code>sudo ssh</code>; on Windows remove <code>sudo</code> and run as Administrator.</p>
           <img src="img/bob-lab-network.png" alt="Lab network diagram" class="screenshot" />
-          <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>sudo ssh -L 50000:localhost:23 -L 2001:localhost:2001 -L 449:localhost:449 \
+          <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>sudo ssh -i ./ssh_private_key.pem \
+  -L 50000:localhost:23 -L 2001:localhost:2001 -L 449:localhost:449 \
   -L 8470:localhost:8470 -L 8471:localhost:8471 -L 8472:localhost:8472 \
   -L 2007:localhost:2007 -L 8473:localhost:8473 -L 8474:localhost:8474 \
   -L 8475:localhost:8475 -L 8476:localhost:8476 -L 2003:localhost:2003 \
   -L 2002:localhost:2002 -L 2006:localhost:2006 -L 2300:localhost:2300 \
-  -L 2323:localhost:2323 -L 2005:localhost:2005 -L 8076:localhost:8076 \
-  -L 3001:localhost:3001 -L 3002:localhost:3002 ... -L 3050:localhost:3050 \
+  -L 2323:localhost:2323 -L 3001:localhost:3001 -L 3002:localhost:3002 \
+  -L 2005:localhost:2005 -L 8076:localhost:8076 -L 3010:localhost:3010 \
   -o ExitOnForwardFailure=yes -o ServerAliveInterval=15 -o ServerAliveCountMax=3 \
-  &lt;myuser&gt;@&lt;myIPaddress&gt; -i ssh_private_key.pem</pre></div>
+  &lt;myuser&gt;@&lt;myIPaddress&gt;</pre></div>
         </div></div>
         <div class="step"><div class="step-num">3</div><div class="step-content"><h3>(Optional) Connect IBM i Access Client Solutions for 5250</h3><p>Only needed if you want to view the green screen. Install <a href="https://www.ibm.com/support/pages/ibm-i-access-client-solutions" style="color:var(--accent)">IBM i Access Client Solutions</a>, set IP Address to <code>127.0.0.1</code>, port to <code>50000</code>. Log in, then:</p>
           <div class="code-block"><div class="code-header">5250 commands <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ADDLIBLE FLGHT4nn
