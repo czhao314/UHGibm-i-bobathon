@@ -730,7 +730,7 @@ CALL FLGHT4nn/FRS021</pre></div>
       <h2 class="section-title">1d <span class="section-badge">Optional</span></h2>
       <h3 class="subsection">Draw.io Diagram</h3>
       <div class="callout info"><div class="icon">📝</div><p>Install the <strong>Draw.io Integration</strong> extension first: <code>Cmd+Shift+X</code> → search "Draw.io Integration" → Install.</p></div>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt (IBM i Developer mode, Library List scope)</div><div class="prompt-text">"Analyze the FLGHT4nn application from the library list and generate a draw.io architecture diagram showing the main programs, menus, and database files. Save the file as <code>FLGHT4nn-architecture.drawio</code> in <code>$HOME/docs/</code> on IBM i."</div></div>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt (IBM i Developer mode, Library List scope)</div><div class="prompt-text">Analyze the FLGHT4nn application from the library list and generate a draw.io architecture diagram showing the main programs, menus, and database files. Ensure that the XML generated uses pure auto-routed connector paths and contains no manual coordinate arrays (avoid using &lt;Array&gt; or &lt;mxPoint&gt; manual child elements on connectors) to prevent the Draw.io extension 'a.push is not a function' error. Save the file as FLGHT4nn-architecture.drawio in $HOME/docs/ on IBM i.</div></div>
       <p style="font-size:14px;color:var(--muted);margin-top:10px;">In the IFS Browser, navigate to <code>$HOME/docs/</code> and click the <code>.drawio</code> file — the Draw.io extension renders it directly in the editor.</p>
       <img src="img/drawIo.png" alt="Draw.io architecture diagram" class="screenshot" />
 
