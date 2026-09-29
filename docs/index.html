@@ -344,7 +344,7 @@
   <div class="track-tabs">
     <button class="track-tab active" id="tab-dev" onclick="switchTrack('dev')"><span class="track-tab-indicator"></span>Developer Track</button>
     <button class="track-tab ansible-tab" id="tab-ansible" onclick="switchTrack('ansible')"><span class="track-tab-indicator"></span>Ansible Track</button>
-    <button class="track-tab oh-tab" id="tab-oh" onclick="switchTrack('oh')"><span class="track-tab-indicator"></span>Office Hours 101</button>
+    <button class="track-tab oh-tab" id="tab-oh" onclick="switchTrack('oh')"><span class="track-tab-indicator"></span>Office Hours Helper</button>
   </div>
 
   <!-- ── DEVELOPER TRACK NAV ── -->
@@ -397,7 +397,10 @@
   <!-- ── OFFICE HOURS NAV ── -->
   <div class="nav-track" id="nav-oh">
     <div class="nav-section">
-      <div class="nav-section-label">Office Hours 101</div>
+      <div class="nav-section-label">Office Hours Helper</div>
+      <a class="nav-item" onclick="showPage('oh-overview', this)">
+        <span class="nav-dot"></span> Overview
+      </a>
       <a class="nav-item" onclick="showPage('oh-ibmi-package', this)">
         <span class="nav-dot"></span> IBM i Package
       </a>
@@ -1988,6 +1991,79 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
   </div>
 
 
+  <!-- ── OFFICE HOURS: OVERVIEW ── -->
+  <div class="page" id="page-oh-overview">
+
+    <!-- ── FULL-BLEED HERO BANNER ── -->
+    <div style="position:relative;overflow:hidden;">
+      <img src="img/IBMI-Bob-UHG.png" alt="UnitedHealth Group × IBM Bob × IBM i"
+           style="width:100%;height:260px;object-fit:cover;object-position:center 30%;display:block;" />
+      <div style="position:absolute;inset:0;background:linear-gradient(to right, rgba(15,25,35,0.82) 38%, rgba(15,25,35,0.18) 100%);"></div>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 48px;max-width:600px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Office Hours Helper</div>
+        <h1 style="font-size:clamp(22px,3vw,36px);font-weight:800;line-height:1.1;color:#fff;margin-bottom:10px;">Getting Set Up<br>for the Bobathon</h1>
+        <p style="font-size:13px;color:rgba(232,237,242,0.75);line-height:1.6;max-width:400px;">Everything you need to install, connect, and get started — follow the topics in order.</p>
+      </div>
+    </div>
+
+    <!-- ── NOTICE BANNER ── -->
+    <div style="background:rgba(79,195,247,0.06);border-bottom:1px solid var(--border);padding:14px 48px;display:flex;align-items:center;gap:12px;">
+      <span style="font-size:15px;flex-shrink:0;">💡</span>
+      <p style="font-size:13px;color:var(--accent);margin:0;line-height:1.5;"><strong style="color:var(--text);">New here?</strong> Start with <strong style="color:var(--text);">IBM i Package</strong> to get the premium package installed, then work through each topic in order before starting the lab.</p>
+      <button class="btn btn-primary" style="margin-left:auto;white-space:nowrap;flex-shrink:0;font-size:13px;padding:8px 18px;" onclick="showPage('oh-ibmi-package', document.querySelector('[onclick*=oh-ibmi-package]'))">Start Here →</button>
+    </div>
+
+    <div class="page-body" style="max-width:960px;">
+
+      <h2 class="section-title" style="margin-top:28px;">Topics</h2>
+
+      <div onclick="showPage('oh-ibmi-package', document.querySelector('[onclick*=oh-ibmi-package]'))"
+           style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:12px;padding:18px 24px;display:flex;align-items:center;gap:20px;margin-bottom:12px;transition:border-color .15s,transform .15s;"
+           onmouseenter="this.style.transform='translateY(-1px)'"
+           onmouseleave="this.style.transform='none'">
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(79,195,247,.15);border:1px solid rgba(79,195,247,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:800;color:var(--accent);">1</div>
+        <div style="flex:1;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:3px;">IBM i Package</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text);">Install the IBM i Premium Package</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">Install and verify the IBM i Premium Package in Bob to unlock Developer and Database modes.</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l5 5-5 5"/></svg>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+
+        <div onclick="showPage('oh-connect', document.querySelector('[onclick*=oh-connect]'))"
+             style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:border-color .15s,transform .15s;"
+             onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'"
+             onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Topic 2</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Connect IBM i to Bob</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">Connect your IBM i TechZone environment to Bob and verify the connection is working.</div>
+        </div>
+
+        <div onclick="showPage('oh-bob101', document.querySelector('[onclick*=oh-bob101]'))"
+             style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:border-color .15s,transform .15s;"
+             onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'"
+             onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Topic 3</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Bob 101</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">A quick tour of the Bob panel, VS Code settings, terminal access, and cloning your repo.</div>
+        </div>
+
+        <div onclick="showPage('oh-workspace', document.querySelector('[onclick*=oh-workspace]'))"
+             style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:border-color .15s,transform .15s;"
+             onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'"
+             onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Topic 4</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Create a Workspace</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">Set up your VS Code workspace for the IBM i lab — folder structure, library list, and workspace settings.</div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
   <!-- ── OFFICE HOURS: IBM i PACKAGE (all 4 images) ── -->
   <div class="page" id="page-oh-ibmi-package">
     <div class="page-hero" style="border-left: 4px solid var(--accent);">
@@ -2089,6 +2165,15 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
           </div>
         </div>
 
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <h3>Reconnecting</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>To reconnect you can simply click the green play button, located in the Servers Section of the IBM i panel, and it will connect to your most recent connection.</p></div>
+            <img src="img/oh-ibmi-connect-button.png" alt="IBM i connect button" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+
       </div>
       <div style="padding:24px 0 0;border-top:1px solid var(--border);margin-top:24px;display:flex;justify-content:flex-start;">
         <button class="btn btn-secondary" onclick="showPage('oh-ibmi-package', document.querySelector('[onclick*=oh-ibmi-package]'))">← IBM i Package</button>
@@ -2104,7 +2189,58 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
       <p class="subtitle">A quick tour of what's where in Bob — modes, tools, skills, and how to get the most out of your session.</p>
     </div>
     <div class="page-body">
-      <div class="callout tip"><div class="icon">💡</div><p>Content coming soon — descriptions and screenshots will be added here.</p></div>
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Bob Toggle Icon</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Click the Bob toggle icon in the VS Code activity bar on the left to open the Bob panel.</p></div>
+            <img src="img/oh-bob-toggle.png" alt="Bob toggle icon" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Bob Panel Actions</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Once the Bob panel is open, you can start a new chat, switch modes, access skills, and view your conversation history from the action icons at the top of the panel.</p></div>
+            <img src="img/oh-bob-panel-actions.png" alt="Bob panel actions" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>VS Code Settings</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Access VS Code settings via the gear icon at the bottom left. From the settings options you can customise your editor, including switching to a dark or light color theme to suit your preference.</p></div>
+            <img src="img/oh-vscode-settings-icon.png" alt="VS Code settings icon" class="screenshot" style="max-width:700px;" />
+            <img src="img/oh-vscode-settings-options.png" alt="VS Code settings options" class="screenshot" style="max-width:700px;" />
+            <img src="img/oh-color-theme.png" alt="Color theme" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h3>Access Terminal</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Open the integrated terminal in VS Code via the top menu <strong>Terminal → New Terminal</strong>. Use it to run commands directly without leaving the editor.</p></div>
+            <img src="img/oh-access-terminal.png" alt="Access terminal" class="screenshot" style="max-width:700px;" />
+            <img src="img/oh-terminal.png" alt="Terminal" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <h3>Cloning Repo</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Open the Explorer panel from the activity bar, then use <strong>Clone Repository</strong> to pull down your project. Paste in your repository URL and select a local folder to clone into.</p></div>
+            <img src="img/oh-open-explorer.png" alt="Open Explorer" class="screenshot" style="max-width:700px;" />
+            <img src="img/oh-clone-repo.png" alt="Clone repo" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+
+      </div>
       <div style="padding:24px 0 0;border-top:1px solid var(--border);margin-top:24px;display:flex;justify-content:space-between;">
         <button class="btn btn-secondary" onclick="showPage('oh-connect', document.querySelector('[onclick*=oh-connect]'))">← Connect IBM i to Bob</button>
         <button class="btn btn-primary" onclick="showPage('oh-workspace', document.querySelector('[onclick*=oh-workspace]'))">Next: Create a Workspace →</button>
@@ -2133,7 +2269,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
 // ── TRACK SWITCHING ───────────────────────────────────
 const devPages     = ['overview','setup','ex1','ex2','ex3','ex4','ex5','ex6','summary'];
 const ansiblePages = ['ansible-overview','lab4','lab5','lab6','lab200'];
-const ohPages      = ['oh-ibmi-package','oh-connect','oh-bob101','oh-workspace'];
+const ohPages      = ['oh-overview','oh-ibmi-package','oh-connect','oh-bob101','oh-workspace'];
 let currentTrack = 'dev';
 let visited = { dev: new Set(['overview']), ansible: new Set(), oh: new Set() };
 
@@ -2145,7 +2281,7 @@ function switchTrack(track) {
   document.getElementById('tab-dev').classList.toggle('active', track === 'dev');
   document.getElementById('tab-ansible').classList.toggle('active', track === 'ansible');
   document.getElementById('tab-oh').classList.toggle('active', track === 'oh');
-  const firstPage = track === 'dev' ? 'overview' : track === 'ansible' ? 'ansible-overview' : 'oh-ibmi-package';
+  const firstPage = track === 'dev' ? 'overview' : track === 'ansible' ? 'ansible-overview' : 'oh-overview';
   const firstNav  = document.querySelector(`#nav-${track} .nav-item`);
   showPage(firstPage, firstNav);
 }
