@@ -304,6 +304,7 @@
   .track-tab:hover { background: var(--surface2); color: var(--text); }
   .track-tab.active { color: var(--orange); border-left-color: var(--orange); background: rgba(255,153,0,.07); }
   .track-tab.ansible-tab.active { color: var(--accent2); border-left-color: var(--accent2); background: rgba(179,157,219,.07); }
+  .track-tab.oh-tab.active { color: var(--accent); border-left-color: var(--accent); background: rgba(79,195,247,.07); }
   .track-tab-indicator {
     width: 6px; height: 6px; border-radius: 50%;
     background: var(--border); flex-shrink: 0;
@@ -311,6 +312,7 @@
   }
   .track-tab.active .track-tab-indicator { background: var(--orange); }
   .track-tab.ansible-tab.active .track-tab-indicator { background: var(--accent2); }
+  .track-tab.oh-tab.active .track-tab-indicator { background: var(--accent); }
   .nav-track { display: none; }
   .nav-track.active { display: block; }
 
@@ -342,6 +344,7 @@
   <div class="track-tabs">
     <button class="track-tab active" id="tab-dev" onclick="switchTrack('dev')"><span class="track-tab-indicator"></span>Developer Track</button>
     <button class="track-tab ansible-tab" id="tab-ansible" onclick="switchTrack('ansible')"><span class="track-tab-indicator"></span>Ansible Track</button>
+    <button class="track-tab oh-tab" id="tab-oh" onclick="switchTrack('oh')"><span class="track-tab-indicator"></span>Office Hours 101</button>
   </div>
 
   <!-- ── DEVELOPER TRACK NAV ── -->
@@ -387,6 +390,25 @@
       <div class="nav-section-label">Wrap-Up</div>
       <a class="nav-item" onclick="showPage('summary', this)">
         <span class="nav-dot"></span> Summary
+      </a>
+    </div>
+  </div>
+
+  <!-- ── OFFICE HOURS NAV ── -->
+  <div class="nav-track" id="nav-oh">
+    <div class="nav-section">
+      <div class="nav-section-label">Office Hours 101</div>
+      <a class="nav-item" onclick="showPage('oh-ibmi-package', this)">
+        <span class="nav-dot"></span> IBM i Package
+      </a>
+      <a class="nav-item" onclick="showPage('oh-connect', this)">
+        <span class="nav-dot"></span> Connect IBM i to Bob
+      </a>
+      <a class="nav-item" onclick="showPage('oh-bob101', this)">
+        <span class="nav-dot"></span> Bob 101
+      </a>
+      <a class="nav-item" onclick="showPage('oh-workspace', this)">
+        <span class="nav-dot"></span> Create a Workspace
       </a>
     </div>
   </div>
@@ -1966,22 +1988,164 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
   </div>
 
 
+  <!-- ── OFFICE HOURS: IBM i PACKAGE (all 4 images) ── -->
+  <div class="page" id="page-oh-ibmi-package">
+    <div class="page-hero" style="border-left: 4px solid var(--accent);">
+      <div class="eyebrow" style="color:var(--accent);">Office Hours 101 — Topic 1</div>
+      <h1>IBM i Package</h1>
+      <p class="subtitle">Install and verify the IBM i Premium Package in Bob to unlock IBM i Developer and Database modes.</p>
+    </div>
+    <div class="page-body">
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Extensions</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>To install IBM i Premium Package navigate to the Extensions section on the left hand tab.</p></div>
+            <img src="img/oh-extensions.png" alt="Extensions panel" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>IBM i Premium Package Search</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Type <strong>IBM i Premium Package</strong> into the search bar and install this option.</p></div>
+            <img src="img/oh-package.png" alt="IBM i Premium Package search" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Settings Icon</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>To double check you have the premium package installed, navigate to the gear icon on the top right of your screen.</p></div>
+            <img src="img/oh-settings.png" alt="Settings icon" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h3>Modes</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Find the section labeled <strong>Modes</strong> and check whether it lists <strong>IBM Bob Premium Package for i</strong>.</p></div>
+            <img src="img/oh-modes.png" alt="Modes list" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+
+      </div>
+      <div style="padding:24px 0 0;border-top:1px solid var(--border);margin-top:24px;display:flex;justify-content:flex-end;">
+        <button class="btn btn-primary" onclick="showPage('oh-connect', document.querySelector('[onclick*=oh-connect]'))">Next: Connect IBM i to Bob →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OFFICE HOURS: CONNECT IBM i TO BOB ── -->
+  <div class="page" id="page-oh-connect">
+    <div class="page-hero" style="border-left: 4px solid var(--accent);">
+      <div class="eyebrow" style="color:var(--accent);">Office Hours 101 — Topic 2</div>
+      <h1>Connect IBM i to Bob</h1>
+      <p class="subtitle">Connect your IBM i environment to Bob so you can use IBM i Developer and Database modes during the lab.</p>
+    </div>
+    <div class="page-body">
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>IBM i Icon Panel</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Open the IBM i icon panel from the left-hand activity bar in VS Code to access your IBM i connections.</p></div>
+            <img src="img/oh-ibmi-icon-panel.png" alt="IBM i icon panel" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>IBM i Connection Panel &amp; Search Bar</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>In the IBM i connection panel, click on the <strong>'Connect to an IBM i'</strong> button or the <strong>+</strong> icon to add a new connection. Alternatively, use the search bar to find and add your IBM i connection.</p></div>
+            <img src="img/oh-ibmi-connection-panel.png" alt="IBM i connection panel" class="screenshot" style="max-width:700px;" />
+            <img src="img/oh-ibmi-search-bar.png" alt="IBM i search bar connection" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>IBM i Login &amp; TechZone Details</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Enter your IBM i login credentials using the TechZone details provided for the session. The red boxes outline the 3 areas of information you will need to input into the login credentials.</p></div>
+            <img src="img/oh-ibmi-login.png" alt="IBM i login" class="screenshot" style="max-width:800px;width:100%;" />
+            <img src="img/oh-techzone-details.png" alt="TechZone details" class="screenshot" style="max-width:800px;width:100%;" />
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h3>IBM i Disconnect</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>When you're done, type <strong>&gt;IBM i: Disconnect</strong> in the VS Code search bar and select disconnect to cleanly close the IBM i session.</p></div>
+            <img src="img/oh-ibmi-disconnect.png" alt="IBM i disconnect" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+
+      </div>
+      <div style="padding:24px 0 0;border-top:1px solid var(--border);margin-top:24px;display:flex;justify-content:flex-start;">
+        <button class="btn btn-secondary" onclick="showPage('oh-ibmi-package', document.querySelector('[onclick*=oh-ibmi-package]'))">← IBM i Package</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OFFICE HOURS: BOB 101 ── -->
+  <div class="page" id="page-oh-bob101">
+    <div class="page-hero" style="border-left: 4px solid var(--accent);">
+      <div class="eyebrow" style="color:var(--accent);">Office Hours 101 — Topic 3</div>
+      <h1>Bob 101</h1>
+      <p class="subtitle">A quick tour of what's where in Bob — modes, tools, skills, and how to get the most out of your session.</p>
+    </div>
+    <div class="page-body">
+      <div class="callout tip"><div class="icon">💡</div><p>Content coming soon — descriptions and screenshots will be added here.</p></div>
+      <div style="padding:24px 0 0;border-top:1px solid var(--border);margin-top:24px;display:flex;justify-content:space-between;">
+        <button class="btn btn-secondary" onclick="showPage('oh-connect', document.querySelector('[onclick*=oh-connect]'))">← Connect IBM i to Bob</button>
+        <button class="btn btn-primary" onclick="showPage('oh-workspace', document.querySelector('[onclick*=oh-workspace]'))">Next: Create a Workspace →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OFFICE HOURS: CREATE A WORKSPACE ── -->
+  <div class="page" id="page-oh-workspace">
+    <div class="page-hero" style="border-left: 4px solid var(--accent);">
+      <div class="eyebrow" style="color:var(--accent);">Office Hours 101 — Topic 4</div>
+      <h1>Create a Workspace</h1>
+      <p class="subtitle">Set up your VS Code workspace for the IBM i lab — folder structure, library list, and workspace settings.</p>
+    </div>
+    <div class="page-body">
+      <div class="callout tip"><div class="icon">💡</div><p>Content coming soon — descriptions and screenshots will be added here.</p></div>
+      <div style="padding:24px 0 0;border-top:1px solid var(--border);margin-top:24px;display:flex;justify-content:flex-start;">
+        <button class="btn btn-secondary" onclick="showPage('oh-bob101', document.querySelector('[onclick*=oh-bob101]'))">← Bob 101</button>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <script>
 // ── TRACK SWITCHING ───────────────────────────────────
 const devPages     = ['overview','setup','ex1','ex2','ex3','ex4','ex5','ex6','summary'];
 const ansiblePages = ['ansible-overview','lab4','lab5','lab6','lab200'];
+const ohPages      = ['oh-ibmi-package','oh-connect','oh-bob101','oh-workspace'];
 let currentTrack = 'dev';
-let visited = { dev: new Set(['overview']), ansible: new Set() };
+let visited = { dev: new Set(['overview']), ansible: new Set(), oh: new Set() };
 
 function switchTrack(track) {
   currentTrack = track;
   document.getElementById('nav-dev').classList.toggle('active', track === 'dev');
   document.getElementById('nav-ansible').classList.toggle('active', track === 'ansible');
+  document.getElementById('nav-oh').classList.toggle('active', track === 'oh');
   document.getElementById('tab-dev').classList.toggle('active', track === 'dev');
   document.getElementById('tab-ansible').classList.toggle('active', track === 'ansible');
-  const firstPage = track === 'dev' ? 'overview' : 'ansible-overview';
+  document.getElementById('tab-oh').classList.toggle('active', track === 'oh');
+  const firstPage = track === 'dev' ? 'overview' : track === 'ansible' ? 'ansible-overview' : 'oh-ibmi-package';
   const firstNav  = document.querySelector(`#nav-${track} .nav-item`);
   showPage(firstPage, firstNav);
 }
@@ -2002,7 +2166,7 @@ function showPage(id, navEl) {
 }
 
 function updateProgress() {
-  const trackPages = currentTrack === 'dev' ? devPages : ansiblePages;
+  const trackPages = currentTrack === 'dev' ? devPages : currentTrack === 'ansible' ? ansiblePages : ohPages;
   const pct = Math.round((visited[currentTrack].size / trackPages.length) * 100);
   document.getElementById('prog-fill').style.width = pct + '%';
   document.getElementById('prog-pct').textContent = pct + '%';
