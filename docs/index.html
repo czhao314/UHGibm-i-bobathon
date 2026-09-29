@@ -2074,11 +2074,9 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
     <div class="page-body">
 
       <!-- jump grid -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:28px;">
-        <a data-scrollto="ohpkg-1" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 1</div><div style="font-size:13px;font-weight:700;color:var(--text);">Extensions</div></a>
-        <a data-scrollto="ohpkg-2" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 2</div><div style="font-size:13px;font-weight:700;color:var(--text);">Premium Package Search</div></a>
-        <a data-scrollto="ohpkg-3" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 3</div><div style="font-size:13px;font-weight:700;color:var(--text);">Settings Icon</div></a>
-        <a data-scrollto="ohpkg-4" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 4</div><div style="font-size:13px;font-weight:700;color:var(--text);">Modes</div></a>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:28px;">
+        <a data-scrollto="ohpkg-1" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Steps 1–2</div><div style="font-size:13px;font-weight:700;color:var(--text);">Install the Package</div><div style="font-size:11px;color:var(--muted);margin-top:3px;">Extensions → Search &amp; Install</div></a>
+        <a data-scrollto="ohpkg-3" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Steps 3–4</div><div style="font-size:13px;font-weight:700;color:var(--text);">Verify the Package</div><div style="font-size:11px;color:var(--muted);margin-top:3px;">Settings Icon → Modes</div></a>
       </div>
 
       <div class="steps">
@@ -2101,8 +2099,19 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
           </div>
         </div>
 
+      </div>
+
+      <!-- divider between install and verify -->
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Verify the Package</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
+
         <div class="step">
-          <div class="step-num">3</div>
+          <div class="step-num">1</div>
           <div class="step-content">
             <h3 id="ohpkg-3">Settings Icon</h3>
             <div class="callout tip"><div class="icon">💡</div><p>To double check you have the premium package installed, navigate to the gear icon on the top right of your screen.</p></div>
@@ -2111,7 +2120,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
         </div>
 
         <div class="step">
-          <div class="step-num">4</div>
+          <div class="step-num">2</div>
           <div class="step-content">
             <h3 id="ohpkg-4">Modes</h3>
             <div class="callout tip"><div class="icon">💡</div><p>Find the section labeled <strong>Modes</strong> and check whether it lists <strong>IBM Bob Premium Package for i</strong>.</p></div>
@@ -2155,6 +2164,16 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
           </div>
         </div>
 
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Connection Panel</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
+
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-content">
@@ -2164,6 +2183,16 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
             <img src="img/oh-ibmi-search-bar.png" alt="IBM i search bar connection" class="screenshot" style="max-width:700px;" />
           </div>
         </div>
+
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Login &amp; Credentials</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
 
         <div class="step">
           <div class="step-num">3</div>
@@ -2175,6 +2204,16 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
           </div>
         </div>
 
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Disconnect</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
+
         <div class="step">
           <div class="step-num">4</div>
           <div class="step-content">
@@ -2183,6 +2222,16 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
             <img src="img/oh-ibmi-disconnect.png" alt="IBM i disconnect" class="screenshot" style="max-width:700px;" />
           </div>
         </div>
+
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Reconnecting</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
 
         <div class="step">
           <div class="step-num">5</div>
@@ -2219,16 +2268,23 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
       </div>
 
       <div class="steps">
-
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-content">
             <h3 id="ohbob-1">Bob Toggle Icon</h3>
-            <div class="callout tip"><div class="icon">💡</div><p>Click the Bob toggle icon in the VS Code activity bar on the left to open the Bob panel.</p></div>
+            <div class="callout tip"><div class="icon">💡</div><p>Click the Bob toggle icon in the VS Code activity bar on the top to open or close the Bob panel.</p></div>
             <img src="img/oh-bob-toggle.png" alt="Bob toggle icon" class="screenshot" style="max-width:700px;" />
           </div>
         </div>
+      </div>
 
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Bob Panel Actions</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-content">
@@ -2237,7 +2293,15 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
             <img src="img/oh-bob-panel-actions.png" alt="Bob panel actions" class="screenshot" style="max-width:700px;" />
           </div>
         </div>
+      </div>
 
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">VS Code Settings</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-content">
@@ -2248,7 +2312,15 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
             <img src="img/oh-color-theme.png" alt="Color theme" class="screenshot" style="max-width:700px;" />
           </div>
         </div>
+      </div>
 
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Access Terminal</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
         <div class="step">
           <div class="step-num">4</div>
           <div class="step-content">
@@ -2258,7 +2330,15 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
             <img src="img/oh-terminal.png" alt="Terminal" class="screenshot" style="max-width:700px;" />
           </div>
         </div>
+      </div>
 
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Cloning Repo</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
         <div class="step">
           <div class="step-num">5</div>
           <div class="step-content">
@@ -2268,7 +2348,6 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
             <img src="img/oh-clone-repo.png" alt="Clone repo" class="screenshot" style="max-width:700px;" />
           </div>
         </div>
-
       </div>
       <div style="padding:24px 0 0;border-top:1px solid var(--border);margin-top:24px;display:flex;justify-content:space-between;">
         <button class="btn btn-secondary" onclick="showPage('oh-connect', document.querySelector('[onclick*=oh-connect]'))">← Connect IBM i to Bob</button>
