@@ -610,18 +610,14 @@
     </div>
     <div class="page-body">
 
-      <div class="callout warning"><div class="icon">⚠️</div><p><strong>Instructors:</strong> Complete your instructor setup separately before participants arrive. See the Instructor Setup README for details.</p></div>
-
       <!-- LIBRARY PICKER -->
       <div class="lib-picker">
         <h3>🔢 Enter Your Assigned Student Number</h3>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Your instructor will tell you your number (1–50). Enter it below and your library name and port will appear everywhere in this guide.</p>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Your instructor will tell you your number (1–50). Enter it below and your library name will appear everywhere in this guide.</p>
         <div class="lib-row">
           <input type="number" id="student-num" min="1" max="50" placeholder="e.g. 3" oninput="scheduleUpdateLib()" style="width:100px;" />
           <span style="color:var(--muted);font-size:13px;">→ Your library:</span>
           <span id="lib-display">FLGHT4nn</span>
-          <span style="color:var(--muted);font-size:13px;">Dev port:</span>
-          <span id="port-display">30nn</span>
         </div>
       </div>
 
@@ -650,7 +646,7 @@
       <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">Each participant has their own copy of FLIGHT400 in a dedicated library. <strong>Use only your assigned number throughout all exercises.</strong></p>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>#</th><th>Library</th><th>Dev Port</th><th>React App URL</th></tr></thead>
+          <thead><tr><th>#</th><th>Library</th></tr></thead>
           <tbody id="lib-table"></tbody>
         </table>
       </div>
@@ -2510,10 +2506,10 @@ function updateProgress() {
 // ── BUILD LIBRARY TABLE ───────────────────────────────
 (function buildTable() {
   const tbody = document.getElementById('lib-table');
-  for (let i = 1; i <= 50; i++) {
+  for (let i = 1; i <= 17; i++) {
     const nn = String(i).padStart(2,'0');
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${i}</td><td><code>FLGHT4${nn}</code></td><td>${3000+i}</td><td><code>http://localhost:${3000+i}</code></td>`;
+    tr.innerHTML = `<td>${i}</td><td><code>FLGHT4${nn}</code></td>`;
     tbody.appendChild(tr);
   }
 })();
@@ -2598,9 +2594,8 @@ function updateLib() {
   const valid = n >= 1 && n <= 50;
   const newNN = valid ? String(n).padStart(2, '0') : 'nn';
 
-  // Always update the two picker badges
+  // Always update the picker badge
   document.getElementById('lib-display').textContent  = 'FLGHT4' + newNN;
-  document.getElementById('port-display').textContent = '30' + newNN;
 
   if (newNN === _currentNN) return; // nothing to swap
 
