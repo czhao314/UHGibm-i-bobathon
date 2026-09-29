@@ -686,11 +686,10 @@
   -o ExitOnForwardFailure=yes -o ServerAliveInterval=15 -o ServerAliveCountMax=3 \
   &lt;myuser&gt;@&lt;myIPaddress&gt;</pre></div>
         </div></div>
-        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>(Optional) Connect IBM i Access Client Solutions for 5250</h3><p>Only needed if you want to view the green screen. Install <a href="https://www.ibm.com/support/pages/ibm-i-access-client-solutions" style="color:var(--accent)">IBM i Access Client Solutions</a>, set IP Address to <code>127.0.0.1</code>, port to <code>50000</code>. Log in, then:</p>
-          <div class="code-block"><div class="code-header">5250 commands <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ADDLIBLE FLGHT4nn
-CALL FLGHT4nn/FRS021</pre></div>
-          <img src="img/ACS-green-screen.png" alt="Flight Maintenance in 5250" class="screenshot" />
-          <div class="callout warning"><div class="icon">⚠️</div><p>When finished in the 5250 screen, always exit by pressing <strong>F3</strong>.</p></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>(Optional) Connect IBM i 5250 Green Screen for 5250</h3><p>Only needed if you want to view the green screen. Navigate to the VSCode search bar, type in <code>&gt;IBM i: Launch Terminal Picker</code>, select <strong>5250</strong>, and then log in with TechZone Credentials:</p>
+          <img src="img/launch-terminal-picker.png" alt="Launch Terminal Picker" class="screenshot" style="max-width:700px;" />
+          <img src="img/5250.png" alt="Select 5250" class="screenshot" style="max-width:700px;" />
+          <img src="img/5250-terminal.png" alt="5250 Terminal" class="screenshot" style="max-width:700px;" />
         </div></div>
       </div>
       <div class="callout success"><div class="icon">✅</div><p>Setup complete! You are now ready to start Exercise 1. Use the button below or click the exercise in the sidebar.</p></div>
