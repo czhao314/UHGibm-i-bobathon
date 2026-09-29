@@ -103,7 +103,7 @@
   .progress-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--accent)); border-radius: 3px; transition: width .4s ease; }
 
   /* ── MAIN ────────────────────────────────────────────── */
-  #main { flex: 1; overflow-y: auto; padding: 0; }
+  #main { flex: 1; overflow-y: auto; padding: 0; scroll-behavior: smooth; }
   #main::-webkit-scrollbar { width: 6px; }
   #main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
@@ -2072,12 +2072,21 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
       <p class="subtitle">Install and verify the IBM i Premium Package in Bob to unlock IBM i Developer and Database modes.</p>
     </div>
     <div class="page-body">
+
+      <!-- jump grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:28px;">
+        <a data-scrollto="ohpkg-1" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 1</div><div style="font-size:13px;font-weight:700;color:var(--text);">Extensions</div></a>
+        <a data-scrollto="ohpkg-2" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 2</div><div style="font-size:13px;font-weight:700;color:var(--text);">Premium Package Search</div></a>
+        <a data-scrollto="ohpkg-3" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 3</div><div style="font-size:13px;font-weight:700;color:var(--text);">Settings Icon</div></a>
+        <a data-scrollto="ohpkg-4" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 4</div><div style="font-size:13px;font-weight:700;color:var(--text);">Modes</div></a>
+      </div>
+
       <div class="steps">
 
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-content">
-            <h3>Extensions</h3>
+            <h3 id="ohpkg-1">Extensions</h3>
             <div class="callout tip"><div class="icon">💡</div><p>To install IBM i Premium Package navigate to the Extensions section on the left hand tab.</p></div>
             <img src="img/oh-extensions.png" alt="Extensions panel" class="screenshot" style="max-width:700px;" />
           </div>
@@ -2086,7 +2095,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-content">
-            <h3>IBM i Premium Package Search</h3>
+            <h3 id="ohpkg-2">IBM i Premium Package Search</h3>
             <div class="callout tip"><div class="icon">💡</div><p>Type <strong>IBM i Premium Package</strong> into the search bar and install this option.</p></div>
             <img src="img/oh-package.png" alt="IBM i Premium Package search" class="screenshot" style="max-width:700px;" />
           </div>
@@ -2095,7 +2104,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-content">
-            <h3>Settings Icon</h3>
+            <h3 id="ohpkg-3">Settings Icon</h3>
             <div class="callout tip"><div class="icon">💡</div><p>To double check you have the premium package installed, navigate to the gear icon on the top right of your screen.</p></div>
             <img src="img/oh-settings.png" alt="Settings icon" class="screenshot" style="max-width:700px;" />
           </div>
@@ -2104,7 +2113,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
         <div class="step">
           <div class="step-num">4</div>
           <div class="step-content">
-            <h3>Modes</h3>
+            <h3 id="ohpkg-4">Modes</h3>
             <div class="callout tip"><div class="icon">💡</div><p>Find the section labeled <strong>Modes</strong> and check whether it lists <strong>IBM Bob Premium Package for i</strong>.</p></div>
             <img src="img/oh-modes.png" alt="Modes list" class="screenshot" style="max-width:700px;" />
           </div>
@@ -2125,12 +2134,22 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
       <p class="subtitle">Connect your IBM i environment to Bob so you can use IBM i Developer and Database modes during the lab.</p>
     </div>
     <div class="page-body">
+
+      <!-- jump grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:28px;">
+        <a data-scrollto="ohcon-1" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 1</div><div style="font-size:13px;font-weight:700;color:var(--text);">IBM i Icon Panel</div></a>
+        <a data-scrollto="ohcon-2" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 2</div><div style="font-size:13px;font-weight:700;color:var(--text);">Connection Panel &amp; Search Bar</div></a>
+        <a data-scrollto="ohcon-3" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 3</div><div style="font-size:13px;font-weight:700;color:var(--text);">Login &amp; TechZone Details</div></a>
+        <a data-scrollto="ohcon-4" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 4</div><div style="font-size:13px;font-weight:700;color:var(--text);">Disconnect</div></a>
+        <a data-scrollto="ohcon-5" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 5</div><div style="font-size:13px;font-weight:700;color:var(--text);">Reconnecting</div></a>
+      </div>
+
       <div class="steps">
 
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-content">
-            <h3>IBM i Icon Panel</h3>
+            <h3 id="ohcon-1">IBM i Icon Panel</h3>
             <div class="callout tip"><div class="icon">💡</div><p>Open the IBM i icon panel from the left-hand activity bar in VS Code to access your IBM i connections.</p></div>
             <img src="img/oh-ibmi-icon-panel.png" alt="IBM i icon panel" class="screenshot" style="max-width:700px;" />
           </div>
@@ -2139,7 +2158,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-content">
-            <h3>IBM i Connection Panel &amp; Search Bar</h3>
+            <h3 id="ohcon-2">IBM i Connection Panel &amp; Search Bar</h3>
             <div class="callout tip"><div class="icon">💡</div><p>In the IBM i connection panel, click on the <strong>'Connect to an IBM i'</strong> button or the <strong>+</strong> icon to add a new connection. Alternatively, use the search bar to find and add your IBM i connection.</p></div>
             <img src="img/oh-ibmi-connection-panel.png" alt="IBM i connection panel" class="screenshot" style="max-width:700px;" />
             <img src="img/oh-ibmi-search-bar.png" alt="IBM i search bar connection" class="screenshot" style="max-width:700px;" />
@@ -2149,7 +2168,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-content">
-            <h3>IBM i Login &amp; TechZone Details</h3>
+            <h3 id="ohcon-3">IBM i Login &amp; TechZone Details</h3>
             <div class="callout tip"><div class="icon">💡</div><p>Enter your IBM i login credentials using the TechZone details provided for the session. The red boxes outline the 3 areas of information you will need to input into the login credentials.</p></div>
             <img src="img/oh-ibmi-login.png" alt="IBM i login" class="screenshot" style="max-width:800px;width:100%;" />
             <img src="img/oh-techzone-details.png" alt="TechZone details" class="screenshot" style="max-width:800px;width:100%;" />
@@ -2159,7 +2178,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
         <div class="step">
           <div class="step-num">4</div>
           <div class="step-content">
-            <h3>IBM i Disconnect</h3>
+            <h3 id="ohcon-4">IBM i Disconnect</h3>
             <div class="callout tip"><div class="icon">💡</div><p>When you're done, type <strong>&gt;IBM i: Disconnect</strong> in the VS Code search bar and select disconnect to cleanly close the IBM i session.</p></div>
             <img src="img/oh-ibmi-disconnect.png" alt="IBM i disconnect" class="screenshot" style="max-width:700px;" />
           </div>
@@ -2168,7 +2187,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
         <div class="step">
           <div class="step-num">5</div>
           <div class="step-content">
-            <h3>Reconnecting</h3>
+            <h3 id="ohcon-5">Reconnecting</h3>
             <div class="callout tip"><div class="icon">💡</div><p>To reconnect you can simply click the green play button, located in the Servers Section of the IBM i panel, and it will connect to your most recent connection.</p></div>
             <img src="img/oh-ibmi-connect-button.png" alt="IBM i connect button" class="screenshot" style="max-width:700px;" />
           </div>
@@ -2189,12 +2208,22 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
       <p class="subtitle">A quick tour of what's where in Bob — modes, tools, skills, and how to get the most out of your session.</p>
     </div>
     <div class="page-body">
+
+      <!-- jump grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:28px;">
+        <a data-scrollto="ohbob-1" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 1</div><div style="font-size:13px;font-weight:700;color:var(--text);">Bob Toggle Icon</div></a>
+        <a data-scrollto="ohbob-2" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 2</div><div style="font-size:13px;font-weight:700;color:var(--text);">Bob Panel Actions</div></a>
+        <a data-scrollto="ohbob-3" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 3</div><div style="font-size:13px;font-weight:700;color:var(--text);">VS Code Settings</div></a>
+        <a data-scrollto="ohbob-4" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 4</div><div style="font-size:13px;font-weight:700;color:var(--text);">Access Terminal</div></a>
+        <a data-scrollto="ohbob-5" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 5</div><div style="font-size:13px;font-weight:700;color:var(--text);">Cloning Repo</div></a>
+      </div>
+
       <div class="steps">
 
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-content">
-            <h3>Bob Toggle Icon</h3>
+            <h3 id="ohbob-1">Bob Toggle Icon</h3>
             <div class="callout tip"><div class="icon">💡</div><p>Click the Bob toggle icon in the VS Code activity bar on the left to open the Bob panel.</p></div>
             <img src="img/oh-bob-toggle.png" alt="Bob toggle icon" class="screenshot" style="max-width:700px;" />
           </div>
@@ -2203,7 +2232,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-content">
-            <h3>Bob Panel Actions</h3>
+            <h3 id="ohbob-2">Bob Panel Actions</h3>
             <div class="callout tip"><div class="icon">💡</div><p>Once the Bob panel is open, you can start a new chat, switch modes, access skills, and view your conversation history from the action icons at the top of the panel.</p></div>
             <img src="img/oh-bob-panel-actions.png" alt="Bob panel actions" class="screenshot" style="max-width:700px;" />
           </div>
@@ -2212,7 +2241,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-content">
-            <h3>VS Code Settings</h3>
+            <h3 id="ohbob-3">VS Code Settings</h3>
             <div class="callout tip"><div class="icon">💡</div><p>Access VS Code settings via the gear icon at the bottom left. From the settings options you can customise your editor, including switching to a dark or light color theme to suit your preference.</p></div>
             <img src="img/oh-vscode-settings-icon.png" alt="VS Code settings icon" class="screenshot" style="max-width:700px;" />
             <img src="img/oh-vscode-settings-options.png" alt="VS Code settings options" class="screenshot" style="max-width:700px;" />
@@ -2223,7 +2252,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
         <div class="step">
           <div class="step-num">4</div>
           <div class="step-content">
-            <h3>Access Terminal</h3>
+            <h3 id="ohbob-4">Access Terminal</h3>
             <div class="callout tip"><div class="icon">💡</div><p>Open the integrated terminal in VS Code via the top menu <strong>Terminal → New Terminal</strong>. Use it to run commands directly without leaving the editor.</p></div>
             <img src="img/oh-access-terminal.png" alt="Access terminal" class="screenshot" style="max-width:700px;" />
             <img src="img/oh-terminal.png" alt="Terminal" class="screenshot" style="max-width:700px;" />
@@ -2233,7 +2262,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
         <div class="step">
           <div class="step-num">5</div>
           <div class="step-content">
-            <h3>Cloning Repo</h3>
+            <h3 id="ohbob-5">Cloning Repo</h3>
             <div class="callout tip"><div class="icon">💡</div><p>Open the Explorer panel from the activity bar, then use <strong>Clone Repository</strong> to pull down your project. Paste in your repository URL and select a local folder to clone into.</p></div>
             <img src="img/oh-open-explorer.png" alt="Open Explorer" class="screenshot" style="max-width:700px;" />
             <img src="img/oh-clone-repo.png" alt="Clone repo" class="screenshot" style="max-width:700px;" />
@@ -2357,6 +2386,18 @@ function attachPromptButtons() {
 }
 
 attachPromptButtons();
+
+// ── STEP SCROLL ───────────────────────────────────────
+document.addEventListener('click', function(e) {
+  const tile = e.target.closest('[data-scrollto]');
+  if (!tile) return;
+  e.preventDefault();
+  const id = tile.getAttribute('data-scrollto');
+  const target = document.getElementById(id);
+  if (!target) return;
+  // target.scrollIntoView works even inside a custom scroll container in modern browsers
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
 
 // ── LIVE 4nn / 30nn SUBSTITUTION ─────────────────────
 // We do in-place text-node replacement — never touch innerHTML so the
