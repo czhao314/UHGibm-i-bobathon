@@ -855,7 +855,7 @@
           <img src="img/custom-mode-3.png" alt="IBM i Developer mode detail page with pencil edit icon highlighted" class="screenshot" />
         </div></div>
         <div class="step"><div class="step-num">4</div><div class="step-content"><h3>Add custom instructions</h3><p>Scroll to the <strong>Custom Instructions</strong> section and add the following text, then click <strong>Save</strong>:</p>
-          <div class="code-block"><div class="code-header">Custom Instructions to paste <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>## When a user asks to plan or implement code changes
+          <div class="prompt-block"><div class="prompt-label">Custom Instructions to paste</div><div class="prompt-text" style="font-family:monospace;font-size:13px;white-space:pre;">## When a user asks to plan or implement code changes
 - Make insert-only changes using apply_diff with surrounding context; do not use insert_content.
 - When inserting, anchor the diff on the line ABOVE the insertion point and do not include
   trailing structural lines (DDS key "K ..." or record-format "R ..." lines) in the
@@ -870,7 +870,7 @@
 - Preserve the existing OPM RPG fixed-column style.
 - Do not add ALWNULL, do not use SQL ALTER TABLE, do not change the field to 5P 1.
 - COLHDG belongs only in the physical file, never in the display file.
-- Always show the diff and wait for my approval before saving; never compile until I say so.</pre></div>
+- Always show the diff and wait for my approval before saving; never compile until I say so.</div></div>
           <img src="img/custom-mode-4.png" alt="Edit IBM i Developer mode dialog showing custom instructions and Save button" class="screenshot" />
         </div></div>
       </div>
@@ -1023,11 +1023,11 @@ FETCH FIRST 100 ROWS ONLY;</div></div>
       </tbody></table></div>
       <div class="callout warning"><div class="icon">⚠️</div><p><strong>Only create indexes in your assigned schema.</strong> When Bob gives suggested indexes, ask: <em>"Apply the highest-priority index only for FLGHT4nn"</em></p></div>
       <p style="font-size:14px;color:var(--text);margin:14px 0 8px;font-weight:600;">Expected recommendation:</p>
-      <div class="code-block"><div class="code-header">SQL <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>CREATE INDEX FLGHT4nn.ORDERS_IDX_DEPDT_FLT
+      <div class="prompt-block"><div class="prompt-label">SQL</div><div class="prompt-text" style="font-family:monospace;font-size:13px;white-space:pre;">CREATE INDEX FLGHT4nn.ORDERS_IDX_DEPDT_FLT
     ON FLGHT4nn.ORDERS (
         DEPARTURE_DATE,
         FLIGHT_NUMBER
-    );</pre></div>
+    );</div></div>
       <div class="callout success"><div class="icon">✅</div><p>You've reviewed, corrected, analyzed, and optimized a Db2 for i SQL statement using Bob's guided Index Advisor workflow — without needing deep expertise in query optimization or Visual Explain.</p></div>
     </div>
     <div class="page-nav">
@@ -1101,7 +1101,7 @@ FETCH FIRST 100 ROWS ONLY;</div></div>
           <img src="img/add-member.png" alt="New member dialog" class="screenshot" />
         </div></div>
         <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Paste and save the source</h3><p>Paste the following into the new member and save with <code>Ctrl/Cmd + S</code>:</p>
-          <div class="code-block"><div class="code-header">CUSTCHK.SQLRPGLE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>**free
+          <div class="prompt-block"><div class="prompt-label">CUSTCHK.SQLRPGLE</div><div class="prompt-text" style="font-family:monospace;font-size:13px;white-space:pre;">**free
 ctl-opt nomain;
 
 dcl-proc checkCustomerExists export;
@@ -1118,7 +1118,7 @@ dcl-proc checkCustomerExists export;
       where CUSTNO = :custId;
 
   return (SQLCODE = 0 and rowCount > 0);
-end-proc;</pre></div>
+end-proc;</div></div>
         </div></div>
       </div>
 
