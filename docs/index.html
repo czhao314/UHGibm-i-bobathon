@@ -343,13 +343,13 @@
 
   <!-- Track switcher tabs -->
   <div class="track-tabs">
-    <button class="track-tab" id="tab-dev" disabled style="opacity:0.35;cursor:not-allowed;pointer-events:none;"><span class="track-tab-indicator"></span>Developer Track</button>
-    <button class="track-tab ansible-tab" id="tab-ansible" disabled style="opacity:0.35;cursor:not-allowed;pointer-events:none;"><span class="track-tab-indicator"></span>Ansible Track</button>
-    <button class="track-tab oh-tab active" id="tab-oh" onclick="switchTrack('oh')"><span class="track-tab-indicator"></span>Office Hours Helper</button>
+    <button class="track-tab active" id="tab-dev" onclick="switchTrack('dev')"><span class="track-tab-indicator"></span>Developer Track</button>
+    <button class="track-tab ansible-tab" id="tab-ansible" onclick="switchTrack('ansible')"><span class="track-tab-indicator"></span>Ansible Track</button>
+    <button class="track-tab oh-tab" id="tab-oh" onclick="switchTrack('oh')"><span class="track-tab-indicator"></span>Office Hours Helper</button>
   </div>
 
   <!-- ── DEVELOPER TRACK NAV ── -->
-  <div class="nav-track" id="nav-dev">
+  <div class="nav-track active" id="nav-dev">
     <div class="nav-section">
       <div class="nav-section-label">Getting Started</div>
       <a class="nav-item active" onclick="showPage('overview', this)">
@@ -396,10 +396,10 @@
   </div>
 
   <!-- ── OFFICE HOURS NAV ── -->
-  <div class="nav-track active" id="nav-oh">
+  <div class="nav-track" id="nav-oh">
     <div class="nav-section">
       <div class="nav-section-label">Office Hours Helper</div>
-      <a class="nav-item active" onclick="showPage('oh-overview', this)">
+      <a class="nav-item" onclick="showPage('oh-overview', this)">
         <span class="nav-dot"></span> Overview
       </a>
       <a class="nav-item" onclick="showPage('oh-ibmi-package', this)">
@@ -463,7 +463,7 @@
 <main id="main">
 
   <!-- OVERVIEW -->
-  <div class="page" id="page-overview">
+  <div class="page active" id="page-overview">
 
     <!-- ── FULL-BLEED HERO BANNER ── -->
     <div class="ov-hero" style="position:relative;overflow:hidden;">
@@ -2171,7 +2171,7 @@ Format as Markdown.</div></div>
 
 
   <!-- ── OFFICE HOURS: OVERVIEW ── -->
-  <div class="page active" id="page-oh-overview">
+  <div class="page" id="page-oh-overview">
 
     <!-- ── FULL-BLEED HERO BANNER ── -->
     <div style="position:relative;overflow:hidden;">
