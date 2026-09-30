@@ -427,10 +427,6 @@
     </div>
     <div class="nav-section">
       <div class="nav-section-label">Labs</div>
-      <a class="nav-item" onclick="showPage('lab4', this)">
-        <span class="nav-dot"></span> Lab 4 — IBM i MCP Mode
-        <span class="badge">~15m</span>
-      </a>
       <a class="nav-item" onclick="showPage('lab5', this)">
         <span class="nav-dot"></span> Lab 5 — PTF Management
         <span class="badge">~20m</span>
@@ -439,9 +435,17 @@
         <span class="nav-dot"></span> Lab 6 — Security Compliance
         <span class="badge">~25m</span>
       </a>
-      <a class="nav-item" onclick="showPage('lab200', this)">
-        <span class="nav-dot"></span> Lab 200 — Ops &amp; SysAdmin
-        <span class="badge">~45m</span>
+      <a class="nav-item" onclick="showPage('lab7', this)">
+        <span class="nav-dot"></span> Lab 7 — Audit Journal Forensics
+        <span class="badge">~25m</span>
+      </a>
+      <a class="nav-item" onclick="showPage('lab8', this)">
+        <span class="nav-dot"></span> Lab 8 — PTF Impact Analysis
+        <span class="badge">~25m</span>
+      </a>
+      <a class="nav-item" onclick="showPage('lab9', this)">
+        <span class="nav-dot"></span> Lab 9 — Health Monitoring
+        <span class="badge">~25m</span>
       </a>
     </div>
   </div>
@@ -1202,35 +1206,12 @@ end-proc;</div></div>
       </div>
     </div>
 
-    <!-- ── NOTICE BANNER ── -->
-    <div style="background:rgba(179,157,219,0.06);border-bottom:1px solid var(--border);padding:14px 48px;display:flex;align-items:center;gap:12px;">
-      <span style="font-size:15px;flex-shrink:0;">💡</span>
-      <p style="font-size:13px;color:var(--accent2);margin:0;line-height:1.5;"><strong style="color:var(--text);">Start with Lab 4</strong> — it sets up the MCP server and Bob modes that Labs 5 and 6 depend on. Lab 200 can be done independently.</p>
-      <button class="btn btn-primary" style="margin-left:auto;white-space:nowrap;flex-shrink:0;font-size:13px;padding:8px 18px;" onclick="showPage('lab4', document.querySelector('[onclick*=lab4]'))">Start Lab 4 →</button>
-    </div>
-
     <div class="page-body" style="max-width:960px;">
 
       <!-- ── LAB CARDS ── -->
       <h2 class="section-title" style="margin-top:28px;">Labs in this Track</h2>
 
-      <!-- Lab 4 — featured row (start here) -->
-      <div onclick="showPage('lab4', document.querySelector('[onclick*=lab4]'))"
-           style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-left:4px solid var(--accent2);border-radius:12px;padding:18px 24px;display:flex;align-items:center;gap:20px;margin-bottom:12px;transition:border-color .15s,transform .15s;"
-           onmouseenter="this.style.borderColor='var(--accent2)';this.style.transform='translateY(-1px)'"
-           onmouseleave="this.style.borderColor='var(--border)';this.style.borderLeftColor='var(--accent2)';this.style.transform='none'">
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(179,157,219,.15);border:1px solid rgba(179,157,219,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:3px;">Lab 4 · ~15 min · Start here</div>
-          <div style="font-size:15px;font-weight:700;color:var(--text);">IBM i Modes, MCP &amp; Bob Shell</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:2px;">Configure MCP, set up custom modes, connect Bob to your IBM i system</div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l5 5-5 5"/></svg>
-      </div>
-
-      <!-- Labs 5, 6, 200 in 2-column grid -->
+      <!-- Labs 5–9 in 2-column grid -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
         <div onclick="showPage('lab5', document.querySelector('[onclick*=lab5]'))" style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:border-color .15s,transform .15s;"
@@ -1249,12 +1230,28 @@ end-proc;</div></div>
           <div style="font-size:12px;color:var(--muted);line-height:1.5;">Audit IBM i security posture and auto-remediate findings with Ansible playbooks.</div>
         </div>
 
-        <div onclick="showPage('lab200', document.querySelector('[onclick*=lab200]'))" style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;grid-column:1/-1;transition:border-color .15s,transform .15s;"
+        <div onclick="showPage('lab7', document.querySelector('[onclick*=lab7]'))" style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:border-color .15s,transform .15s;"
              onmouseenter="this.style.borderColor='var(--accent2)';this.style.transform='translateY(-2px)'"
              onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'">
-          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:6px;">Lab 200 · ~45 min</div>
-          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Ops &amp; System Admin</div>
-          <div style="font-size:12px;color:var(--muted);line-height:1.5;">End-to-end IBM i operations — PTF reports, security audits, job monitoring, and SQL performance analysis using Bob in Database and Developer modes.</div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:6px;">Lab 7 · ~25 min</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Audit Journal Forensics</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">Query the IBM i audit journal in plain English — forensic investigation, correlated timelines, and Ansible remediation hand-off.</div>
+        </div>
+
+        <div onclick="showPage('lab8', document.querySelector('[onclick*=lab8]'))" style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:border-color .15s,transform .15s;"
+             onmouseenter="this.style.borderColor='var(--accent2)';this.style.transform='translateY(-2px)'"
+             onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:6px;">Lab 8 · ~25 min</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">PTF Impact Analysis Agent</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">Trace supersede chains, generate a sequenced deployment plan, and have Bob author a CAB-ready change request document.</div>
+        </div>
+
+        <div onclick="showPage('lab9', document.querySelector('[onclick*=lab9]'))" style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;grid-column:1/-1;transition:border-color .15s,transform .15s;"
+             onmouseenter="this.style.borderColor='var(--accent2)';this.style.transform='translateY(-2px)'"
+             onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:6px;">Lab 9 · ~25 min</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Predictive Operational Health Monitoring</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">Real-time snapshots, Collection Services trend analysis, anomaly detection, capacity forecasting, and an AI-generated health report — no monitoring console required.</div>
         </div>
 
       </div>
@@ -1307,250 +1304,7 @@ ansible-galaxy collection install ibm.power_hmc</pre></div>
     </div>
     <div class="page-nav" style="border-top:1px solid var(--border);margin-top:0;">
       <span></span>
-      <button class="btn btn-primary" onclick="showPage('lab4', document.querySelector('[onclick*=lab4]'))">Start Lab 4 →</button>
-    </div>
-  </div>
-
-  <!-- LAB 4 — IBM i MCP MODE -->
-  <div class="page" id="page-lab4">
-    <div class="page-hero">
-      <div class="eyebrow">Lab 4 — Ansible Track</div>
-      <h1>IBM i Modes, IBM i MCP &amp; Bob Shell</h1>
-      <p class="subtitle">Configure IBM Bob to work with IBM i systems using the Model Context Protocol (MCP). Set up custom modes, connect to your IBM i system, and execute your first queries using Bob's AI-powered interface.</p>
-      <div class="meta-pills">
-        <span class="pill time">⏱ ~15 minutes</span>
-        <span class="pill level">Intermediate</span>
-      </div>
-    </div>
-    <div class="page-body">
-
-      <h2 class="section-title">What is MCP?</h2>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">The <strong>Model Context Protocol (MCP)</strong> is an open protocol that standardizes how AI applications interact with external data sources and tools — a universal adapter that allows Bob to:</p>
-      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text);margin-bottom:16px;">
-        <li><strong>Access Data Sources</strong> — Connect to databases, APIs, and file systems</li>
-        <li><strong>Execute Tools</strong> — Run SQL queries, system commands, and custom operations</li>
-        <li><strong>Maintain Context</strong> — Keep track of conversation state across interactions</li>
-      </ul>
-      <div class="table-wrap"><table><thead><tr><th>Concept</th><th>Description</th></tr></thead><tbody>
-        <tr><td><strong>MCP Server</strong></td><td>A service that exposes tools and resources to AI agents</td></tr>
-        <tr><td><strong>Transport</strong></td><td>Communication method (HTTP for remote, Stdio for local)</td></tr>
-        <tr><td><strong>Tools</strong></td><td>Executable operations (SQL queries, system commands)</td></tr>
-        <tr><td><strong>Resources</strong></td><td>Data sources (databases, files, APIs)</td></tr>
-        <tr><td><strong>Authentication</strong></td><td>Security layer (tokens, credentials)</td></tr>
-      </tbody></table></div>
-
-      <h2 class="section-title">Part 1 <span class="section-badge">MCP Server Setup on IBM i</span></h2>
-      <div class="callout tip"><div class="icon">💡</div><p>Skip Part 1 if your MCP server is already running on IBM i.</p></div>
-
-      <h3 class="subsection">Step 1 — Install Prerequisites on IBM i</h3>
-      <div class="code-block"><div class="code-header">IBM i PASE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre># Install Node.js 22+
-yum install nodejs22
-
-# Verify
-node --version   # Should show v22.x.x or higher
-
-# Install git if needed
-yum install git</pre></div>
-
-      <h3 class="subsection">Step 2 — Install &amp; Start Mapepire Service</h3>
-      <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Connect via 5250</h3><p>Connect with <a href="https://www.ibm.com/support/pages/ibm-i-access-client-solutions" style="color:var(--accent)">Access Client Solutions</a> and start SSH: <code>STRTCPSVR *SSHD</code></p></div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Install and start Mapepire via SSH</h3>
-          <div class="code-block"><div class="code-header">IBM i PASE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>/QOpenSys/pkgs/bin/yum install mapepire-server
-/QOpenSys/pkgs/bin/yum install service-commander
-/QOpenSys/pkgs/bin/sc start mapepire</pre></div>
-        </div></div>
-      </div>
-
-      <h3 class="subsection">Step 3 — Configure MCP Server</h3>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">In PASE, create a <code>.env</code> file in your home directory:</p>
-      <div class="code-block"><div class="code-header">~/.env <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>DB2i_HOST=localhost
-DB2i_PORT=8076
-DB2i_IGNORE_UNAUTHORIZED=true
-DB2i_USER=&lt;YOUR-USER&gt;
-DB2i_PASS=&lt;YOUR-PASSWORD&gt;
-
-MCP_TRANSPORT_TYPE=http
-MCP_HTTP_PORT=3010
-MCP_LOG_LEVEL=info
-IBMI_AUTH_ALLOW_HTTP=true</pre></div>
-      <div class="callout warning"><div class="icon">⚠️</div><p>Replace <code>&lt;YOUR-USER&gt;</code> and <code>&lt;YOUR-PASSWORD&gt;</code> with your IBM i OS credentials. <code>DB2i_HOST=localhost</code> because Mapepire runs on the same system.</p></div>
-
-      <h3 class="subsection">Step 4 — Start the MCP Server</h3>
-      <div class="code-block"><div class="code-header">IBM i PASE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>export MCP_SERVER_CONFIG=.env && npx -y @ibm/ibmi-mcp-server@latest --transport http --builtin-tools</pre></div>
-
-      <h3 class="subsection">Step 5 — (Optional) Run as a Background Service</h3>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Create <code>~/.sc/services/ibmi-mcp-server.yaml</code> to manage the server with Service Commander:</p>
-      <div class="code-block"><div class="code-header">~/.sc/services/ibmi-mcp-server.yaml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>name: IBM i MCP Server
-dir: /home/&lt;USERNAME&gt;/MCP/ibmi-mcp-server
-start_cmd: npx -y @ibm/ibmi-mcp-server@latest --transport http --tools ./tools
-
-check_alive: port
-check_alive_criteria: 3010
-
-batch_mode: yes
-sbmjob_jobname: MCPSERVER
-sbmjob_opts: JOBQ(QUSRNOMAX) CCSID(37)
-
-environment_vars:
-  - "PATH=/QOpenSys/pkgs/bin:/QOpenSys/usr/bin:/usr/bin"
-  - "HOME=/home/&lt;USERNAME&gt;"
-
-groups:
-  - "mcp"
-  - "default"</pre></div>
-
-      <h3 class="subsection">Step X — SSH Tunnel (if IBM i traffic is filtered)</h3>
-      <div class="code-block"><div class="code-header">bash — run on your laptop <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ssh -L 50000:localhost:23 -L 8076:localhost:8076 -L 3010:localhost:3010 \
-  -o ExitOnForwardFailure=yes -o ServerAliveInterval=15 -o ServerAliveCountMax=3 \
-  &lt;myuser&gt;@&lt;myIPaddress&gt;</pre></div>
-      <div class="callout tip"><div class="icon">💡</div><p>Port 8076 = Mapepire. Port 3010 = MCP server. Update these if you changed the defaults in your <code>.env</code>.</p></div>
-
-      <h2 class="section-title">Part 2 <span class="section-badge">Bob Setup (5 min)</span></h2>
-
-      <h3 class="subsection">Step 1 — Open your project in Bob</h3>
-      <p style="font-size:14px;color:var(--muted);">Open up your participant working directory in a new Bob window.</p>
-
-      <h3 class="subsection">Step 2 — Update MCP Configuration</h3>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Edit <code>.bob/mcp.json</code> — replace <code>&lt;IBMi_IP&gt;</code> with <code>localhost</code> if using SSH tunnel, or your IBM i's IP address directly:</p>
-      <div class="code-block"><div class="code-header">.bob/mcp.json <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>{
-    "mcpServers": {
-        "ibmi-mcp-server": {
-            "type": "streamable-http",
-            "url": "http://&lt;IBMi_IP&gt;:3010/mcp"
-        },
-        "ibmi-mcp-docs": {
-            "type": "streamable-http",
-            "url": "https://ibm-d95bab6e.mintlify.app/mcp",
-            "alwaysAllow": []
-        }
-    }
-}</pre></div>
-
-      <h3 class="subsection">Step 3 — Check Configuration</h3>
-      <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Restart Bob</h3><p>Reload the window: <code>F1</code> → <strong>Reload Window</strong></p></div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Open Bob settings → MCP list</h3><p>Confirm <code>ibmi-mcp-server</code> and <code>ibmi-mcp-docs</code> show as <strong>connected</strong>.</p></div></div>
-        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Check available tools</h3><p>Click on <code>ibmi-mcp-server</code> in the MCP list and review the list of exposed tools.</p></div></div>
-      </div>
-
-      <h2 class="section-title">Exercise 1 <span class="section-badge">~3 min</span></h2>
-      <h3 class="subsection">Switch to a Mode &amp; Query System Status</h3>
-      <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Switch to a mode that can use MCP tools</h3><p>Expand the modes dropdown beneath the chat input and select <strong>Advanced</strong> or <strong>IBM i Agent</strong>.</p>
-          <img src="../pics/select-ibmi-agent.png" alt="Select IBM i Agent mode" class="screenshot" style="max-width:340px;" onerror="this.style.display='none'" />
-          <div class="callout tip"><div class="icon">💡</div><p>You can also import custom modes from the <a href="https://github.com/IBM/ibmi-mcp-server/blob/main/.bob/custom_modes.yaml" style="color:var(--accent)">ibmi-mcp-server examples</a> into your <code>.bob/</code> directory.</p></div>
-        </div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Ask Bob about system status</h3>
-          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Show me the current system status"</div></div>
-          <p style="font-size:14px;color:var(--muted);margin-top:8px;">Bob executes the <code>system_status</code> tool and returns CPU utilization, memory usage, I/O statistics, and active job count.</p>
-        </div></div>
-      </div>
-      <p style="font-size:14px;color:var(--text);margin:12px 0 6px;font-weight:600;">More prompts to try:</p>
-      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px;color:var(--text);">
-        <li><em>"What is the current CPU usage?"</em></li>
-        <li><em>"How many jobs are currently active?"</em></li>
-        <li><em>"Show me memory pool information"</em></li>
-      </ul>
-      <div class="callout success"><div class="icon">✅</div><p>Bob returns formatted system performance data from your IBM i system.</p></div>
-
-      <h2 class="section-title">Exercise 2 <span class="section-badge">~3 min</span></h2>
-      <h3 class="subsection">Explore Database Objects</h3>
-      <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>List service categories</h3>
-          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"List all service categories available on IBM i"</div></div>
-          <p style="font-size:14px;color:var(--muted);">Bob shows categories like "System Administration", "Performance", "Security", etc.</p>
-        </div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Search for job-related services</h3>
-          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Search for services related to 'job' in their name"</div></div>
-        </div></div>
-      </div>
-      <p style="font-size:14px;color:var(--text);margin:12px 0 6px;font-weight:600;">More prompts to try:</p>
-      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px;color:var(--text);">
-        <li><em>"What services are available in the Performance category?"</em></li>
-        <li><em>"Show me an example of using the ACTIVE_JOB_INFO service"</em></li>
-        <li><em>"List tables in the QSYS2 schema"</em></li>
-      </ul>
-      <div class="callout success"><div class="icon">✅</div><p>Bob successfully queries and displays IBM i service information.</p></div>
-
-      <h2 class="section-title">Exercise 3 <span class="section-badge">Optional — ~2 min</span></h2>
-      <h3 class="subsection">Security Analysis</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Show me users with limited capabilities"</div></div>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Are there any database files readable by any user?"</div></div>
-      <div class="callout warning"><div class="icon">⚠️</div><p>These queries require appropriate security authorities on your IBM i system.</p></div>
-
-      <h2 class="section-title">Exercise 4 <span class="section-badge">Custom Tools</span></h2>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Create your own SQL tools by adding YAML files to the <code>tools/</code> directory on IBM i.</p>
-      <div class="code-block"><div class="code-header">tools/custom/my-tools.yaml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>sources:
-  ibmi-system:
-    host: ${DB2i_HOST}
-    user: ${DB2i_USER}
-    password: ${DB2i_PASS}
-    port: 8076
-    ignore-unauthorized: true
-
-tools:
-  get_customer_orders:
-    source: ibmi-system
-    description: "Get all orders for a specific customer"
-    parameters:
-      - name: customer_id
-        type: string
-        description: "Customer ID"
-        required: true
-    statement: |
-      SELECT o.ORDER_ID, o.ORDER_DATE, o.ORDER_AMOUNT, c.CUSTOMER_NAME
-      FROM ORDERS o
-      JOIN CUSTOMERS c ON o.CUSTOMER_ID = c.CUSTOMER_ID
-      WHERE c.CUSTOMER_ID = ?
-      ORDER BY o.ORDER_DATE DESC</pre></div>
-      <p style="font-size:14px;color:var(--muted);margin-top:10px;">Then restart the MCP server to load the new tool:</p>
-      <div class="code-block"><div class="code-header">IBM i PASE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>export MCP_SERVER_CONFIG=.env && npx -y @ibm/ibmi-mcp-server@latest --transport http --tools ./tools</pre></div>
-
-      <h2 class="section-title">Exercise 4b <span class="section-badge">Optional — Bob Shell</span></h2>
-      <h3 class="subsection">Using Bob from the Command Line</h3>
-      <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Verify Bob CLI is available</h3>
-          <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>bob --version</pre></div>
-        </div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Start Bob shell</h3>
-          <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>bob</pre></div>
-          <img src="../pics/bobshell.png" alt="Bob shell terminal interface" class="screenshot" onerror="this.style.display='none'" />
-        </div></div>
-        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Switch mode and run a query</h3>
-          <div class="code-block"><div class="code-header">Bob Shell</div><pre>/mode advanced
-Show me the current system status</pre></div>
-          <img src="../pics/wrksyssts-bob.png" alt="System status output in Bob shell" class="screenshot" onerror="this.style.display='none'" />
-        </div></div>
-        <div class="step"><div class="step-num">4</div><div class="step-content"><h3>Run one-shot CLI queries</h3>
-          <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>bob -p "Show me the current system status" --chat-mode advanced
-bob -p "Show me the top 5 CPU consumers" --chat-mode advanced
-bob -p "List tables in the SAMPLE schema" --chat-mode advanced</pre></div>
-        </div></div>
-      </div>
-
-      <h2 class="section-title">Lab Completion Checklist</h2>
-      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--text);">
-        <li>☐ Bob is configured with IBM i custom modes</li>
-        <li>☐ MCP servers are connected and working</li>
-        <li>☐ Successfully switched to IBM i Agent mode</li>
-        <li>☐ Retrieved system status information</li>
-        <li>☐ Explored IBM i services and database objects</li>
-        <li>☐ (Optional) Ran security analysis queries</li>
-        <li>☐ (Optional) Used Bob CLI from the command line</li>
-      </ul>
-
-      <h2 class="section-title">Troubleshooting</h2>
-      <div class="table-wrap"><table><thead><tr><th>Problem</th><th>Fix</th></tr></thead><tbody>
-        <tr><td>Bob doesn't show custom modes</td><td>Verify <code>.bobmodes</code> file is in project root; restart Bob; check YAML syntax</td></tr>
-        <tr><td>MCP server connection fails</td><td>Verify <code>.env</code> credentials; ensure Mapepire is running on port 8076; check firewall</td></tr>
-        <tr><td>Tools return errors</td><td>Verify IBM i user authorities; check Mapepire logs; ensure QSYS2 services are available</td></tr>
-        <tr><td>No data returned</td><td>Confirm you're querying existing objects; check SQL syntax; verify database authorities</td></tr>
-      </tbody></table></div>
-    </div>
-    <div class="page-nav">
-      <button class="btn btn-secondary" onclick="showPage('ansible-overview', document.querySelector('[onclick*=ansible-overview]'))">← Overview</button>
-      <button class="btn btn-primary" onclick="showPage('lab5', document.querySelector('[onclick*=lab5]'))">Lab 5 →</button>
+      <button class="btn btn-primary" onclick="showPage('lab5', document.querySelector('[onclick*=lab5]'))">Start Lab 5 →</button>
     </div>
   </div>
 
@@ -1567,46 +1321,69 @@ bob -p "List tables in the SAMPLE schema" --chat-mode advanced</pre></div>
     </div>
     <div class="page-body">
 
-      <div class="callout info"><div class="icon">📋</div><p><strong>Builds on Lab 4.</strong> The <code>ansible-for-i</code> custom mode and Ansible collection installed in Lab 4 are required here.</p></div>
 
       <h2 class="section-title">Prerequisites</h2>
-      <div class="callout tip"><div class="icon">💡</div><p>Verify your setup before starting:</p></div>
-      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre># Verify Ansible
-ansible --version
-
-# Check IBM i collection is at v3.3.0
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text);margin-bottom:14px;">
+        <li>IBM i 7.3 or higher, SSH configured</li>
+        <li>User profile with <code>*ALLOBJ</code> or appropriate PTF management authorities</li>
+        <li>Python 3.6+ installed via yum (<code>yum install python3</code>)</li>
+      </ul>
+      <div class="callout tip"><div class="icon">💡</div><p>Create a virtual environment first: <code>python -m venv .venv &amp;&amp; source .venv/bin/activate</code></p></div>
+      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>pip install ansible
+ansible-galaxy collection install ibm.power_ibmi:3.3.0 --force
+ansible-galaxy collection install ibm.power_hmc</pre></div>
+      <div class="callout warning"><div class="icon">⚠️</div><p>Install <code>ibm.power_ibmi</code> at <strong>v3.3.0 specifically</strong>. v3.5.0 switches from <code>ibm_db</code> to <code>pyodbc</code> and fails with <code>CWBNL0203</code> inside a PASE SSH session.</p></div>
+      <div class="code-block"><div class="code-header">bash — verify setup <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible --version
 ansible-galaxy collection list | grep ibm.power_ibmi</pre></div>
-      <div class="callout warning"><div class="icon">⚠️</div><p>Set <code>ansible_python_interpreter</code> to <code>/QOpenSys/pkgs/bin/python3.9</code> explicitly in your inventory. The default <code>python3</code> symlink may point to a version without <code>ibm_db</code> installed.</p></div>
 
       <h2 class="section-title">Custom Mode Configuration</h2>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Add the <code>ansible-for-i</code> custom mode to <code>.bob/custom_modes.yaml</code>:</p>
-      <div class="code-block"><div class="code-header">.bob/custom_modes.yaml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- slug: ansible-for-i
-  name: ℹ️ Ansible for i
-  whenToUse: an agent who specializes IBM i with Ansible
-  roleDefinition: |
-    You are an expert in IBM i system administration and Ansible automation.
-    Focus on:
-    - IBM i-specific Ansible modules (ibm.power_ibmi collection)
-    - PTF management and system currency
-    - YAML playbook best practices
-    - IBM i object authorities and security
-  groups:
-    - read
-    - edit
-    - mcp
-    - command</pre></div>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Use the <code>ansible-for-i</code> custom mode defined in <code>.bob/custom_modes.yaml</code>. If not yet configured, add it:</p>
+      <div class="code-block"><div class="code-header">.bob/custom_modes.yaml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>customModes:
+  - slug: ansible-for-i
+    name: "Ansible for i"
+    whenToUse: &gt;-
+      Use this mode for IBM i automation with Ansible -- playbook development,
+      ibm.power_ibmi collection modules, PTF management, object authorities,
+      PowerHA automation, and Power HMC integration.
+    roleDefinition: |
+      You are an expert in IBM i system administration and Ansible automation.
+
+      Focus areas:
+      - IBM i-specific Ansible modules (ibm.power_ibmi collection)
+      - PTF management and system currency
+      - YAML playbook best practices
+      - IBM i object authorities and security
+      - Power Systems hardware management
+      - High availability configurations
+
+      Key commands: ansible-playbook, ansible-inventory, ansible-doc
+      Core modules: ibmi_fix, ibmi_sql_query, ibmi_object_authority
+    groups:
+      - read
+      - edit
+      - execute</pre></div>
 
       <h2 class="section-title">Part 1 <span class="section-badge">Generate the Playbook with Bob</span></h2>
       <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Activate the mode</h3><p>Expand the modes dropdown beneath the chat input and select <strong>ℹ️ Ansible for i</strong>.</p></div></div>
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Activate Ansible for i mode</h3><p>Expand the modes dropdown beneath the chat input and select <strong>ℹ️ Ansible for i</strong>.</p></div></div>
+        <div class="step"><div class="step-num">1b</div><div class="step-content"><h3>Verify column names first (IBM i Database mode)</h3>
+          <p style="font-size:14px;color:var(--muted);">Switch to <strong>IBM i Database mode</strong> and run this prompt to confirm available columns on your system before generating any playbook SQL:</p>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Run a query to check whether these columns exist in their respective views:
+  QSYS2.SYSTEM_STATUS_INFO — HOST_NAME, ELAPSED_CPU_USED, SYSTEM_ASP_USED, ACTIVE_JOBS_IN_SYSTEM, TOTAL_JOBS_IN_SYSTEM
+  QSYS2.PTF_INFO — PTF_IDENTIFIER, PTF_LOADED_STATUS, PTF_IPL_REQUIRED, PTF_PRODUCT_ID, PTF_STATUS_TIMESTAMP</div></div>
+          <p style="font-size:14px;color:var(--muted);margin-top:8px;">Note down the columns returned — particularly hostname, CPU %, ASP usage, and PTF status fields. Switch back to <strong>Ansible for i mode</strong> before continuing.</p>
+        </div></div>
         <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Ask Bob to create the PTF currency check automation</h3>
+          <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">Substitute the confirmed column names from Step 1b where indicated:</p>
           <div class="prompt-block"><div class="prompt-label">Bob Prompt — copy this exactly</div><div class="prompt-text">Create an Ansible automation project for IBM i PTF management with the following:
 
 1. Directory structure: ./ansible with subdirectories for inventories/development, playbooks, and templates
 2. A playbook called check_ptf_currency.yml that:
-   - Queries IBM i system information using ibmi_sql_query
+   - Queries IBM i system information using ibmi_sql_query against QSYS2.SYSTEM_STATUS_INFO
+     (available columns: HOST_NAME, PARTITION_ID, ELAPSED_CPU_USED, SYSTEM_ASP_USED, ACTIVE_JOBS_IN_SYSTEM, TOTAL_JOBS_IN_SYSTEM)
    - Checks PTF group levels (SF99740, SF99738) using ibmi_fix_group_check
    - Lists installed PTFs from QSYS2.PTF_INFO
+     (available columns: PTF_IDENTIFIER, PTF_LOADED_STATUS, PTF_IPL_REQUIRED, PTF_PRODUCT_ID, PTF_STATUS_TIMESTAMP)
    - Compares against missing critical PTFs
    - Calculates compliance statistics
    - Generates an HTML report using a Jinja2 template, save to ./ansible/reports
@@ -1630,27 +1407,35 @@ Use IBM i Ansible collection modules (ibm.power_ibmi) and follow best practices.
         ibmi_dev01:
           ansible_host: &lt;YOUR_IBM_I_IP&gt;
           ansible_user: ITZUSER
-          ansible_ssh_private_key_file: /path/to/ssh_private_key.pem
+          ansible_ssh_private_key_file: ./ssh_private_key.pem
           ansible_python_interpreter: /QOpenSys/pkgs/bin/python3.9
           ansible_connection: ssh
           ansible_env:
             LANG: EN_US
             PASE_LANG: EN_US
             QIBM_MULTI_THREADED: "Y"</pre></div>
+          <div class="callout warning"><div class="icon">⚠️</div><p>Set <code>ansible_python_interpreter</code> to <code>/QOpenSys/pkgs/bin/python3.9</code> explicitly. The default <code>python3</code> symlink may point to a version without <code>ibm_db</code>.</p></div>
         </div></div>
       </div>
 
       <h2 class="section-title">Part 2 <span class="section-badge">Preview the Report Template</span></h2>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Duplicate the Jinja2 template at <code>./ansible/templates/ptf_currency_report.html.j2</code>, convert it to <code>ptf_currency_report.html</code>, and open it in your browser to preview the unfilled layout:</p>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Duplicate the Jinja2 template at <code>./ansible/templates/ptf_currency_report.html.j2</code>, convert it to <code>ptf_currency_report.html</code>, and open it in the integrated browser (right-click the file):</p>
       <img src="../pics/PTF_report_unfilled.png" alt="Unfilled PTF currency report template" class="screenshot" onerror="this.style.display='none'" />
 
       <h2 class="section-title">Part 3 <span class="section-badge">Run the Playbook</span></h2>
       <div class="steps">
         <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Run through Bob</h3>
-          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Run the PTF currency check playbook"</div></div>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Run the PTF currency check playbook</div></div>
           <div class="callout tip"><div class="icon">💡</div><p>Bob may iterate on the playbook a few times to adapt to your system — this is normal. Let it self-correct.</p></div>
         </div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Review output &amp; open the report</h3><p>Check the PLAY RECAP for success/failure. Then open the generated HTML report in your browser:</p>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Pre-flight verification</h3><p>Run these on your IBM i before executing the playbook:</p>
+          <div class="code-block"><div class="code-header">IBM i PASE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>/QOpenSys/pkgs/bin/python3.9 -c "import ibm_db_dbi; conn = ibm_db_dbi.connect(); print('OK')"
+/QOpenSys/pkgs/bin/python3.9 -c "import itoolkit; print(itoolkit.__version__)"
+/QOpenSys/pkgs/cwbping localhost</pre></div>
+          <div class="code-block"><div class="code-header">bash — Ansible controller <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-galaxy collection list | grep ibm.power_ibmi   # Must show 3.3.0
+ansible --version                                       # Must show 2.9+</pre></div>
+        </div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Review output &amp; open the report</h3><p>Check the PLAY RECAP for success/failure. Then open the generated HTML report:</p>
           <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>open ./ansible/reports/&lt;REPORT_NAME&gt;</pre></div>
           <img src="../pics/PTF_report_filled.png" alt="Filled PTF currency report with real data" class="screenshot" onerror="this.style.display='none'" />
         </div></div>
@@ -1662,7 +1447,7 @@ Use IBM i Ansible collection modules (ibm.power_ibmi) and follow best practices.
         <tr><td>Module not found</td><td>Reinstall: <code>ansible-galaxy collection install ibm.power_ibmi:3.3.0 --force</code></td></tr>
         <tr><td>Permission denied</td><td>Check user authorities on IBM i</td></tr>
         <tr><td><code>CWBNL0203</code> / ODBC errors</td><td>You have v3.5.0 — downgrade to v3.3.0</td></tr>
-        <tr><td><code>SQL0206 - Column not found</code></td><td>Remove <code>SERIAL_NUMBER</code>/<code>PARTITION_NAME</code> from <code>ENV_SYS_INFO</code> query — they don't exist on IBM i 7.6 VMs</td></tr>
+        <tr><td><code>SQL0206 - Column not found</code> on <code>SERIAL_NUMBER</code></td><td>Remove those columns from the query — they don't exist on IBM i 7.6 VMs</td></tr>
       </tbody></table></div>
 
       <h2 class="section-title">Additional Use Cases</h2>
@@ -1676,15 +1461,20 @@ Use IBM i Ansible collection modules (ibm.power_ibmi) and follow best practices.
   ibm.power_ibmi.ibmi_sql_query:
     sql: "SELECT * FROM QSYS2.SYSTEM_STATUS_INFO"
   register: health_metrics</pre></div>
-      <div class="code-block"><div class="code-header">User Authority Management <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Grant object authority
-  ibm.power_ibmi.ibmi_object_authority:
-    object_name: "MYLIB/MYFILE"
-    user: "APPUSER"
-    authority: "*CHANGE"</pre></div>
+      <div class="code-block"><div class="code-header">PowerHA Orchestration <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Check cluster status
+  ibm.power_ibmi.ibmi_cl_command:
+    cmd: "DSPCLU CLUSTER(MYCLUSTER)"
+  register: cluster_status</pre></div>
+      <div class="code-block"><div class="code-header">ServiceNow Integration <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Create change request
+  servicenow.itsm.change_request:
+    instance: "{{ snow_instance }}"
+    short_description: "PTF Application - {{ ansible_date_time.date }}"
+    description: "Applying PTFs: {{ missing_ptfs.missing_fixes | join(', ') }}"
+    state: "new"</pre></div>
       <div class="callout success"><div class="icon">✅</div><p>You've created an Ansible-based PTF management assistant with Bob AI integration — automated currency checking, compliance reporting, and a foundation for IBM i automation.</p></div>
     </div>
     <div class="page-nav">
-      <button class="btn btn-secondary" onclick="showPage('lab4', document.querySelector('[onclick*=lab4]'))">← Lab 4</button>
+      <button class="btn btn-secondary" onclick="showPage('ansible-overview', document.querySelector('[onclick*=ansible-overview]'))">← Overview</button>
       <button class="btn btn-primary" onclick="showPage('lab6', document.querySelector('[onclick*=lab6]'))">Lab 6 →</button>
     </div>
   </div>
@@ -1704,7 +1494,7 @@ Use IBM i Ansible collection modules (ibm.power_ibmi) and follow best practices.
 
       <div class="callout info"><div class="icon">📋</div><p><strong>Builds on Lab 5.</strong> The <code>ansible-for-i</code> mode, Ansible collection, and <code>./ansible</code> project structure from Lab 5 are all required here.</p></div>
 
-      <h2 class="section-title">Lab Objectives</h2>
+      <h2 class="section-title">Objectives</h2>
       <ul style="padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--text);margin-bottom:8px;">
         <li>Audit critical IBM i system values (<code>QSECURITY</code>, <code>QINACTMSGQ</code>, <code>QMAXSIGN</code>, <code>QALWOBJRST</code>) using <code>ibmi_sysval</code></li>
         <li>Audit user profiles for default password vulnerabilities using <code>ibmi_user_compliance_check</code></li>
@@ -1712,8 +1502,18 @@ Use IBM i Ansible collection modules (ibm.power_ibmi) and follow best practices.
         <li>Execute dynamic "self-healing" remediation to restore compliance automatically</li>
       </ul>
 
-      <h2 class="section-title">Instructor Setup <span class="section-badge">Run before students arrive</span></h2>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Create the non-compliant baseline that students will audit and remediate:</p>
+      <h2 class="section-title">Prerequisites</h2>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text);margin-bottom:14px;">
+        <li>IBM i 7.3+, user profile with <code>*ALLOBJ</code> and <code>*SECADM</code> authorities</li>
+        <li>Python 3.9 on target IBM i: <code>/QOpenSys/pkgs/bin/python3.9</code></li>
+        <li>Public SSH key-based auth configured (completed in Lab 5)</li>
+        <li><code>ibm.power_ibmi:3.3.0</code> collection installed; <code>./ansible</code> project from Lab 5 present</li>
+      </ul>
+      <div class="code-block"><div class="code-header">bash — verify <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-galaxy collection list | grep ibm.power_ibmi
+ansible ibmi_systems -i ansible/inventories/development/hosts.yml -m ansible.builtin.ping</pre></div>
+
+      <h2 class="section-title">Lab Environment Setup <span class="section-badge">Run before students arrive</span></h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Create the non-compliant baseline that students will audit and remediate. The <code>MYAPP_DB</code> library must exist before the audit playbook runs.</p>
       <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre># Create test library in non-compliant state
 ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
   -m ibm.power_ibmi.ibmi_cl_command \
@@ -1723,7 +1523,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
   -m ibm.power_ibmi.ibmi_object_authority \
   -a "object_name=MYAPP_DB object_type=*LIB user=*PUBLIC operation=grant authority=*CHANGE"
 
-# Set QINACTMSGQ non-compliant
+# Set QINACTMSGQ non-compliant (QPWDMINLEN blocked by QPWDRULES on this system)
 ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
   -m ibm.power_ibmi.ibmi_cl_command \
   -a "cmd='CHGSYSVAL SYSVAL(QINACTMSGQ) VALUE(*ENDJOB)'"</pre></div>
@@ -1736,21 +1536,18 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
 
 Generate two playbooks and a reporting template:
 
-1. A playbook called audit_security.yml that:
-   - Audits system values QSECURITY, QINACTMSGQ, QMAXSIGN, QALWOBJRST using ibmi_sysval
-     (parameter is 'sysvalue', a list of dicts with 'name' and 'expect' keys)
-   - Audits user profiles for default/blank passwords using ibmi_user_compliance_check
-     (parameters: 'users' list and 'fields' list of dicts with 'name' and 'expect' keys)
-   - Inspects the public authority of library MYAPP_DB using ibmi_object_authority
-     with operation=display (NOT 'query')
-   - Saves a JSON compliance report locally using ansible.builtin.template with delegate_to: localhost
+1. audit_security.yml:
+   - Audit system values QSECURITY, QINACTMSGQ, QMAXSIGN, QALWOBJRST using ibmi_sysval
+   - Audit user profiles for default/blank passwords using ibmi_user_compliance_check
+   - Inspect the public authority of library MYAPP_DB using ibmi_object_authority with operation=display
+   - Save a JSON compliance report locally using ansible.builtin.template with delegate_to: localhost
 
-2. A playbook called remediate_security.yml that:
-   - Sets QINACTMSGQ=*DSCJOB and QALWOBJRST=*NONE using ibmi_cl_command with CHGSYSVAL
-   - Revokes *PUBLIC *CHANGE on MYAPP_DB then grants *PUBLIC *EXCLUDE
-   - Uses become_user and become_user_password module arguments for tasks requiring *SECADM
+2. remediate_security.yml:
+   - Set QINACTMSGQ=*DSCJOB and QALWOBJRST=*NONE using ibmi_cl_command with CHGSYSVAL
+   - Revoke *PUBLIC *CHANGE authority on MYAPP_DB using ibmi_object_authority, then grant *PUBLIC *EXCLUDE
 
-3. A Jinja2 template at ./ansible/templates/security_report.json.j2 that outputs a structured compliance scorecard.</div></div>
+3. A Jinja2 template at ./ansible/templates/security_report.json.j2 that outputs a structured
+   compliance scorecard. Use delegate_to: localhost on the template task.</div></div>
         </div></div>
         <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Verify Bob's generated files</h3>
           <div class="table-wrap"><table><thead><tr><th>File</th><th>Purpose</th></tr></thead><tbody>
@@ -1762,7 +1559,7 @@ Generate two playbooks and a reporting template:
       </div>
 
       <h2 class="section-title">Part 2 <span class="section-badge">Key Module Patterns</span></h2>
-      <div class="callout warning"><div class="icon">⚠️</div><p><strong>Common mistakes Bob may need to self-correct:</strong></p></div>
+      <div class="callout warning"><div class="icon">⚠️</div><p><strong>Common mistakes Bob may need to self-correct. Review these before running:</strong></p></div>
 
       <h3 class="subsection">System Value Auditing — use <code>sysvalue</code> not <code>sysval</code></h3>
       <div class="code-block"><div class="code-header">audit_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Audit system security values
@@ -1773,6 +1570,17 @@ Generate two playbooks and a reporting template:
       - {name: 'QMAXSIGN',   expect: '000003'}
       - {name: 'QALWOBJRST', expect: '*NONE',    check: 'equal_as_list'}
   register: sysval_audit
+  failed_when: false</pre></div>
+
+      <h3 class="subsection">User Profile Compliance — use <code>users</code> + <code>fields</code>, no <code>check_type</code></h3>
+      <div class="code-block"><div class="code-header">audit_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Check for profiles with default/blank passwords
+  ibm.power_ibmi.ibmi_user_compliance_check:
+    users:
+      - '*ALL'
+    fields:
+      - {name: 'NO_PASSWORD_INDICATOR', expect: ['NO']}
+      - {name: 'STATUS',                expect: ['*ENABLED']}
+  register: user_compliance
   failed_when: false</pre></div>
 
       <h3 class="subsection">Library Permissions — use <code>operation: display</code> not <code>query</code></h3>
@@ -1786,27 +1594,20 @@ Generate two playbooks and a reporting template:
   failed_when: false</pre></div>
 
       <h3 class="subsection">Setting System Values — use <code>ibmi_cl_command</code> not <code>ibmi_sysval</code></h3>
-      <div class="callout info"><div class="icon">📋</div><p><code>ibmi_sysval</code> is <strong>read-only</strong>. To change a system value, use <code>ibmi_cl_command</code> with <code>CHGSYSVAL</code> in the remediation playbook.</p></div>
+      <div class="callout info"><div class="icon">📋</div><p><code>ibmi_sysval</code> is <strong>read-only</strong>. To change a system value, use <code>ibmi_cl_command</code> with <code>CHGSYSVAL</code>.</p></div>
       <div class="code-block"><div class="code-header">remediate_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Set QINACTMSGQ to disconnect inactive sessions
   ibm.power_ibmi.ibmi_cl_command:
     cmd: "CHGSYSVAL SYSVAL(QINACTMSGQ) VALUE(*DSCJOB)"</pre></div>
-
-      <h3 class="subsection">Privilege Elevation — use module-level <code>become_user</code></h3>
-      <div class="callout warning"><div class="icon">⚠️</div><p>Standard Ansible <code>become:</code> does NOT work on IBM i. Use <code>become_user</code> and <code>become_user_password</code> as module-level arguments instead.</p></div>
-      <div class="code-block"><div class="code-header">remediate_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Remediate QINACTMSGQ (requires *SECADM)
-  ibm.power_ibmi.ibmi_cl_command:
-    cmd: "CHGSYSVAL SYSVAL(QINACTMSGQ) VALUE(*DSCJOB)"
-    become_user: 'QSECOFR'
-    become_user_password: '{{ qsecofr_password }}'</pre></div>
-      <div class="callout tip"><div class="icon">💡</div><p>For this lab, <code>ITZUSER</code> already has <code>*ALLOBJ</code> and <code>*SECADM</code> — you can omit <code>become_user</code>/<code>become_user_password</code> entirely.</p></div>
+      <div class="callout tip"><div class="icon">💡</div><p><strong>Note:</strong> On this system <code>QPWDRULES</code> is active with <code>*MINLEN15</code>, which blocks <code>CHGSYSVAL</code> on <code>QPWDMINLEN</code>. <code>QINACTMSGQ</code> is audited and remediated instead as it covers the same CIS benchmark category.</p></div>
 
       <h2 class="section-title">Playbook Execution &amp; Self-Healing</h2>
 
       <h3 class="subsection">Step 1 — Run the Audit Playbook</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Run the security audit playbook"</div></div>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Run the security audit playbook</div></div>
       <p style="font-size:14px;color:var(--muted);margin-top:8px;">Or run directly:</p>
       <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-playbook -i ansible/inventories/development/hosts.yml \
   ansible/playbooks/audit_security.yml</pre></div>
+      <div class="callout tip"><div class="icon">💡</div><p>Bob may iterate on the playbook a few times to adapt to your system. Let it self-correct — review its explanations for each change.</p></div>
       <p style="font-size:14px;color:var(--text);margin:12px 0 8px;font-weight:600;">Expected findings with the non-compliant baseline:</p>
       <div class="table-wrap"><table><thead><tr><th>Item</th><th>Current</th><th>Target</th><th>Status</th></tr></thead><tbody>
         <tr><td><code>QSECURITY</code></td><td><code>50</code></td><td><code>&gt;= 50</code></td><td>✅ PASS</td></tr>
@@ -1817,7 +1618,7 @@ Generate two playbooks and a reporting template:
       </tbody></table></div>
 
       <h3 class="subsection">Step 2 — Run the Remediation Playbook</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Run the remediation playbook to fix the non-compliant findings"</div></div>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Run the remediation playbook to fix the non-compliant findings</div></div>
       <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-playbook -i ansible/inventories/development/hosts.yml \
   ansible/playbooks/remediate_security.yml</pre></div>
       <p style="font-size:14px;color:var(--text);margin:12px 0 8px;font-weight:600;">What this changes:</p>
@@ -1826,16 +1627,17 @@ Generate two playbooks and a reporting template:
         <tr><td><code>QALWOBJRST</code></td><td><code>*ALL</code></td><td><code>*NONE</code></td></tr>
         <tr><td><code>MYAPP_DB *PUBLIC</code></td><td><code>*CHANGE</code></td><td><code>*EXCLUDE</code></td></tr>
       </tbody></table></div>
+      <div class="callout warning"><div class="icon">⚠️</div><p><code>QALWOBJRST=*NONE</code> means no objects can be restored from save files without explicit authority. On a shared ITZ system this is safe for the lab; reverse it with <code>*ALL</code> afterwards if needed.</p></div>
 
       <h3 class="subsection">Step 3 — Re-Audit and Verify Compliance</h3>
       <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Run the audit a second time to confirm all items now pass:</p>
       <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-playbook -i ansible/inventories/development/hosts.yml \
   ansible/playbooks/audit_security.yml</pre></div>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Compare the two compliance report files and summarize what changed"</div></div>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Compare the two compliance report files and summarize what changed</div></div>
       <div class="callout success"><div class="icon">✅</div><p>All three previously failing items should now show <strong>PASS</strong> and the overall compliance score should read <strong>100%</strong> for the audited controls.</p></div>
 
       <h3 class="subsection">Step 4 — Reset the Environment (Optional)</h3>
-      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre># Restore non-compliant baseline for the next session
+      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre># Restore non-compliant baseline for the next student session
 ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
   -m ibm.power_ibmi.ibmi_cl_command \
   -a "cmd='CHGSYSVAL SYSVAL(QINACTMSGQ) VALUE(*ENDJOB)'"
@@ -1846,132 +1648,524 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
 
 ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
   -m ibm.power_ibmi.ibmi_object_authority \
-  -a "object_name=MYAPP_DB object_type=*LIB user=*PUBLIC operation=grant authority=*CHANGE"</pre></div>
+  -a "object_name=MYAPP_DB object_type=*LIB user=*PUBLIC operation=grant authority=*CHANGE"
+
+# Optionally delete the test library
+ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
+  -m ibm.power_ibmi.ibmi_cl_command \
+  -a "cmd='DLTLIB LIB(MYAPP_DB)'"</pre></div>
+
+      <h2 class="section-title">Additional Security Use Cases</h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Ask Bob to add these tasks to your existing <code>audit_security.yml</code> or <code>remediate_security.yml</code>:</p>
+
+      <h3 class="subsection">1. Inactive Profile Disabling</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Add a task to audit_security.yml that finds all enabled user profiles that have not signed on in more than 90 days, then add a second task to remediate_security.yml that disables those profiles using ibmi_cl_command.</div></div>
+      <div class="code-block"><div class="code-header">result <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Find profiles inactive for more than 90 days
+  ibm.power_ibmi.ibmi_sql_query:
+    sql: &gt;
+      SELECT AUTHORIZATION_NAME FROM QSYS2.USER_INFO
+      WHERE STATUS = '*ENABLED'
+        AND PREVIOUS_SIGNON &lt; CURRENT DATE - 90 DAYS
+        AND AUTHORIZATION_NAME != 'QSECOFR'
+  register: inactive_users
+  failed_when: false
+
+- name: Disable inactive profiles
+  ibm.power_ibmi.ibmi_cl_command:
+    cmd: "CHGUSRPRF USRPRF({{ item.AUTHORIZATION_NAME }}) STATUS(*DISABLED)"
+  loop: "{{ inactive_users.row | default([]) }}"</pre></div>
+
+      <h3 class="subsection">2. SSH Configuration Hardening</h3>
+      <div class="callout tip"><div class="icon">💡</div><p><strong>IBM i path:</strong> The yum-installed OpenSSH config lives at <code>/QOpenSys/QIBM/UserData/SC1/OpenSSH/etc/sshd_config</code>, not the Linux default.</p></div>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Add tasks to remediate_security.yml that enforce six CIS-recommended sshd_config settings using ansible.builtin.lineinfile: PermitRootLogin no, HostbasedAuthentication no, MaxAuthTries 4, ClientAliveCountMax 0, ClientAliveInterval 300, and strong Ciphers only.</div></div>
+      <div class="code-block"><div class="code-header">result <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Enforce SSH hardening settings (CIS 4.4.x)
+  ansible.builtin.lineinfile:
+    path: "/QOpenSys/QIBM/UserData/SC1/OpenSSH/etc/sshd_config"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - {regexp: '^#?PermitRootLogin',        line: 'PermitRootLogin no'}
+    - {regexp: '^#?HostbasedAuthentication', line: 'HostbasedAuthentication no'}
+    - {regexp: '^#?MaxAuthTries',            line: 'MaxAuthTries 4'}
+    - {regexp: '^#?ClientAliveCountMax',     line: 'ClientAliveCountMax 0'}
+    - {regexp: '^#?ClientAliveInterval',     line: 'ClientAliveInterval 300'}
+    - {regexp: '^#?Ciphers',                 line: 'Ciphers aes256-ctr,aes192-ctr,aes128-ctr'}
+  notify: Restart SSH Daemon</pre></div>
+
+      <h3 class="subsection">3. Broad Object Authority Audit</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Add a task that reports all objects in MYAPP_DB where *PUBLIC has *ALL authority, using QSYS2.OBJECT_PRIVILEGES.</div></div>
+      <div class="code-block"><div class="code-header">result <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Report all objects with *PUBLIC *ALL authority in MYAPP_DB
+  ibm.power_ibmi.ibmi_sql_query:
+    sql: &gt;
+      SELECT OBJECT_NAME, OBJECT_TYPE, OBJECT_AUTHORITY
+      FROM QSYS2.OBJECT_PRIVILEGES
+      WHERE OBJECT_SCHEMA = 'MYAPP_DB'
+        AND GRANTEE = '*PUBLIC'
+        AND OBJECT_AUTHORITY = '*ALL'
+  register: overly_permissive_objects
+  failed_when: false</pre></div>
 
       <h2 class="section-title">Common Troubleshooting</h2>
       <div class="table-wrap"><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
         <tr><td><code>CWBNL0203</code></td><td><code>ibm.power_ibmi</code> 3.5.x pyodbc fails in PASE sessions</td><td>Pin to <code>ibm.power_ibmi:3.3.0</code></td></tr>
         <tr><td><code>parameter 'sysval' not supported</code></td><td>Wrong parameter name</td><td>Use <code>sysvalue</code> (list of dicts)</td></tr>
         <tr><td><code>invalid operation: query</code></td><td>Wrong operation on <code>ibmi_object_authority</code></td><td>Use <code>operation: display</code></td></tr>
+        <tr><td><code>check_type is not a valid parameter</code></td><td>Wrong param on <code>ibmi_user_compliance_check</code></td><td>Use <code>users</code> + <code>fields</code> parameters</td></tr>
         <tr><td><code>MYAPP_DB not found / CPF9801</code></td><td>Library not created before audit runs</td><td>Run the instructor setup block first</td></tr>
-        <tr><td><code>become_user</code> has no effect</td><td>Standard Ansible <code>become:</code> not supported on IBM i</td><td>Use <code>become_user</code>/<code>become_user_password</code> as module arguments</td></tr>
       </tbody></table></div>
+
+      <div class="callout success"><div class="icon">✅</div><p>You've built and run an automated security compliance and self-healing remediation assistant on IBM i using Bob and Ansible. All three failing controls were detected, remediated, and verified in a single automated workflow.</p></div>
     </div>
     <div class="page-nav">
       <button class="btn btn-secondary" onclick="showPage('lab5', document.querySelector('[onclick*=lab5]'))">← Lab 5</button>
-      <button class="btn btn-primary" onclick="showPage('lab200', document.querySelector('[onclick*=lab200]'))">Lab 200 →</button>
+      <button class="btn btn-primary" onclick="showPage('lab7', document.querySelector('[onclick*=lab7]'))">Lab 7 →</button>
     </div>
   </div>
 
-  <!-- LAB 200 — OPS & SYSADMIN -->
-  <div class="page" id="page-lab200">
+  <!-- LAB 7 — AUDIT JOURNAL FORENSICS -->
+  <div class="page" id="page-lab7">
     <div class="page-hero">
-      <div class="eyebrow">Lab 200 — Ansible Track</div>
-      <h1>Premium Package for i — Ops &amp; System Admin</h1>
-      <p class="subtitle">Use Bob's Premium Package for IBM i to perform Operations and System Administration tasks using natural language — PTF reporting, security audits, CPU troubleshooting, and database optimization — no green screen required.</p>
+      <div class="eyebrow">Lab 7 — Ansible Track</div>
+      <h1>Audit Journal Forensics</h1>
+      <p class="subtitle">Query IBM i's security audit journal using natural language with Bob, interpret the most critical entry types, correlate findings into a vulnerability picture, and hand off remediation actions to Ansible.</p>
       <div class="meta-pills">
-        <span class="pill time">⏱ ~45 minutes</span>
-        <span class="pill level">IBM i Database + IBM i Developer mode</span>
+        <span class="pill time">⏱ ~25 minutes</span>
+        <span class="pill level">Intermediate</span>
       </div>
     </div>
     <div class="page-body">
 
-      <div class="callout tip"><div class="icon">💡</div><p><strong>Can be done independently</strong> — this lab does not depend on Labs 4–6. You only need an active IBM i connection in Bob with the <strong>IBM Bob Premium Package for i</strong> installed.</p></div>
-
-      <div class="table-wrap" style="margin-bottom:20px;"><table><thead><tr><th>#</th><th>Exercise</th><th>Bob Tools &amp; Skills</th><th>IBM i Service</th></tr></thead><tbody>
-        <tr><td>1.1</td><td>PTF Status Report</td><td><code>execute_sql_statement</code>, <code>db2-sql-primer</code></td><td><code>QSYS2.PTF_INFO</code>, <code>QSYS2.GROUP_PTF_INFO</code></td></tr>
-        <tr><td>1.2</td><td>Security Audit</td><td><code>execute_sql_statement</code>, <code>db2-security-best-practices</code></td><td><code>QSYS2.USER_INFO</code>, <code>QSYS2.OBJECT_PRIVILEGES</code></td></tr>
-        <tr><td>1.3</td><td>Save Report to IFS</td><td><code>write_stream_file</code>, <code>execute_pase_command</code></td><td>IFS home directory</td></tr>
-        <tr><td>2.1</td><td>Top CPU Jobs</td><td><code>execute_sql_statement</code></td><td><code>QSYS2.ACTIVE_JOB_INFO</code></td></tr>
-        <tr><td>2.2</td><td>Job Investigation</td><td><code>execute_sql_statement</code>, <code>read_stream_file</code></td><td><code>QSYS2.JOBLOG_INFO</code></td></tr>
-        <tr><td>2.3</td><td>Performance Collection</td><td><code>execute_sql_statement</code>, <code>execute_cl_command</code></td><td><code>QSYS2.COLLECTION_SERVICES_INFO</code></td></tr>
-        <tr><td>3.1</td><td>Top SQL by CPU</td><td><code>execute_sql_statement</code>, <code>db2-sql-performance-analysis</code></td><td>Plan Cache</td></tr>
-        <tr><td>3.2</td><td>Index Recommendations</td><td><code>execute_sql_statement</code>, <code>db2-index-strategy</code></td><td><code>QSYS2.SYSIXADV</code></td></tr>
-      </tbody></table></div>
-
-      <h2 class="section-title">Exercise 1 <span class="section-badge">Security &amp; PTF Reporting</span></h2>
-
-      <h3 class="subsection">1.1 — PTF Status Report</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt — IBM i Database mode</div><div class="prompt-text">"Generate a PTF status report for my IBM i system. Show me missing PTFs, their descriptions, and whether they require an IPL."</div></div>
-      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected:</strong> PTFs ranked by status (<code>NOT APPLIED</code>, <code>APPLY PENDING</code>, <code>APPLIED</code>) with IPL-required flags. Group PTF levels (e.g., SF99xxx Db2, SF99722 Java).</p>
-      <p style="font-size:14px;color:var(--text);margin:10px 0 6px;font-weight:600;">Refinements to try:</p>
-      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px;color:var(--text);">
-        <li><em>"Which PTFs are loaded but not yet applied?"</em></li>
-        <li><em>"Show me the current Group PTF levels for Db2 and Java."</em></li>
-        <li><em>"Are there any PTFs that require an IPL to take effect?"</em></li>
+      <h2 class="section-title">Objectives</h2>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--text);margin-bottom:8px;">
+        <li>Understand the <code>SYSTOOLS.AUDIT_JOURNAL_*</code> table function family</li>
+        <li>Use Bob (IBM i Database mode) to run forensic queries in plain English</li>
+        <li>Identify failed logon storms, authority violations, object deletions, and profile changes</li>
+        <li>Correlate findings across entry types to build an attack timeline</li>
+        <li>Feed audit findings into an Ansible remediation playbook</li>
       </ul>
 
-      <h3 class="subsection">1.2 — Security Audit Report</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Run a security audit on my IBM i. Check for user profiles with default passwords, profiles with *ALLOBJ authority, and any publicly accessible sensitive objects."</div></div>
-      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected:</strong> User profiles with expired/default passwords or inactive for 90+ days. Profiles holding <code>*ALLOBJ</code>, <code>*SECADM</code>, or <code>*JOBCTL</code>. Objects with <code>*PUBLIC *CHANGE</code> or <code>*PUBLIC *ALL</code> flagged as risks.</p>
-      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px;color:var(--text);margin-top:8px;">
-        <li><em>"Which user profiles have not logged in for more than 90 days?"</em></li>
-        <li><em>"Show me all profiles with *ALLOBJ authority that are not IBM-supplied."</em></li>
-        <li><em>"Are there any objects in production libraries accessible to *PUBLIC?"</em></li>
+      <h2 class="section-title">Prerequisites</h2>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text);margin-bottom:14px;">
+        <li>IBM i 7.4+ (7.3 is supported but some functions require 7.4+)</li>
+        <li><code>QAUDJRN</code> journal active with <code>*AUTFAIL</code>, <code>*SIGNON</code>, <code>*OBJMGT</code>, <code>*SYSMGT</code>, <code>*SECURITY</code>, <code>*PGMADP</code> entry types enabled</li>
+        <li>User profile with <code>*ALLOBJ</code> or <code>*AUDIT</code> special authority</li>
+        <li>Mapepire server running on port 8076</li>
+        <li>IBM i Database mode active in Bob</li>
       </ul>
+      <div class="callout tip"><div class="icon">💡</div><p>Verify <code>QAUDJRN</code> is active — ask Bob in IBM i Database mode: <code>SELECT JOURNAL_NAME, JOURNAL_STATE FROM QSYS2.JOURNAL_INFO WHERE JOURNAL_NAME = 'QAUDJRN'</code></p></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;">If not active, ask your system administrator to run: <code>CHGSECAUD QAUDLVL(*AUTFAIL *SIGNON *OBJMGT *SYSMGT *SECURITY *PGMADP)</code></p>
 
-      <h3 class="subsection">1.3 — Generate a Markdown Report</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Write a concise Markdown security and PTF summary report and save it to the IFS under my home directory."</div></div>
-      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected:</strong> A <code>.md</code> file saved to <code>/home/&lt;your_user&gt;/</code> containing PTF gap and security findings tables, ready to share with your team.</p>
+      <h2 class="section-title">The <code>SYSTOOLS.AUDIT_JOURNAL_*</code> Family</h2>
+      <div class="table-wrap"><table><thead><tr><th>Function</th><th>Entry Type</th><th>What It Captures</th></tr></thead><tbody>
+        <tr><td><code>SYSTOOLS.AUDIT_JOURNAL_AF</code></td><td><code>AF</code></td><td>Authority failures — access denied</td></tr>
+        <tr><td><code>SYSTOOLS.AUDIT_JOURNAL_PW</code></td><td><code>PW</code></td><td>Invalid password / signon attempts</td></tr>
+        <tr><td><code>SYSTOOLS.AUDIT_JOURNAL_CP</code></td><td><code>CP</code></td><td>User profile changes (create, change, delete)</td></tr>
+        <tr><td><code>SYSTOOLS.AUDIT_JOURNAL_SV</code></td><td><code>SV</code></td><td>System value changes</td></tr>
+        <tr><td><code>SYSTOOLS.AUDIT_JOURNAL_OM</code></td><td><code>OM</code></td><td>Object management — created, deleted, moved, renamed</td></tr>
+        <tr><td><code>SYSTOOLS.AUDIT_JOURNAL_DO</code></td><td><code>DO</code></td><td>Object deletions</td></tr>
+        <tr><td><code>SYSTOOLS.AUDIT_JOURNAL_AD</code></td><td><code>AD</code></td><td>Adopted authority use</td></tr>
+      </tbody></table></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Each function accepts a mandatory time range:</p>
+      <div class="code-block"><div class="code-header">example invocation <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>SELECT *
+FROM   TABLE(
+         SYSTOOLS.AUDIT_JOURNAL_AF(
+           STARTING_TIMESTAMP =&gt; CURRENT_TIMESTAMP - 24 HOURS,
+           ENDING_TIMESTAMP   =&gt; CURRENT_TIMESTAMP
+         )
+       ) AS AF
+FETCH FIRST 20 ROWS ONLY</pre></div>
 
-      <h2 class="section-title">Exercise 2 <span class="section-badge">CPU Troubleshooting</span></h2>
+      <h2 class="section-title">Part 1 <span class="section-badge">Natural Language Forensic Queries</span></h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Activate <strong>IBM i Database mode</strong> for all queries in this section.</p>
 
-      <h3 class="subsection">2.1 — Identify the Top CPU Consumers</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Show me the top 10 jobs consuming the most CPU on this system."</div></div>
-      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected:</strong> Ranked active jobs with <code>CPU_TIME</code>, <code>THREAD_COUNT</code>, <code>TEMPORARY_STORAGE</code>, job name/user/type/status.</p>
-      <div class="callout tip"><div class="icon">💡</div><p><code>CPU_TIME</code> is cumulative since job start. Check <code>ELAPSED_CPU_PERCENTAGE</code> for real-time activity.</p></div>
+      <h3 class="subsection">Step 2 — Failed Signon Investigation</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query SYSTOOLS.AUDIT_JOURNAL_PW for the last 24 hours.
+Show me: user profile attempted, workstation or IP address, timestamp, and how many attempts per user.
+Order by attempt count descending so the worst offenders are at the top.
+Then execute the query.</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>What to look for:</strong> Any user with 5+ failed attempts in a short window (credential stuffing), attempts against service accounts (<code>QSECOFR</code>, <code>QTCP</code>), or unfamiliar IP addresses.</p>
 
-      <h3 class="subsection">2.2 — Drill Down on a Suspicious Job</h3>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Pick the top CPU-consuming non-system job, then ask:</p>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"What is going on with job [JOB_NAME]? Investigate its logs, runtime context, and give me recommendations."</div></div>
-      <div class="table-wrap"><table><thead><tr><th>Area</th><th>What to look for</th></tr></thead><tbody>
-        <tr><td><strong>Runtime</strong></td><td>Language/framework, JVM version, server type</td></tr>
-        <tr><td><strong>Job details</strong></td><td>Thread count, memory, subsystem, pool</td></tr>
-        <tr><td><strong>Job log errors</strong></td><td>Escape messages (<code>*ESCAPE</code>), FFDC incidents</td></tr>
-        <tr><td><strong>Recommendations</strong></td><td>Concrete fixes ranked by priority</td></tr>
+      <h3 class="subsection">Step 3 — Authority Failure Analysis</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Show me all authority failures from SYSTOOLS.AUDIT_JOURNAL_AF in the last 48 hours.
+Group by the user and the object they were denied access to.
+Flag anything where the denied object is in QSYS, QGPL, or a library starting with Q.</div></div>
+
+      <h3 class="subsection">Step 4 — Object Deletion Forensics</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query SYSTOOLS.AUDIT_JOURNAL_OM for the last 7 days.
+Filter for DELETE and RENAME operations only.
+Show the object name, library, the user who did it, and the timestamp.
+Sort by timestamp descending.</div></div>
+      <div class="callout tip"><div class="icon">💡</div><p>Deletes live in <code>AUDIT_JOURNAL_DO</code>; renames/moves live in <code>AUDIT_JOURNAL_OM</code>. Bob will <code>UNION ALL</code> both to give a unified view.</p></div>
+
+      <h3 class="subsection">Step 5 — System Value Change Audit</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Show all system value changes from SYSTOOLS.AUDIT_JOURNAL_SV in the last 30 days.
+Include who changed it, the system value name, the old value, and the new value.</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>What to look for:</strong> Changes to <code>QSECURITY</code> (lowering from 50 is a serious violation), <code>QMAXSIGN</code> (increasing allowed attempts), or <code>QALWOBJRST</code> — and any changes outside a documented change window.</p>
+
+      <h3 class="subsection">Step 6 — User Profile Change Timeline</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query SYSTOOLS.AUDIT_JOURNAL_CP for the last 14 days.
+Show me all profile creates, changes, and deletes.
+Include who performed the action and what profile was affected.</div></div>
+
+      <h2 class="section-title">Part 2 <span class="section-badge">Building a Correlated Timeline</span></h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">A realistic attack pattern: PW entries (guessed password) → AF entries (access control hits) → CP entry (profile elevated) → OM entries (objects deleted to cover tracks).</p>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">I want to investigate the user SVCTEST across all audit journal entry types
+for the last 48 hours. Build a unified timeline showing every PW, AF, CP, OM,
+and SV event involving that user, ordered by timestamp.</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Bob will produce a <code>UNION ALL</code> query across multiple <code>SYSTOOLS.AUDIT_JOURNAL_*</code> functions, building a complete per-user activity timeline.</p>
+
+      <h2 class="section-title">Part 3 <span class="section-badge">Feeding Findings into Ansible Remediation</span></h2>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt — switch to Ansible for i mode first</div><div class="prompt-text">Based on the audit finding that SVCTEST has *ALLOBJ authority and should not,
+generate an Ansible playbook task that removes *ALLOBJ from that profile using
+ibm.power_ibmi.ibmi_user.</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Save the generated task into <code>./ansible/playbooks/remediate_audit_findings.yml</code> alongside the Lab 6 playbooks.</p>
+      <div class="code-block"><div class="code-header">result <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Remove *ALLOBJ special authority from SVCTEST
+  ibm.power_ibmi.ibmi_user:
+    name: SVCTEST
+    special_authority:
+      - '*NONE'
+  register: profile_update
+
+- name: Confirm authority change
+  ibm.power_ibmi.ibmi_sql_query:
+    sql: &gt;
+      SELECT USER_NAME, SPECIAL_AUTHORITIES
+      FROM   QSYS2.USER_INFO
+      WHERE  USER_NAME = 'SVCTEST'
+  register: verify_result</pre></div>
+
+      <h2 class="section-title">Additional Forensic Use Cases</h2>
+      <h3 class="subsection">1. Brute-Force Detection Against a Specific Profile</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Show me all PW entries for user QSECOFR in the last 7 days,
+broken down by hour so I can see if there's a pattern.</div></div>
+
+      <h3 class="subsection">2. Adopted Authority Audit</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query SYSTOOLS.AUDIT_JOURNAL_AD for the last 24 hours.
+Show which programs are running under adopted authority and who called them.
+Flag any non-IBM programs adopting *ALLOBJ or *SECADM.</div></div>
+
+      <h3 class="subsection">3. After-Hours Activity Report</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Show me all authority failures and object management events that occurred
+between 10 PM and 6 AM local time over the last 30 days.
+Exclude known batch job users QBATCH and QTMHHTTP.</div></div>
+
+      <h2 class="section-title">Common Troubleshooting</h2>
+      <div class="table-wrap"><table><thead><tr><th>Error</th><th>Likely Cause</th><th>Resolution</th></tr></thead><tbody>
+        <tr><td><code>SQL0443 — SYSTOOLS.AUDIT_JOURNAL_PW not found</code></td><td>IBM i below 7.4 or PTF not applied</td><td>Apply group PTF SF99722 or upgrade to 7.4+</td></tr>
+        <tr><td><code>CPF9801 — QAUDJRN not found</code></td><td>Audit journal not configured</td><td>Run <code>CHGSECAUD QAUDLVL(*AUTFAIL *SIGNON ...)</code> as <code>QSECOFR</code></td></tr>
+        <tr><td><code>SQL0551 — not authorized to QAUDJRN</code></td><td>User lacks audit authority</td><td>User needs <code>*AUDIT</code> or <code>*ALLOBJ</code> special authority</td></tr>
+        <tr><td>Empty result set</td><td>Entry type not being journaled</td><td>Check <code>QAUDLVL</code> system value includes the needed entry type</td></tr>
+        <tr><td><code>STARTING_TIMESTAMP</code> parameter error</td><td>Incorrect function invocation syntax</td><td>Use named parameters: <code>STARTING_TIMESTAMP =&gt;</code> not positional</td></tr>
       </tbody></table></div>
 
-      <h3 class="subsection">2.3 — Check Performance Collection Status</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Is there a performance data collection running on this system?"</div></div>
-      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected:</strong> Active collection name, profile (<code>*STANDARDP</code>, <code>*EXTD2</code>), start time, interval, and categories collected.</p>
-      <div class="callout tip"><div class="icon">💡</div><p>Collection Services data is stored as <code>*MGTCOL</code> objects in <code>QPFRDATA</code>.</p></div>
-
-      <h2 class="section-title">Exercise 3 <span class="section-badge">Database Troubleshooting</span></h2>
-
-      <h3 class="subsection">3.1 — Top SQL Statements by CPU</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Which SQL queries have consumed the most CPU over the last 10 minutes?"</div></div>
-      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected:</strong> Ranked SQL statements with job name, CPU time, I/O counts, statement status (<code>ACTIVE</code>, <code>COMPLETE</code>), and actual SQL text.</p>
-
-      <h3 class="subsection">3.2 — Interpret &amp; Tune</h3>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">For each top statement, ask Bob:</p>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"This query is doing a full table scan with ORDER BY on an unindexed column. What do you recommend?"</div></div>
-      <div class="table-wrap"><table><thead><tr><th>Finding</th><th>Recommendation</th></tr></thead><tbody>
-        <tr><td><code>ORDER BY</code> on unindexed column</td><td>Create an index on the sort column</td></tr>
-        <tr><td>Large JOIN with no index</td><td>Review Index Advisor suggestions in <code>QSYS2.SYSIXADV</code></td></tr>
-        <tr><td>High <code>ELAPSED_SYNC_DISK_IO</code></td><td>Review disk tier, consider result caching</td></tr>
-        <tr><td>Repeated identical statements</td><td>Enable statement caching in the connection pool</td></tr>
-      </tbody></table></div>
-
-      <h2 class="section-title">Exercise 4 <span class="section-badge">PTF Automation with Ansible</span></h2>
-      <div class="callout info"><div class="icon">📘</div><p>This exercise is a summary of Lab 5. For full step-by-step instructions, go back to <button class="btn btn-ghost" style="padding:2px 8px;font-size:13px;" onclick="showPage('lab5', document.querySelector('[onclick*=lab5]'))">Lab 5</button>.</p></div>
-
-      <h3 class="subsection">4.1 — Configure Ansible for i Mode</h3>
-      <p style="font-size:14px;color:var(--muted);">Add the <code>ansible-for-i</code> custom mode to <code>.bob/custom_modes.yaml</code> as defined in Lab 5. Switch to the mode, then:</p>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Create an Ansible playbook that checks PTF currency on my IBM i and generates a compliance report."</div></div>
-
-      <h3 class="subsection">4.2 — Automate and Schedule</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"How can I schedule this PTF compliance check to run nightly and email the report?"</div></div>
-      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected:</strong> A CL command or PASE cron job to schedule the playbook. Guidance on using <code>SNDDST</code> or SMTP to distribute the report.</p>
-
-      <h2 class="section-title">Exercise 5 <span class="section-badge">HMC Operations</span></h2>
-      <div class="callout info"><div class="icon">📘</div><p>IBM i often runs as an LPAR on IBM Power Systems managed by an HMC. Bob can assist with the <strong>infrastructure layer</strong> — querying LPAR states, checking VIOS health, and performing dynamic resource operations — all through the HMC REST API.</p></div>
-      <p style="font-size:14px;color:var(--muted);">Full instructions are in the dedicated HMC lab (<code>lab201-hmc.md</code>). This exercise uses Bob in default Agent mode with an optional custom <code>hmc-operator</code> mode for deeper Power Systems infrastructure work.</p>
-
-      <div class="callout success"><div class="icon">✅</div><p>All exercises in Lab 200 use IBM Bob <strong>Premium Package for i</strong> capabilities — IBM i Database and IBM i Developer modes, purpose-built tools, and auto-activated skills. See the <a href="https://bob.ibm.com/docs/ide/premium-packages/bob-for-i/bob-for-i-index" style="color:var(--accent)">full reference</a>.</p></div>
+      <div class="callout success"><div class="icon">✅</div><p>You've built a complete audit journal forensics workflow — natural language queries, cross-entry-type correlation, and direct Ansible remediation hand-off — all without writing SQL by hand.</p></div>
     </div>
     <div class="page-nav">
       <button class="btn btn-secondary" onclick="showPage('lab6', document.querySelector('[onclick*=lab6]'))">← Lab 6</button>
-      <button class="btn btn-primary" onclick="showPage('ansible-overview', document.querySelector('[onclick*=ansible-overview]'))">Back to Ansible Overview</button>
+      <button class="btn btn-primary" onclick="showPage('lab8', document.querySelector('[onclick*=lab8]'))">Lab 8 →</button>
+    </div>
+  </div>
+
+  <!-- LAB 8 — PTF IMPACT ANALYSIS AGENT -->
+  <div class="page" id="page-lab8">
+    <div class="page-hero">
+      <div class="eyebrow">Lab 8 — Ansible Track</div>
+      <h1>PTF Impact Analysis Agent</h1>
+      <p class="subtitle">Turn Bob into a PTF Impact Analysis Agent — query PTF group levels, trace dependency and supersede chains, generate a sequenced deployment plan, and have Bob author a complete change request document ready for CAB approval.</p>
+      <div class="meta-pills">
+        <span class="pill time">⏱ ~25 minutes</span>
+        <span class="pill level">Intermediate</span>
+      </div>
+    </div>
+    <div class="page-body">
+
+      <div class="callout info"><div class="icon">📋</div><p>All queries in Parts 1–4 run in <strong>IBM i Database mode</strong>. The optional Ansible section (Part 5) uses <strong>Ansible for i mode</strong> and requires the Lab 5 setup.</p></div>
+
+      <h2 class="section-title">Objectives</h2>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--text);margin-bottom:8px;">
+        <li>Query <code>QSYS2.GROUP_PTF_INFO</code> to inventory installed PTF groups, levels, and apply dates</li>
+        <li>Use <code>QSYS2.PTF_INFO</code> to analyse individual PTF status, IPL requirements, and supersede relationships</li>
+        <li>Trace pre-requisite and supersede chains to establish correct application order</li>
+        <li>Have Bob generate a sequenced, human-readable deployment plan</li>
+        <li>Have Bob author a complete AI-written change request document</li>
+      </ul>
+
+      <h2 class="section-title">Key SQL Services</h2>
+      <div class="table-wrap"><table><thead><tr><th>View / Function</th><th>What It Provides</th></tr></thead><tbody>
+        <tr><td><code>QSYS2.GROUP_PTF_INFO</code></td><td>Each PTF group's name, description, installed level, target release, status, and apply timestamp — primary currency source on IBM i 7.6</td></tr>
+        <tr><td><code>QSYS2.PTF_INFO</code></td><td>Every PTF: status, IPL required flag, superseded-by ID, product, release, load/apply dates</td></tr>
+        <tr><td><code>QSYS2.PTF_PRODUCT_INFO</code></td><td>Cross-reference: which licensed programs are affected by a given PTF</td></tr>
+      </tbody></table></div>
+      <div class="callout warning"><div class="icon">⚠️</div><p>The lab system is IBM i <strong>7.6 (V7R6M0)</strong>. <code>QSYS2.GROUP_PTF_CURRENCY</code> <strong>does not exist</strong> on this release — use <code>QSYS2.GROUP_PTF_INFO</code> for all currency queries.</p></div>
+
+      <h2 class="section-title">Part 1 <span class="section-badge">PTF Group Level Analysis</span></h2>
+
+      <h3 class="subsection">Step 1 — Activate IBM i Database Mode</h3>
+      <p style="font-size:14px;color:var(--muted);">Expand the <strong>mode dropdown</strong> beneath the Bob chat input and select <strong>IBM i Database</strong>.</p>
+
+      <h3 class="subsection">Step 2 — Full PTF Group Picture</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query QSYS2.GROUP_PTF_INFO and show me every PTF group on this system
+that has a status of INSTALLED.
+For each group, show the group name, description, installed level,
+and when it was last applied. Sort by last applied date, oldest first.</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>What to look for:</strong> Groups with the oldest <code>LAST_APPLIED</code> dates — <code>SF99960</code> (Db2 for i) and <code>SF99967</code> (Technology Refresh) are the most operationally critical. A <code>PTF_GROUP_STATUS</code> of <code>NOT INSTALLED</code> means maximum risk.</p>
+
+      <h3 class="subsection">Step 3 — Highest-Risk Groups</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">From those results, which groups were last applied more than 6 months ago?
+Show the group name, installed level, and last applied date.</div></div>
+
+      <h2 class="section-title">Part 2 <span class="section-badge">Individual PTF Status Inventory</span></h2>
+
+      <h3 class="subsection">Step 4 — Surface All Unapplied PTFs</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query QSYS2.PTF_INFO for all PTFs that are NOT in status APPLIED or ON ORDER.
+Show PTF ID, product, status, whether an IPL is required, and the load date.
+Sort by load date so the oldest unaddressed PTFs are first.</div></div>
+      <div class="table-wrap"><table><thead><tr><th><code>PTF_STATUS</code></th><th>Meaning</th><th>Action</th></tr></thead><tbody>
+        <tr><td><code>NOT APPLIED</code></td><td>Loaded on disk, not yet applied</td><td>Schedule for apply</td></tr>
+        <tr><td><code>APPLY PENDING</code></td><td>Queued, waiting for IPL or delayed apply</td><td>Check <code>IPL_REQUIRED</code></td></tr>
+        <tr><td><code>LOADED</code></td><td>Transferred to system, not yet applied</td><td>Apply immediately or at next window</td></tr>
+        <tr><td><code>SUPERSEDED</code></td><td>A newer PTF replaces this one</td><td>Apply the superseding PTF instead</td></tr>
+        <tr><td><code>TEMPORARILY APPLIED</code></td><td>Applied but not permanent</td><td>Confirm or make permanent</td></tr>
+      </tbody></table></div>
+
+      <h2 class="section-title">Part 3 <span class="section-badge">Supersede Chain Analysis</span></h2>
+
+      <h3 class="subsection">Step 6 — Trace the Supersede Chain</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">For each unapplied PTF that has a SUPERSEDED_BY_PTF_ID, show me the full
+supersede chain — PTF A superseded by B, B superseded by C — until we reach
+the terminal (non-superseded) PTF. That terminal one is what I actually need
+to apply.</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Bob will produce a recursive CTE walking the supersede chain. A <code>CHAIN_DEPTH &gt; 3</code> is a sign the system has been going without PTFs for a long time.</p>
+
+      <h2 class="section-title">Part 4 <span class="section-badge">Deployment Plan Generation</span></h2>
+
+      <h3 class="subsection">Step 8 — Generate the Sequenced Deployment Plan</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Based on everything we've found — the PTF group levels and apply dates, the unapplied PTFs,
+the IPL requirements, the supersede chains — generate
+a sequenced PTF deployment plan for this system.
+
+Structure it as:
+1. Phase 1: Immediate applies (no IPL)
+2. Phase 2: IPL-required applies with a
+   recommended maintenance window duration estimate
+3. PTFs to skip because they are superseded (list the terminal replacement)
+4. A summary risk statement: what is the exposure if we defer this work?</div></div>
+
+      <h3 class="subsection">Step 9 — Save the Deployment Plan to IFS</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Save the deployment plan as a Markdown file to the IFS at
+/home/ITZUSER/PTFREPORTS/deployment_plan_&lt;today's date&gt;_&lt;yourname&gt;.md</div></div>
+
+      <h2 class="section-title">Part 5 <span class="section-badge">AI-Authored Change Request Document</span></h2>
+
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Using the deployment plan we just generated, write a formal IT change request
+document suitable for submission to a Change Advisory Board (CAB).
+
+Include:
+- Change title and reference number (use today's date as the reference)
+- Executive summary (2–3 sentences, non-technical)
+- Systems affected (hostname, OS release, product IDs)
+- Change description: what will be applied, in what order, and why
+- Business justification: risk of deferral
+- Implementation plan with phases, estimated durations, and responsible party placeholders
+- Rollback plan: how to back out if something goes wrong
+- Pre-change verification checks
+- Post-change verification checks
+- Approver signature block
+
+Format it as a Markdown document.</div></div>
+
+      <h3 class="subsection">Step 10 — Save the Change Document</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Save the change request document to the IFS at
+/home/ITZUSER/PTFREPORTS/change_request_CHG-2026-&lt;today's date&gt;_&lt;yourname&gt;.md
+and also write it to the local workspace as
+./ptf-reports/change_request_&lt;today's date&gt;_&lt;yourname&gt;.md</div></div>
+
+      <h2 class="section-title">Common Troubleshooting</h2>
+      <div class="table-wrap"><table><thead><tr><th>Error</th><th>Likely Cause</th><th>Resolution</th></tr></thead><tbody>
+        <tr><td><code>SQL0204 — QSYS2.GROUP_PTF_CURRENCY not found</code></td><td><code>GROUP_PTF_CURRENCY</code> does not exist on IBM i 7.6</td><td>Use <code>QSYS2.GROUP_PTF_INFO</code></td></tr>
+        <tr><td><code>GROUP_PTF_INFO</code> returns no rows</td><td>No PTF groups installed</td><td>Apply a cumulative PTF package first</td></tr>
+        <tr><td><code>PTF_INFO</code> shows <code>ON ORDER</code> for many PTFs</td><td>PTF ordering via ECS is pending</td><td>Check <code>WRKPTFGRP</code>; PTFs may still be downloading</td></tr>
+        <tr><td>Supersede chain query runs slowly</td><td>Large <code>PTF_INFO</code> table with no index hint</td><td>Add <code>FETCH FIRST 50 ROWS ONLY</code> during investigation</td></tr>
+        <tr><td><code>ibmi_fix</code> Ansible module fails with <code>CPF3634</code></td><td>PTF save files not present on system</td><td>Use <code>ibmi_fix_repo_lkup</code> first to confirm PTF is available locally</td></tr>
+      </tbody></table></div>
+
+      <div class="callout success"><div class="icon">✅</div><p>You've built a complete PTF Impact Analysis Agent — group-level gap analysis, individual PTF status inventory, supersede chain tracing, a sequenced deployment plan, and an AI-authored CAB-ready change document.</p></div>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('lab7', document.querySelector('[onclick*=lab7]'))">← Lab 7</button>
+      <button class="btn btn-primary" onclick="showPage('lab9', document.querySelector('[onclick*=lab9]'))">Lab 9 →</button>
+    </div>
+  </div>
+
+  <!-- LAB 9 — PREDICTIVE HEALTH MONITORING -->
+  <div class="page" id="page-lab9">
+    <div class="page-hero">
+      <div class="eyebrow">Lab 9 — Ansible Track</div>
+      <h1>Predictive Operational Health Monitoring</h1>
+      <p class="subtitle">Turn Bob into a Predictive Operational Health Monitor — real-time snapshots, Collection Services trend analysis, anomaly detection, capacity forecasting, and an AI-generated health report. No dedicated monitoring console required.</p>
+      <div class="meta-pills">
+        <span class="pill time">⏱ ~25 minutes</span>
+        <span class="pill level">Intermediate</span>
+      </div>
+    </div>
+    <div class="page-body">
+
+      <div class="callout info"><div class="icon">📋</div><p>All SQL queries in this lab run in <strong>IBM i Database mode</strong>. CL commands (start/stop Collection Services) use <strong>IBM i Developer mode</strong>.</p></div>
+
+      <h2 class="section-title">Objectives</h2>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--text);margin-bottom:8px;">
+        <li>Take and interpret real-time health snapshots using <code>QSYS2.SYSTEM_STATUS_INFO</code>, <code>QSYS2.SYSDISKSTAT</code>, and <code>QSYS2.MEMORY_POOL_INFO</code></li>
+        <li>Read Collection Services history from <code>QPFRDATA.QAPMJSUM</code> and <code>QPFRDATA.QAPMDISK</code></li>
+        <li>Detect anomalies by comparing current metrics against a rolling baseline</li>
+        <li>Forecast when ASP and memory pool thresholds will be breached</li>
+        <li>Have Bob generate a prioritised health report with risk ratings and recommended actions</li>
+      </ul>
+
+      <h2 class="section-title">Prerequisites</h2>
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text);margin-bottom:14px;">
+        <li>IBM i 7.3+, user profile with <code>*ALLOBJ</code> or <code>*IOSYSCFG</code> authority</li>
+        <li>Collection Services started (instructions below if not active)</li>
+        <li>IBM i Database mode active in Bob</li>
+      </ul>
+
+      <h3 class="subsection">Verify and Start Collection Services</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">Switch to <strong>IBM i Developer mode</strong> and ask Bob:</p>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt — IBM i Developer mode</div><div class="prompt-text">Check if Collection Services is currently running on this system.
+Show the collection name, profile, start time, and what categories are being collected.</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Bob will query <code>QSYS2.COLLECTION_SERVICES_INFO</code>. If nothing is returned, start a collection:</p>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Start a Collection Services collection on this system using the *STANDARDP profile.</div></div>
+      <div class="callout tip"><div class="icon">💡</div><p><code>*STANDARDP</code> captures system-level metrics at 15-minute intervals — sufficient for trend analysis. Even a collection started a few minutes before the exercises will generate enough data.</p></div>
+
+      <h2 class="section-title">Key SQL Services</h2>
+      <div class="table-wrap"><table><thead><tr><th>View</th><th>What It Provides</th></tr></thead><tbody>
+        <tr><td><code>QSYS2.SYSTEM_STATUS_INFO</code></td><td>Point-in-time: CPU utilisation, active jobs, ASP usage, temp storage</td></tr>
+        <tr><td><code>QSYS2.SYSDISKSTAT</code></td><td>Per-disk-arm: storage used %, I/O request counts, elapsed busy %, service time</td></tr>
+        <tr><td><code>QSYS2.MEMORY_POOL_INFO</code></td><td>Per-pool: size, elapsed fault counts, active/ineligible threads</td></tr>
+        <tr><td><code>QSYS2.ACTIVE_JOB_INFO</code></td><td>Live job snapshot: CPU%, thread count, memory, wait reason</td></tr>
+        <tr><td><code>QPFRDATA.QAPMJSUM</code></td><td>Collection Services history — CPU ms per interval by job group</td></tr>
+        <tr><td><code>QPFRDATA.QAPMDISK</code></td><td>Collection Services history — per-disk I/O counts and service time per interval</td></tr>
+        <tr><td><code>QSYS2.JOBLOG_INFO</code></td><td>Full job message log — escape messages, FFDC references, runtime errors</td></tr>
+      </tbody></table></div>
+      <div class="callout warning"><div class="icon">⚠️</div><p><code>QSYS2.DISK_STATISTICS</code> does not exist — the correct view is <code>QSYS2.SYSDISKSTAT</code>. <code>SYSTOOLS.METRICS_DISK</code> and <code>SYSTOOLS.METRICS_*</code> views do not exist on this system — use <code>QPFRDATA</code> tables directly.</p></div>
+
+      <h2 class="section-title">Part 1 <span class="section-badge">Current-State Health Snapshot</span></h2>
+
+      <h3 class="subsection">Step 2 — Full System Health Snapshot</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt — IBM i Database mode</div><div class="prompt-text">Take a full health snapshot of this IBM i system right now. I want:
+1. Overall CPU utilisation and how many jobs are active vs. waiting
+2. ASP usage percentage and how much free space remains
+3. The top 3 memory pools by fault rate
+4. The top 3 disk arms by utilisation percentage
+5. Any metric that is already above 80% — flag those as critical
+
+Present the results as a structured health dashboard summary.</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>What to look for:</strong> <code>ELAPSED_CPU_USED &gt; 80</code> (CPU-constrained), <code>SYSTEM_ASP_USED &gt; 85</code> (disk space risk), <code>ELAPSED_PERCENT_BUSY &gt; 70</code> on any disk arm (I/O bottleneck), elevated faults in <code>*BASE</code> or <code>*INTERACT</code> pool (memory pressure).</p>
+
+      <h3 class="subsection">Step 3 — Top Resource Consumers</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Show me the top 10 active jobs by current elapsed CPU percentage.
+For each job, also show thread count, temporary storage used, and current wait reason.
+Flag any job over 20% elapsed CPU as a potential concern.</div></div>
+
+      <h2 class="section-title">Part 2 <span class="section-badge">Trend Analysis with Collection Services</span></h2>
+
+      <h3 class="subsection">Step 4 — Collection Services CPU History</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query QSYS2.COLLECTION_SERVICES_INFO to show me the active collection name,
+profile, and start time. Then query QPFRDATA.QAPMJSUM for system-level CPU
+samples over the last 2 hours. Sum all job-group buckets per interval to get
+the system total. Show timestamp, CPU ms per second, and interval duration.
+I want to see whether CPU is trending up, flat, or down.</div></div>
+
+      <h3 class="subsection">Step 5 — CPU Trend Direction</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">From the CPU samples we just retrieved, calculate using window arithmetic:
+1. The average CPU over the full window
+2. The average CPU for the first half vs the second half of the window
+3. Whether the trend is rising (second half > first half by more than 5%), falling, or flat
+4. The peak CPU sample and when it occurred</div></div>
+
+      <h3 class="subsection">Step 6 — Disk I/O Trend</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">From Collection Services data, show me disk I/O request rates and average
+response times sampled over the last 2 hours. Flag any interval where
+average response time exceeded 20ms — that threshold indicates I/O pressure.</div></div>
+
+      <h2 class="section-title">Part 3 <span class="section-badge">Anomaly Detection</span></h2>
+
+      <h3 class="subsection">Step 7 — Compare Current to Baseline</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Using the Collection Services samples from QPFRDATA.QAPMJSUM and QPFRDATA.QAPMDISK
+over the last 2 hours as a baseline, compare the current snapshot values to that baseline.
+
+For each metric (CPU ms/sec, disk I/O ops/sec, pool fault rate):
+- Show the baseline average across all sampled intervals
+- Show the current value from the most recent interval
+- Calculate the deviation (current minus baseline average)
+- Flag as ANOMALY if the current value is more than 2 standard deviations above
+  the baseline average, or more than 25% above it in absolute terms</div></div>
+
+      <h3 class="subsection">Step 8 — Root-Cause the Anomalies</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">CPU is anomalously high right now compared to the 2-hour baseline.
+Cross-reference with the active job snapshot — which jobs started or
+significantly increased their CPU consumption within the last 30 minutes?</div></div>
+
+      <h3 class="subsection">Step 9 — Deep Job Investigation</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">The anomaly detection flagged job [JOB_NAME] as the likely cause of the CPU spike.
+Investigate this job fully:
+1. Pull its job log — show all escape messages, warnings, and any FFDC references
+2. Show its current runtime context: thread count, memory use, subsystem, pool,
+   and how long it has been running
+3. If it is a PASE process, check the IFS for its executable path, working
+   directory, and any open log files
+4. Based on what you find, give me no more than two recommendations.
+Distinguish facts from inferences.</div></div>
+
+      <h2 class="section-title">Part 4 <span class="section-badge">Capacity Forecasting</span></h2>
+
+      <h3 class="subsection">Step 10 — ASP Usage Forecast</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query QSYS2.SYSTEM_STATUS_INFO for current ASP usage.
+Then query Collection Services for ASP usage samples over the last 7 days.
+Calculate the average daily growth rate in GB.
+Project forward: at the current growth rate, how many days until ASP reaches
+85%? And how many days until it reaches 95%?
+Flag if either threshold is within 30 days.</div></div>
+      <div class="callout tip"><div class="icon">💡</div><p>If <code>QPFRDATA.QAPMLPAR</code> has no rows (the <code>*LPAR</code> category not collected), use the current <code>QSYS2.ASP_INFO</code> snapshot combined with a hypothetical growth rate. Enable with: <code>CHGPFRCOL CGTLIST(*ADD *LPAR)</code></p></div>
+
+      <h3 class="subsection">Step 11 — Memory Pool Sizing Forecast</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">For each memory pool with a fault rate above 1 fault/second in the Collection
+Services data, show the current pool size, the defined (minimum) size, and
+calculate how much additional memory would be needed to bring the fault rate
+to near zero based on IBM's general guidance of 10% headroom above working set.</div></div>
+
+      <h2 class="section-title">Part 5 <span class="section-badge">Health Report Generation</span></h2>
+
+      <h3 class="subsection">Step 12 — Consolidated Health Report</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Based on everything we've found — the current snapshot, trend analysis,
+anomaly detections, job investigation, SQL diagnosis, and capacity forecasts —
+generate a comprehensive operational health report for this IBM i system.
+
+Structure it as:
+1. Executive Summary (3 sentences, non-technical)
+2. Health Dashboard — one row per metric with current value, trend, and status (Green / Yellow / Red)
+3. Anomalies Detected — what is unusual right now and the likely cause
+4. Capacity Forecasts — resources approaching limits with days-to-threshold
+5. Recommended Actions — prioritised list (Critical / High / Medium / Low) with specific commands or queries
+6. Monitoring Recommendations — what to watch over the next 24–72 hours
+
+Format as Markdown.</div></div>
+      <div class="callout tip"><div class="icon">💡</div><p>Ask Bob to save the report: <em>"Save that report to <code>/home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt;_&lt;yourname&gt;.md</code>"</em></p></div>
+
+      <h2 class="section-title">Common Troubleshooting</h2>
+      <div class="table-wrap"><table><thead><tr><th>Error</th><th>Likely Cause</th><th>Resolution</th></tr></thead><tbody>
+        <tr><td><code>QSYS2.DISK_STATISTICS</code> not found</td><td>This view does not exist</td><td>Replace all references with <code>QSYS2.SYSDISKSTAT</code></td></tr>
+        <tr><td><code>COLLECTION_SERVICES_INFO</code> returns no rows</td><td>No collection running</td><td>Run <code>STRPFRCOL COLLNAME(*GEN) TYPE(*STANDARDP)</code></td></tr>
+        <tr><td>Collection data only covers a few minutes</td><td>Collection just started</td><td>Wait 2–3 intervals or reduce interval to 5 mins: <code>STRPFRCOL COLLNAME(*GEN) INTERVAL(5)</code></td></tr>
+        <tr><td><code>SYSDISKSTAT</code> columns <code>ELAPSED_PERCENT_BUSY</code> / <code>ELAPSED_IO_REQUESTS</code> are NULL</td><td>Disk is SAN/virtual — hypervisor doesn't expose arm-level I/O counters</td><td>Use <code>PERCENT_USED</code> for storage utilisation</td></tr>
+        <tr><td><code>QPFRDATA.QAPMLPAR</code> returns no rows</td><td><code>*LPAR</code> category not enabled</td><td>Run <code>CHGPFRCOL CGTLIST(*ADD *LPAR)</code></td></tr>
+        <tr><td>ASP query returns multiple rows</td><td>Multiple ASPs configured</td><td>Add <code>WHERE ASP_NUMBER = 1</code> to focus on the system ASP</td></tr>
+      </tbody></table></div>
+
+      <div class="callout success"><div class="icon">✅</div><p>You've built a complete end-to-end Predictive Operational Health Monitor — real-time snapshots, Collection Services trend analysis, statistical anomaly detection, job drill-down, capacity forecasting, and an executive-ready health report — all from conversational prompts with Bob.</p></div>
+    </div>
+    <div class="page-nav">
+      <button class="btn btn-secondary" onclick="showPage('lab8', document.querySelector('[onclick*=lab8]'))">← Lab 8</button>
+      <button class="btn btn-primary" onclick="showPage('ansible-overview', document.querySelector('[onclick*=ansible-overview]'))">Back to Overview</button>
     </div>
   </div>
 
@@ -2453,7 +2647,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
 <script>
 // ── TRACK SWITCHING ───────────────────────────────────
 const devPages     = ['overview','setup','ex1','ex2','ex3','ex4','ex5','ex6','summary'];
-const ansiblePages = ['ansible-overview','lab4','lab5','lab6','lab200'];
+const ansiblePages = ['ansible-overview','lab5','lab6','lab7','lab8','lab9'];
 const ohPages      = ['oh-overview','oh-ibmi-package','oh-connect','oh-bob101','oh-workspace'];
 let currentTrack = 'dev';
 let visited = { dev: new Set(['overview']), ansible: new Set(), oh: new Set() };
