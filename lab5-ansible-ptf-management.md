@@ -20,7 +20,7 @@ This lab guides you through creating an automated assistant to manage Program Te
 
 ### IBM i System Requirements
 - IBM i 7.3 or higher
-- SSH daemon running (`STRTCPSVR SERVER(*SSHD)`)
+- SSH'd into IBM i (PASE/5250)
 - User profile with *ALLOBJ or appropriate PTF management authorities
 - Python 3.6+ installed via yum (`yum install python3`)
 - IBM i Open Source Package Management configured
@@ -28,6 +28,11 @@ Please check on the [Lab Instructor Guide](./lab5-ansible-ptf-management.md#lab-
 
 
 ### Bob Workstation Requirements
+**You can create a virtual environment to install all the packages required.
+```bash
+  python -m venv
+  source .venv/bin/activate
+  ```
 - Ansible 2.9+ installed (`pip install ansible`)
 - Python 3.8+ with pip
 - IBM i Ansible collections:
@@ -54,37 +59,39 @@ ansible-galaxy collection list | grep ibm.power_ibmi
 For this we'll use the `ansible-for-i` custom mode defined in `./.bob/custom_modes.yaml`:
 
 ```yaml
-- slug: ansible-for-i
-  name: ℹ️ Ansible for i
-  whenToUse: an agent who specializes IBM i with Ansible
-  roleDefinition: |
-    You are an expert in IBM i system administration and Ansible automation.
-    Focus on:
-    - IBM i-specific Ansible modules (ibm.power_ibmi collection)
-    - PTF management and system currency
-    - YAML playbook best practices
-    - IBM i object authorities and security
-    - Power Systems hardware management
-    - High availability configurations
-  
-    commands:
-      - ansible-playbook
-      - ansible-inventory
-      - ansible-doc
-    
-    knowledge_areas:
-      - IBM i operating system concepts
-      - PTF lifecycle and management
-      - Ansible playbook development
-      - Jinja2 templating
-      - IBM i Ansible modules: ibmi_fix, ibmi_sql_query, ibmi_object_authority
-      - Power HMC integration
-      - PowerHA SystemMirror automation
-  groups:
-    - read
-    - edit
-    - mcp
-    - command
+customModes:
+  - slug: ansible-for-i
+    name: "Ansible for i"
+    whenToUse: >-
+      Use this mode for IBM i automation with Ansible -- playbook development,
+      ibm.power_ibmi collection modules, PTF management, object authorities,
+      PowerHA automation, and Power HMC integration.
+    roleDefinition: |
+      You are an expert in IBM i system administration and Ansible automation.
+
+      Focus areas:
+      - IBM i-specific Ansible modules (ibm.power_ibmi collection)
+      - PTF management and system currency
+      - YAML playbook best practices
+      - IBM i object authorities and security
+      - Power Systems hardware management
+      - High availability configurations
+
+      Key commands you work with:
+        ansible-playbook, ansible-inventory, ansible-doc
+
+      Core knowledge areas:
+        - IBM i operating system concepts
+        - PTF lifecycle and management
+        - Ansible playbook development
+        - Jinja2 templating
+        - IBM i Ansible modules: ibmi_fix, ibmi_sql_query, ibmi_object_authority
+        - Power HMC integration
+        - PowerHA SystemMirror automation
+    groups:
+      - read
+      - edit
+      - execute
 ```
 
 ## First Playbook Creation
@@ -97,28 +104,44 @@ Let's use Bob to generate the complete playbook structure and automation code.
 - Expand the modes dropdown beneath the chat input
 - Select `ℹ️ Ansible for i`
 
+**Step 1b: Verify column names before generating (IBM i Database mode)**
+
+Before asking Bob to write any playbook SQL, confirm the actual column names available on your system. IBM i versions vary — columns that exist on 7.5 may not exist on 7.3, and a wrong column name will cause `SQL0206` errors at runtime.
+
+- Switch to **IBM i Database mode** (mode dropdown → IBM i Database)
+- Run this prompt:
+
+```
+Run a query to check whether these columns exist in their respective views:
+  QSYS2.SYSTEM_STATUS_INFO — HOST_NAME, ELAPSED_CPU_USED, SYSTEM_ASP_USED, ACTIVE_JOBS_IN_SYSTEM, TOTAL_JOBS_IN_SYSTEM
+  QSYS2.PTF_INFO — PTF_IDENTIFIER, PTF_LOADED_STATUS, PTF_IPL_REQUIRED, PTF_PRODUCT_ID, PTF_STATUS_TIMESTAMP
+```
+
+Bob will query the system catalog live and return the real column list for your IBM i version. **Note down the columns you want to use** — particularly:
+- From `SYSTEM_STATUS_INFO`: the hostname/system name column, CPU utilisation, ASP usage
+- From `PTF_INFO`: PTF identifier, status, IPL required flag, product ID, and load date
+
+- Switch back to **Ansible for i mode** before continuing
+
 **Step 2: Ask Bob to create the PTF currency check automation**
 
-In your Bob IDE or terminal, provide this prompt:
+In your Bob IDE or terminal, provide this prompt — substituting the confirmed column names from Step 1b where indicated:
 
 ```
 Create an Ansible automation project for IBM i PTF management with the following:
 
 1. Directory structure: ./ansible with subdirectories for inventories/development, playbooks, and templates
 2. A playbook called check_ptf_currency.yml that:
-   - Queries IBM i system information using ibmi_sql_query
+   - Queries IBM i system information using ibmi_sql_query against QSYS2.SYSTEM_STATUS_INFO
+     (available columns: HOST_NAME, PARTITION_ID, ELAPSED_CPU_USED, SYSTEM_ASP_USED, ACTIVE_JOBS_IN_SYSTEM, TOTAL_JOBS_IN_SYSTEM)
    - Checks PTF group levels (SF99740, SF99738) using ibmi_fix_group_check
    - Lists installed PTFs from QSYS2.PTF_INFO
+     (available columns: PTF_IDENTIFIER, PTF_LOADED_STATUS, PTF_IPL_REQUIRED, PTF_PRODUCT_ID, PTF_STATUS_TIMESTAMP)
    - Compares against missing critical PTFs
    - Calculates compliance statistics
    - Generates an HTML report using a Jinja2 template, save to ./ansible/reports
 3. An inventory file for development environment with ibmi_systems group
 4. A Jinja2 template for the PTF currency report with system info, PTF group status, missing PTFs, and compliance metrics
-5. Helpful notes
-  - Use the IBM i MCP server to 
-    - check what columns are actually available in SYSTEM_STATUS_INFO
-    - check the actual PTF_INFO table structure to see what columns are available
-  - OS_VERSION and OS_RELEASE columns that don't exist
 
 Use IBM i Ansible collection modules (ibm.power_ibmi) and follow best practices.
 ```
@@ -132,7 +155,7 @@ Bob will create:
 
 **Step 4: Customize the generated inventory**
 
-Update the inventory file with your actual IBM i system details:
+Update the inventory (hosts.yml) file with your actual IBM i system details:
 ```yaml
 all:
   children:
@@ -141,7 +164,7 @@ all:
         ibmi_dev01:
           ansible_host: <YOUR_IBM_I_IP>
           ansible_user: ITZUSER
-          ansible_ssh_private_key_file: /path/to/ssh_private_key.pem
+          ansible_ssh_private_key_file: ./ssh_private_key.pem
           ansible_python_interpreter: /QOpenSys/pkgs/bin/python3.9
           ansible_connection: ssh
           ansible_env:
@@ -161,33 +184,45 @@ After Bob generates the automation, review the PTF currency check playbook struc
 - name: Check PTF Currency on IBM i Systems
   hosts: ibmi_systems
   gather_facts: no
-  
+
   vars:
-    report_path: "/tmp/ptf_currency_report_{{ ansible_date_time.date }}.html"
-    
+    report_path: "./ansible/reports/ptf_currency_report_{{ ansible_date_time.date }}.html"
+
   tasks:
     - name: Gather system information
       ibm.power_ibmi.ibmi_sql_query:
-        sql: "SELECT HOST_NAME, OS_VERSION, OS_RELEASE FROM SYSIBMADM.ENV_SYS_INFO"
+        sql: >-
+          SELECT HOST_NAME, ELAPSED_CPU_USED, SYSTEM_ASP_USED,
+                 ACTIVE_JOBS_IN_SYSTEM, TOTAL_JOBS_IN_SYSTEM
+          FROM QSYS2.SYSTEM_STATUS_INFO
       register: system_info
-      
+
     - name: Get current PTF group level
       ibm.power_ibmi.ibmi_fix_group_check:
         groups:
           - "SF99740"  # Technology Refresh group
           - "SF99738"  # Cumulative PTF package
       register: ptf_groups
-      
+
+    - name: List installed PTFs
+      ibm.power_ibmi.ibmi_sql_query:
+        sql: >-
+          SELECT PTF_IDENTIFIER, PTF_LOADED_STATUS, PTF_IPL_REQUIRED,
+                 PTF_PRODUCT_ID, PTF_STATUS_TIMESTAMP
+          FROM QSYS2.PTF_INFO
+          WHERE PTF_LOADED_STATUS NOT IN ('NOT LOADED', 'DAMAGED')
+      register: ptf_list
+
     ...
 ```
 
 ## Template Development
 
-Duplicate Jinja2 template at `./ansible/templates/ptf_currency_report.html.j2`, convert it to html: `ptf_currency_report.html`, and open it in your browser:
+Duplicate Jinja2 template at `./ansible/templates/ptf_currency_report.html.j2`, convert it to html: `ptf_currency_report.html`, and open it in the integrated browser (right click on the file):
 
 ![](./pics/PTF_report_unfilled.png)
 
-## Playbook Execution
+## Playbook Execution - Ansible for i mode
 
 **Run the playbook through Bob:**
 ```bash

@@ -24,7 +24,7 @@ This lab guides you through leveraging **IBM Bob** and the **IBM i Ansible Colle
 This lab builds directly on top of the environment configured in **Lab 5**. Ensure the following are active:
 
 ### IBM i System Requirements
-- IBM i 7.3 or higher with SSH daemon running (`STRTCPSVR SERVER(*SSHD)`)
+- IBM i 7.3 or higher
 - A user profile with `*ALLOBJ` and `*SECADM` authorities (necessary for altering security values and user profiles)
 - Python 3.9 installed on the target IBM i system (`/QOpenSys/pkgs/bin/python3.9`)
 - Public SSH key-based authentication successfully configured (completed in Lab 5)
@@ -96,22 +96,15 @@ Create a security compliance automation project for IBM i using the ibm.power_ib
 
 Generate two playbooks and a reporting template:
 
-1. A playbook called audit_security.yml that:
-   - Audits system values QSECURITY, QINACTMSGQ, QMAXSIGN, QALWOBJRST using ibmi_sysval
-     (parameter is 'sysvalue', a list of dicts with 'name' and 'expect' keys)
-   - Audits user profiles for default/blank passwords using ibmi_user_compliance_check
-     (parameters: 'users' list and 'fields' list of dicts with 'name' and 'expect' keys)
-   - Inspects the public authority of library MYAPP_DB using ibmi_object_authority
-     with operation=display (NOT 'query' -- valid operations are grant/revoke/display)
-   - Saves a JSON compliance report locally using ansible.builtin.template with delegate_to: localhost
+1. audit_security.yml:
+   - Audit system values QSECURITY, QINACTMSGQ, QMAXSIGN, QALWOBJRST using ibmi_sysval
+   - Audit user profiles for default/blank passwords using ibmi_user_compliance_check
+   - Inspect the public authority of library MYAPP_DB using ibmi_object_authority with operation=display
+   - Save a JSON compliance report locally using ansible.builtin.template with delegate_to: localhost
 
-2. A playbook called remediate_security.yml that:
-   - Sets QINACTMSGQ=*DSCJOB and QALWOBJRST=*NONE using ibmi_cl_command with CHGSYSVAL
-     (ibmi_sysval is read-only; QPWDMINLEN cannot be set when QPWDRULES is active)
-   - Revokes *PUBLIC *CHANGE authority on MYAPP_DB using ibmi_object_authority operation=revoke
-     then grants *PUBLIC *EXCLUDE
-   - Uses become_user and become_user_password module arguments (not Ansible's standard become plugin)
-     for tasks that require *SECADM authority
+2. remediate_security.yml:
+   - Set QINACTMSGQ=*DSCJOB and QALWOBJRST=*NONE using ibmi_cl_command with CHGSYSVAL
+   - Revoke *PUBLIC *CHANGE authority on MYAPP_DB using ibmi_object_authority, then grant *PUBLIC *EXCLUDE
 
 3. A Jinja2 template at ./ansible/templates/security_report.json.j2 that outputs a structured
    compliance scorecard. Use delegate_to: localhost on the template task.
@@ -216,30 +209,6 @@ Non-compliant users are returned in `user_compliance.result_set`. Bob will loop 
 ```
 
 > **Note:** On this system `QPWDRULES` is active with `*MINLEN15`, which blocks any direct `CHGSYSVAL` on `QPWDMINLEN` with CPF1058. `QINACTMSGQ` is audited and remediated instead as it represents the same CIS benchmark category (session policy controls).
-
-#### Privilege Elevation on IBM i (`become_user`)
-
-On IBM i, standard Ansible `become:` does not work. The `ibm.power_ibmi` collection uses **module-level** `become_user` and `become_user_password` arguments instead. Bob will generate the remediation tasks like this:
-
-```yaml
-- name: Remediate QINACTMSGQ (requires *SECADM)
-  ibm.power_ibmi.ibmi_cl_command:
-    cmd: "CHGSYSVAL SYSVAL(QINACTMSGQ) VALUE(*DSCJOB)"
-    become_user: 'QSECOFR'
-    become_user_password: '{{ qsecofr_password }}'
-```
-
-Pass the password at runtime to avoid storing it in plain text:
-```bash
-ansible-playbook ... -e "qsecofr_password=<password>"
-```
-
-Or use Ansible Vault for production environments:
-```bash
-ansible-vault encrypt_string '<password>' --name 'qsecofr_password'
-```
-
-> **Note for this lab:** `ITZUSER` already has `*ALLOBJ` and `*SECADM` — you can omit `become_user`/`become_user_password` entirely and the tasks will run under `ITZUSER` directly.
 
 ---
 
@@ -573,7 +542,6 @@ in the main lab. What differences do you see and why does MYAPP_DB need stricter
 | `invalid operation: query` | Wrong operation on `ibmi_object_authority` | Use `operation: display` to read authority |
 | `check_type is not a valid parameter` | Wrong parameter on `ibmi_user_compliance_check` | Use `users` + `fields` parameters |
 | `MYAPP_DB not found` / `CPF9801` | Library not created before audit runs | Run the instructor setup block first |
-| `become_user` has no effect | Standard Ansible `become:` not supported on IBM i | Use `become_user`/`become_user_password` as module arguments |
 
 ---
 
@@ -587,7 +555,6 @@ You have successfully built and run an automated security compliance and self-he
 - Checked user profiles for weak password configurations using `ibmi_user_compliance_check`
 - Enforced zero-trust access permissions on a database library using `ibmi_object_authority`
 - Applied self-healing remediation and verified 100% compliance on a re-audit
-- Used IBM i-specific privilege elevation with `become_user`/`become_user_password` module arguments
 
 **Next Steps:**
 - Integrate the compliance audit playbook into a weekly CI/CD cron job or scheduled pipeline
