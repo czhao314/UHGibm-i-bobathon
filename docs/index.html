@@ -1290,12 +1290,24 @@ end-proc;</div></div>
 
       </div>
 
+      <!-- Python venv setup -->
+      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Step 1 — Create &amp; Activate a Python Virtual Environment</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px;">Install Ansible inside an isolated virtual environment so it doesn't conflict with your system Python packages.</p>
+      <div class="code-block"><div class="code-header">bash — create the virtual environment <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>python3 -m venv .venv</pre></div>
+      <div class="code-block" style="margin-top:8px;"><div class="code-header">bash — activate (macOS / Linux) <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>source .venv/bin/activate</pre></div>
+      <div class="code-block" style="margin-top:8px;"><div class="code-header">bash — activate (Windows PowerShell) <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>.venv\Scripts\Activate.ps1</pre></div>
+      <div class="callout info" style="margin-top:10px;margin-bottom:18px;"><div class="icon">💡</div><p>Your prompt will change to show <code>(ansible-ibmi)</code> when the environment is active. Run <strong>all</strong> Ansible commands below from inside this activated environment. To deactivate later, simply run <code>deactivate</code>.</p></div>
+
       <!-- Ansible install commands kept for reference -->
-      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Install Ansible &amp; Collections</div>
+      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Step 2 — Install Ansible &amp; Collections</div>
       <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>pip install ansible
 ansible-galaxy collection install ibm.power_ibmi:3.3.0 --force
 ansible-galaxy collection install ibm.power_hmc</pre></div>
       <div class="callout warning" style="margin-top:10px;"><div class="icon">⚠️</div><p>Install <code>ibm.power_ibmi</code> at <strong>v3.3.0 specifically</strong>. v3.5.0 switches SQL drivers and breaks on IBM i PASE sessions with a <code>CWBNL0203</code> error.</p></div>
+      <div class="callout tip" style="margin-top:10px;"><div class="icon">💡</div><p><strong>macOS SSL certificate error?</strong> If <code>ansible-galaxy collection install</code> fails with an SSL certificate verification error, run the following first to install trusted certificates, then re-run the collection installs:</p>
+        <div class="code-block" style="margin-top:8px;margin-bottom:0;"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>pip install certifi
+/Applications/Python\ 3.14/Install\ Certificates.command</pre></div>
+      </div>
 
       <div class="code-block" style="margin-top:12px;"><div class="code-header">IBM i PASE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>/QOpenSys/pkgs/bin/yum install python3.9
 /QOpenSys/pkgs/bin/yum install python39-itoolkit
@@ -1333,11 +1345,15 @@ ansible-galaxy collection install ibm.power_hmc</pre></div>
 ansible-galaxy collection install ibm.power_ibmi:3.3.0 --force
 ansible-galaxy collection install ibm.power_hmc</pre></div>
       <div class="callout warning"><div class="icon">⚠️</div><p>Install <code>ibm.power_ibmi</code> at <strong>v3.3.0 specifically</strong>. v3.5.0 switches from <code>ibm_db</code> to <code>pyodbc</code> and fails with <code>CWBNL0203</code> inside a PASE SSH session.</p></div>
+      <div class="callout tip" style="margin-top:10px;"><div class="icon">💡</div><p><strong>macOS SSL certificate error?</strong> If <code>ansible-galaxy collection install</code> fails with an SSL certificate verification error, run the following first to install trusted certificates, then re-run the collection installs:</p>
+        <div class="code-block" style="margin-top:8px;margin-bottom:0;"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>pip install certifi
+/Applications/Python\ 3.14/Install\ Certificates.command</pre></div>
+      </div>
       <div class="code-block"><div class="code-header">bash — verify setup <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible --version
 ansible-galaxy collection list | grep ibm.power_ibmi</pre></div>
 
       <h2 class="section-title">Custom Mode Configuration</h2>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Use the <code>ansible-for-i</code> custom mode defined in <code>.bob/custom_modes.yaml</code>. If not yet configured, add it:</p>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">You'll need to create the <code>ansible-for-i</code> custom mode before starting. Add the following to <code>.bob/custom_modes.yaml</code> (create the file if it doesn't exist):</p>
       <div class="code-block"><div class="code-header">.bob/custom_modes.yaml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>customModes:
   - slug: ansible-for-i
     name: "Ansible for i"
@@ -1365,16 +1381,15 @@ ansible-galaxy collection list | grep ibm.power_ibmi</pre></div>
 
       <h2 class="section-title">Part 1 <span class="section-badge">Generate the Playbook with Bob</span></h2>
       <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Activate Ansible for i mode</h3><p>Expand the modes dropdown beneath the chat input and select <strong>ℹ️ Ansible for i</strong>.</p></div></div>
-        <div class="step"><div class="step-num">1b</div><div class="step-content"><h3>Verify column names first (IBM i Database mode)</h3>
-          <p style="font-size:14px;color:var(--muted);">Switch to <strong>IBM i Database mode</strong> and run this prompt to confirm available columns on your system before generating any playbook SQL:</p>
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Verify column names first (<strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong>)</h3>
+          <p style="font-size:14px;color:var(--muted);">Switch to <strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong> and run this prompt to confirm available columns on your system before generating any playbook SQL:</p>
           <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Run a query to check whether these columns exist in their respective views:
   QSYS2.SYSTEM_STATUS_INFO — HOST_NAME, ELAPSED_CPU_USED, SYSTEM_ASP_USED, ACTIVE_JOBS_IN_SYSTEM, TOTAL_JOBS_IN_SYSTEM
   QSYS2.PTF_INFO — PTF_IDENTIFIER, PTF_LOADED_STATUS, PTF_IPL_REQUIRED, PTF_PRODUCT_ID, PTF_STATUS_TIMESTAMP</div></div>
-          <p style="font-size:14px;color:var(--muted);margin-top:8px;">Note down the columns returned — particularly hostname, CPU %, ASP usage, and PTF status fields. Switch back to <strong>Ansible for i mode</strong> before continuing.</p>
+          <p style="font-size:14px;color:var(--muted);margin-top:8px;">Switch back to <strong style="color:var(--ibm-blue,#0f62fe);">Ansible for i mode</strong> before continuing.</p>
         </div></div>
         <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Ask Bob to create the PTF currency check automation</h3>
-          <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">Substitute the confirmed column names from Step 1b where indicated:</p>
+          <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">Make sure <strong style="color:var(--ibm-blue,#0f62fe);">Ansible for i mode</strong> is active, then send this prompt:</p>
           <div class="prompt-block"><div class="prompt-label">Bob Prompt — copy this exactly</div><div class="prompt-text">Create an Ansible automation project for IBM i PTF management with the following:
 
 1. Directory structure: ./ansible with subdirectories for inventories/development, playbooks, and templates
@@ -1432,7 +1447,11 @@ Use IBM i Ansible collection modules (ibm.power_ibmi) and follow best practices.
           <div class="code-block"><div class="code-header">IBM i PASE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>/QOpenSys/pkgs/bin/python3.9 -c "import ibm_db_dbi; conn = ibm_db_dbi.connect(); print('OK')"
 /QOpenSys/pkgs/bin/python3.9 -c "import itoolkit; print(itoolkit.__version__)"
 /QOpenSys/pkgs/cwbping localhost</pre></div>
-          <div class="code-block"><div class="code-header">bash — Ansible controller <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-galaxy collection list | grep ibm.power_ibmi   # Must show 3.3.0
+          <div class="callout tip" style="margin-top:8px;"><div class="icon">💡</div><p><strong>If <code>/QOpenSys/pkgs/cwbping localhost</code> is not found</strong>, IBM Access Client Solutions is not installed. Install it first, then re-run the ping:</p>
+            <div class="code-block" style="margin-top:8px;margin-bottom:4px;"><div class="code-header">IBM i PASE — install <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>/QOpenSys/pkgs/bin/yum install ibm-iaccess</pre></div>
+            <div class="code-block" style="margin-bottom:0;"><div class="code-header">IBM i PASE — retry <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>/QOpenSys/pkgs/bin/cwbping localhost</pre></div>
+          </div>
+          <div class="code-block" style="margin-top:10px;"><div class="code-header">bash — Ansible controller <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-galaxy collection list | grep ibm.power_ibmi   # Must show 3.3.0
 ansible --version                                       # Must show 2.9+</pre></div>
         </div></div>
         <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Review output &amp; open the report</h3><p>Check the PLAY RECAP for success/failure. Then open the generated HTML report:</p>
@@ -1530,7 +1549,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
 
       <h2 class="section-title">Part 1 <span class="section-badge">Generate the Playbooks with Bob</span></h2>
       <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Activate Ansible for i mode</h3><p>Expand the modes dropdown and select <strong>ℹ️ Ansible for i</strong>.</p></div></div>
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Activate <strong style="color:var(--ibm-blue,#0f62fe);">Ansible for i mode</strong></h3><p>Expand the modes dropdown and select <strong>ℹ️ Ansible for i</strong>.</p></div></div>
         <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Ask Bob to generate the security compliance project</h3>
           <div class="prompt-block"><div class="prompt-label">Bob Prompt — copy this exactly</div><div class="prompt-text">Create a security compliance automation project for IBM i using the ibm.power_ibmi collection (version 3.3.0).
 
@@ -1559,9 +1578,18 @@ Generate two playbooks and a reporting template:
       </div>
 
       <h2 class="section-title">Part 2 <span class="section-badge">Key Module Patterns</span></h2>
-      <div class="callout warning"><div class="icon">⚠️</div><p><strong>Common mistakes Bob may need to self-correct. Review these before running:</strong></p></div>
+      <div class="callout warning"><div class="icon">⚠️</div><p><strong>These are common parameter mistakes in the generated playbooks. Use the Bob prompt below to verify and fix them before running.</strong></p></div>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt — review and fix generated playbooks</div><div class="prompt-text">Review the generated playbooks in ./ansible/playbooks/ and fix any parameter mistakes based on these rules:
 
-      <h3 class="subsection">System Value Auditing — use <code>sysvalue</code> not <code>sysval</code></h3>
+1. ibmi_sysval — the parameter name must be "sysvalue" (not "sysval"). Each entry is a dict with "name", "expect", and optionally "check".
+2. ibmi_user_compliance_check — parameters are "users" (list of profile names) and "fields" (list of dicts with "name" and "expect"). There is no "check_type" parameter — remove it if present.
+3. ibmi_object_authority — use "operation: display" to read authority, not "operation: query".
+4. ibmi_cl_command — use this (not ibmi_sysval) for any task that changes a system value with CHGSYSVAL. ibmi_sysval is read-only.
+
+Fix any of these issues found in the playbooks and show me what you changed.</div></div>
+
+      <h3 class="subsection">Pattern 1 — System Value Auditing</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">The <code>ibmi_sysval</code> parameter must be <code>sysvalue</code>, not <code>sysval</code>:</p>
       <div class="code-block"><div class="code-header">audit_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Audit system security values
   ibm.power_ibmi.ibmi_sysval:
     sysvalue:
@@ -1572,7 +1600,8 @@ Generate two playbooks and a reporting template:
   register: sysval_audit
   failed_when: false</pre></div>
 
-      <h3 class="subsection">User Profile Compliance — use <code>users</code> + <code>fields</code>, no <code>check_type</code></h3>
+      <h3 class="subsection">Pattern 2 — User Profile Compliance</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">Parameters are <code>users</code> (list of names) and <code>fields</code> (list of dicts with <code>name</code>/<code>expect</code>). There is no <code>check_type</code> parameter:</p>
       <div class="code-block"><div class="code-header">audit_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Check for profiles with default/blank passwords
   ibm.power_ibmi.ibmi_user_compliance_check:
     users:
@@ -1583,7 +1612,8 @@ Generate two playbooks and a reporting template:
   register: user_compliance
   failed_when: false</pre></div>
 
-      <h3 class="subsection">Library Permissions — use <code>operation: display</code> not <code>query</code></h3>
+      <h3 class="subsection">Pattern 3 — Library Permissions</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">Use <code>operation: display</code> to read authority, not <code>operation: query</code>:</p>
       <div class="code-block"><div class="code-header">audit_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Audit public authority on MYAPP_DB
   ibm.power_ibmi.ibmi_object_authority:
     object_name: 'MYAPP_DB'
@@ -1593,7 +1623,7 @@ Generate two playbooks and a reporting template:
   register: myapp_public_auth
   failed_when: false</pre></div>
 
-      <h3 class="subsection">Setting System Values — use <code>ibmi_cl_command</code> not <code>ibmi_sysval</code></h3>
+      <h3 class="subsection">Pattern 4 — Setting System Values</h3>
       <div class="callout info"><div class="icon">📋</div><p><code>ibmi_sysval</code> is <strong>read-only</strong>. To change a system value, use <code>ibmi_cl_command</code> with <code>CHGSYSVAL</code>.</p></div>
       <div class="code-block"><div class="code-header">remediate_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Set QINACTMSGQ to disconnect inactive sessions
   ibm.power_ibmi.ibmi_cl_command:
@@ -1738,7 +1768,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
       <h2 class="section-title">Objectives</h2>
       <ul style="padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--text);margin-bottom:8px;">
         <li>Understand the <code>SYSTOOLS.AUDIT_JOURNAL_*</code> table function family</li>
-        <li>Use Bob (IBM i Database mode) to run forensic queries in plain English</li>
+        <li>Use Bob (<strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong>) to run forensic queries in plain English</li>
         <li>Identify failed logon storms, authority violations, object deletions, and profile changes</li>
         <li>Correlate findings across entry types to build an attack timeline</li>
         <li>Feed audit findings into an Ansible remediation playbook</li>
@@ -1750,9 +1780,9 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
         <li><code>QAUDJRN</code> journal active with <code>*AUTFAIL</code>, <code>*SIGNON</code>, <code>*OBJMGT</code>, <code>*SYSMGT</code>, <code>*SECURITY</code>, <code>*PGMADP</code> entry types enabled</li>
         <li>User profile with <code>*ALLOBJ</code> or <code>*AUDIT</code> special authority</li>
         <li>Mapepire server running on port 8076</li>
-        <li>IBM i Database mode active in Bob</li>
+        <li><strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong> active in Bob</li>
       </ul>
-      <div class="callout tip"><div class="icon">💡</div><p>Verify <code>QAUDJRN</code> is active — ask Bob in IBM i Database mode: <code>SELECT JOURNAL_NAME, JOURNAL_STATE FROM QSYS2.JOURNAL_INFO WHERE JOURNAL_NAME = 'QAUDJRN'</code></p></div>
+      <div class="callout tip"><div class="icon">💡</div><p>Verify <code>QAUDJRN</code> is active — ask Bob in <strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong>: <code>SELECT JOURNAL_NAME, JOURNAL_STATE FROM QSYS2.JOURNAL_INFO WHERE JOURNAL_NAME = 'QAUDJRN'</code></p></div>
       <p style="font-size:14px;color:var(--muted);margin-top:8px;">If not active, ask your system administrator to run: <code>CHGSECAUD QAUDLVL(*AUTFAIL *SIGNON *OBJMGT *SYSMGT *SECURITY *PGMADP)</code></p>
 
       <h2 class="section-title">The <code>SYSTOOLS.AUDIT_JOURNAL_*</code> Family</h2>
@@ -1776,7 +1806,7 @@ FROM   TABLE(
 FETCH FIRST 20 ROWS ONLY</pre></div>
 
       <h2 class="section-title">Part 1 <span class="section-badge">Natural Language Forensic Queries</span></h2>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Activate <strong>IBM i Database mode</strong> for all queries in this section.</p>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Activate <strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong> for all queries in this section.</p>
 
       <h3 class="subsection">Step 2 — Failed Signon Investigation</h3>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query SYSTOOLS.AUDIT_JOURNAL_PW for the last 24 hours.
@@ -1815,10 +1845,10 @@ and SV event involving that user, ordered by timestamp.</div></div>
       <p style="font-size:14px;color:var(--muted);margin-top:8px;">Bob will produce a <code>UNION ALL</code> query across multiple <code>SYSTOOLS.AUDIT_JOURNAL_*</code> functions, building a complete per-user activity timeline.</p>
 
       <h2 class="section-title">Part 3 <span class="section-badge">Feeding Findings into Ansible Remediation</span></h2>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt — switch to Ansible for i mode first</div><div class="prompt-text">Based on the audit finding that SVCTEST has *ALLOBJ authority and should not,
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt — switch to <strong style="color:var(--ibm-blue,#0f62fe);">Ansible for i mode</strong> first</div><div class="prompt-text">Based on the audit finding that SVCTEST has *ALLOBJ authority and should not,
 generate an Ansible playbook task that removes *ALLOBJ from that profile using
-ibm.power_ibmi.ibmi_user.</div></div>
-      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Save the generated task into <code>./ansible/playbooks/remediate_audit_findings.yml</code> alongside the Lab 6 playbooks.</p>
+ibm.power_ibmi.ibmi_user. Save the generated task into ./ansible/playbooks/remediate_audit_findings.yml alongside the Lab 6 playbooks.</div></div>
+      <!-- <p style="font-size:14px;color:var(--muted);margin-top:8px;">Save the generated task into <code>./ansible/playbooks/remediate_audit_findings.yml</code> alongside the Lab 6 playbooks.</p> -->
       <div class="code-block"><div class="code-header">result <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Remove *ALLOBJ special authority from SVCTEST
   ibm.power_ibmi.ibmi_user:
     name: SVCTEST
@@ -1879,7 +1909,7 @@ Exclude known batch job users QBATCH and QTMHHTTP.</div></div>
     </div>
     <div class="page-body">
 
-      <div class="callout info"><div class="icon">📋</div><p>All queries in Parts 1–4 run in <strong>IBM i Database mode</strong>. The optional Ansible section (Part 5) uses <strong>Ansible for i mode</strong> and requires the Lab 5 setup.</p></div>
+      <div class="callout info"><div class="icon">📋</div><p>All queries run in <strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong>.</p></div>
 
       <h2 class="section-title">Objectives</h2>
       <ul style="padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--text);margin-bottom:8px;">
@@ -1900,7 +1930,7 @@ Exclude known batch job users QBATCH and QTMHHTTP.</div></div>
 
       <h2 class="section-title">Part 1 <span class="section-badge">PTF Group Level Analysis</span></h2>
 
-      <h3 class="subsection">Step 1 — Activate IBM i Database Mode</h3>
+      <h3 class="subsection">Step 1 — Activate <strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database Mode</strong></h3>
       <p style="font-size:14px;color:var(--muted);">Expand the <strong>mode dropdown</strong> beneath the Bob chat input and select <strong>IBM i Database</strong>.</p>
 
       <h3 class="subsection">Step 2 — Full PTF Group Picture</h3>
@@ -2010,7 +2040,7 @@ and also write it to the local workspace as
     </div>
     <div class="page-body">
 
-      <div class="callout info"><div class="icon">📋</div><p>All SQL queries in this lab run in <strong>IBM i Database mode</strong>. CL commands (start/stop Collection Services) use <strong>IBM i Developer mode</strong>.</p></div>
+      <div class="callout info"><div class="icon">📋</div><p>All SQL queries in this lab run in <strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong>.</p></div>
 
       <h2 class="section-title">Objectives</h2>
       <ul style="padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--text);margin-bottom:8px;">
@@ -2025,17 +2055,10 @@ and also write it to the local workspace as
       <ul style="padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text);margin-bottom:14px;">
         <li>IBM i 7.3+, user profile with <code>*ALLOBJ</code> or <code>*IOSYSCFG</code> authority</li>
         <li>Collection Services started (instructions below if not active)</li>
-        <li>IBM i Database mode active in Bob</li>
+        <li><strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong> active in Bob</li>
       </ul>
 
-      <h3 class="subsection">Verify and Start Collection Services</h3>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">Switch to <strong>IBM i Developer mode</strong> and ask Bob:</p>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt — IBM i Developer mode</div><div class="prompt-text">Check if Collection Services is currently running on this system.
-Show the collection name, profile, start time, and what categories are being collected.</div></div>
-      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Bob will query <code>QSYS2.COLLECTION_SERVICES_INFO</code>. If nothing is returned, start a collection:</p>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Start a Collection Services collection on this system using the *STANDARDP profile.</div></div>
-      <div class="callout tip"><div class="icon">💡</div><p><code>*STANDARDP</code> captures system-level metrics at 15-minute intervals — sufficient for trend analysis. Even a collection started a few minutes before the exercises will generate enough data.</p></div>
-
+     
       <h2 class="section-title">Key SQL Services</h2>
       <div class="table-wrap"><table><thead><tr><th>View</th><th>What It Provides</th></tr></thead><tbody>
         <tr><td><code>QSYS2.SYSTEM_STATUS_INFO</code></td><td>Point-in-time: CPU utilisation, active jobs, ASP usage, temp storage</td></tr>
@@ -2046,12 +2069,11 @@ Show the collection name, profile, start time, and what categories are being col
         <tr><td><code>QPFRDATA.QAPMDISK</code></td><td>Collection Services history — per-disk I/O counts and service time per interval</td></tr>
         <tr><td><code>QSYS2.JOBLOG_INFO</code></td><td>Full job message log — escape messages, FFDC references, runtime errors</td></tr>
       </tbody></table></div>
-      <div class="callout warning"><div class="icon">⚠️</div><p><code>QSYS2.DISK_STATISTICS</code> does not exist — the correct view is <code>QSYS2.SYSDISKSTAT</code>. <code>SYSTOOLS.METRICS_DISK</code> and <code>SYSTOOLS.METRICS_*</code> views do not exist on this system — use <code>QPFRDATA</code> tables directly.</p></div>
 
       <h2 class="section-title">Part 1 <span class="section-badge">Current-State Health Snapshot</span></h2>
 
       <h3 class="subsection">Step 2 — Full System Health Snapshot</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt — IBM i Database mode</div><div class="prompt-text">Take a full health snapshot of this IBM i system right now. I want:
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt — <strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong></div><div class="prompt-text">Take a full health snapshot of this IBM i system right now. I want:
 1. Overall CPU utilisation and how many jobs are active vs. waiting
 2. ASP usage percentage and how much free space remains
 3. The top 3 memory pools by fault rate
@@ -2148,8 +2170,10 @@ Structure it as:
 5. Recommended Actions — prioritised list (Critical / High / Medium / Low) with specific commands or queries
 6. Monitoring Recommendations — what to watch over the next 24–72 hours
 
-Format as Markdown.</div></div>
-      <div class="callout tip"><div class="icon">💡</div><p>Ask Bob to save the report: <em>"Save that report to <code>/home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt;_&lt;yourname&gt;.md</code>"</em></p></div>
+Format as Markdown.
+Save the report to /home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt;_&lt;yourname&gt;.md"
+</div></div>
+      <div class="callout tip"><div class="icon">💡</div><p>Verify the report was saved to <em><code>/home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt;_&lt;yourname&gt;.md</code>"</em></p></div>
 
       <h2 class="section-title">Common Troubleshooting</h2>
       <div class="table-wrap"><table><thead><tr><th>Error</th><th>Likely Cause</th><th>Resolution</th></tr></thead><tbody>
