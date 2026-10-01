@@ -838,7 +838,7 @@
     </div>
     <div class="page-body">
 
-      <div class="callout tip"><div class="icon">💡</div><p><strong>Before you begin:</strong> Switch to <strong>IBM i Developer</strong> mode, set scope to <strong>Library List (QSYS)</strong>, and confirm <code>FLGHT4nn</code> is on the library list. You stay in Developer mode for the whole exercise.</p></div>
+      <div class="callout tip"><div class="icon">💡</div><p><strong>Before you begin:</strong> Switch to <code>IBM i Developer mode</code>, set scope to <strong>Library List (QSYS)</strong>, and confirm <code>FLGHT4nn</code> is on the library list. You stay in Developer mode for the whole exercise.</p></div>
 
       <h3 class="subsection">Field Spec at a Glance</h3>
       <div class="table-wrap"><table><thead><tr><th>Layer</th><th>Field Name</th><th>Definition</th></tr></thead><tbody>
@@ -852,7 +852,7 @@
         <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Open Bob settings</h3><p>Click the <strong>settings icon</strong> at the top right of the Bob panel.</p>
           <img src="img/custom-mode-1.png" alt="Settings icon at the top right of the Bob panel" class="screenshot" />
         </div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Navigate to IBM i Developer mode</h3><p>Click <strong>Modes</strong> on the left sidebar → select <strong>IBM i Developer</strong>.</p>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Navigate to IBM i Developer mode</h3><p>Click <strong>Modes</strong> on the left sidebar → select <code>IBM i Developer mode</code>.</p>
           <img src="img/custom-mode-2.png" alt="Modes settings panel with IBM i Developer selected" class="screenshot" />
         </div></div>
         <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Open the mode editor</h3><p>Click the <strong>pencil (edit) icon</strong> in the top right.</p>
@@ -958,7 +958,7 @@ CRTRPGPGM PGM(FLGHT4nn/FRS021) SRCFILE(FLGHT4nn/QRPGSRC)  SRCMBR(FRS021) REPLACE
     <div class="page-body">
 
       <h2 class="section-title">4a <span class="section-badge">Switch Mode</span></h2>
-      <p style="font-size:14px;color:var(--muted);">In the Bob chat panel, use the mode selector to switch to <strong>IBM i Database</strong> mode.</p>
+      <p style="font-size:14px;color:var(--muted);">In the Bob chat panel, use the mode selector to switch to <code>IBM i Database mode</code>.</p>
 
       <h2 class="section-title">4b <span class="section-badge">Review the Query</span></h2>
       <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Type <code>/review</code> first so it highlights in the Bob chat, then paste and send the query below.</p>
@@ -1049,7 +1049,7 @@ FETCH FIRST 100 ROWS ONLY;</div></div>
       <div class="meta-pills"><span class="pill time">⏱ ~10 minutes</span><span class="pill level">IBM i Developer mode</span></div>
     </div>
     <div class="page-body">
-      <div class="callout tip"><div class="icon">💡</div><p>Switch back to <strong>IBM i Developer</strong> mode before starting.</p></div>
+      <div class="callout tip"><div class="icon">💡</div><p>Switch back to <code>IBM i Developer mode</code> before starting.</p></div>
 
       <h2 class="section-title">Prompt 1 <span class="section-badge">CPU Usage</span></h2>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Which active jobs have accumulated the most CPU time? For the top jobs, distinguish cumulative CPU time from their current elapsed CPU percentage."</div></div>
@@ -1387,15 +1387,15 @@ ansible-galaxy collection list | grep ibm.power_ibmi</pre></div>
 
       <h2 class="section-title">Part 1 <span class="section-badge">Generate the Playbook with Bob</span></h2>
       <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Verify column names first (<strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong>)</h3>
-          <p style="font-size:14px;color:var(--muted);">Switch to <strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong> and run this prompt to confirm available columns on your system before generating any playbook SQL:</p>
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Verify column names first (<code>IBM i Database mode</code>)</h3>
+          <p style="font-size:14px;color:var(--muted);">Switch to <code>IBM i Database mode</code> and run this prompt to confirm available columns on your system before generating any playbook SQL:</p>
           <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Run a query to check whether these columns exist in their respective views:
   QSYS2.SYSTEM_STATUS_INFO — HOST_NAME, ELAPSED_CPU_USED, SYSTEM_ASP_USED, ACTIVE_JOBS_IN_SYSTEM, TOTAL_JOBS_IN_SYSTEM
   QSYS2.PTF_INFO — PTF_IDENTIFIER, PTF_LOADED_STATUS, PTF_IPL_REQUIRED, PTF_PRODUCT_ID, PTF_STATUS_TIMESTAMP</div></div>
-          <p style="font-size:14px;color:var(--muted);margin-top:8px;">Switch back to <strong style="color:var(--ibm-blue,#0f62fe);">Ansible for i mode</strong> before continuing.</p>
+          <p style="font-size:14px;color:var(--muted);margin-top:8px;">Switch back to <code>Ansible for i mode</code> before continuing.</p>
         </div></div>
         <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Ask Bob to create the PTF currency check automation</h3>
-          <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">Make sure <strong style="color:var(--ibm-blue,#0f62fe);">Ansible for i mode</strong> is active, then send this prompt:</p>
+          <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">Make sure <code>Ansible for i mode</code> is active, then send this prompt:</p>
           <div class="prompt-block"><div class="prompt-label">Bob Prompt — copy this exactly</div><div class="prompt-text">Create an Ansible automation project for IBM i PTF management with the following:
 
 1. Directory structure: ./ansible with subdirectories for inventories/development, playbooks, and templates
@@ -1559,7 +1559,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
 
       <h2 class="section-title">Part 1 <span class="section-badge">Generate the Playbooks with Bob</span></h2>
       <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Activate <strong style="color:var(--ibm-blue,#0f62fe);">Ansible for i mode</strong></h3><p>Expand the modes dropdown and select <strong>ℹ️ Ansible for i</strong>.</p></div></div>
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Activate <code>Ansible for i mode</code></h3><p>Expand the modes dropdown and select <strong>ℹ️ Ansible for i</strong>.</p></div></div>
         <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Ask Bob to generate the security compliance project</h3>
           <div class="prompt-block"><div class="prompt-label">Bob Prompt — copy this exactly</div><div class="prompt-text">Create a security compliance automation project for IBM i using the ibm.power_ibmi collection (version 3.3.0).
 
@@ -1778,7 +1778,7 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
       <h2 class="section-title">Objectives</h2>
       <ul style="padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--text);margin-bottom:8px;">
         <li>Understand the <code>SYSTOOLS.AUDIT_JOURNAL_*</code> table function family</li>
-        <li>Use Bob (<strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong>) to run forensic queries in plain English</li>
+        <li>Use Bob (<code>IBM i Database mode</code>) to run forensic queries in plain English</li>
         <li>Identify failed logon storms, authority violations, object deletions, and profile changes</li>
         <li>Correlate findings across entry types to build an attack timeline</li>
         <li>Feed audit findings into an Ansible remediation playbook</li>
@@ -1790,9 +1790,9 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
         <li><code>QAUDJRN</code> journal active with <code>*AUTFAIL</code>, <code>*SIGNON</code>, <code>*OBJMGT</code>, <code>*SYSMGT</code>, <code>*SECURITY</code>, <code>*PGMADP</code> entry types enabled</li>
         <li>User profile with <code>*ALLOBJ</code> or <code>*AUDIT</code> special authority</li>
         <li>Mapepire server running on port 8076</li>
-        <li><strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong> active in Bob</li>
+        <li><code>IBM i Database mode</code> active in Bob</li>
       </ul>
-      <div class="callout tip"><div class="icon">💡</div><p>Verify <code>QAUDJRN</code> is active — ask Bob in <strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong>: <code>SELECT JOURNAL_NAME, JOURNAL_STATE FROM QSYS2.JOURNAL_INFO WHERE JOURNAL_NAME = 'QAUDJRN'</code></p></div>
+      <div class="callout tip"><div class="icon">💡</div><p>Verify <code>QAUDJRN</code> is active — ask Bob in <code>IBM i Database mode</code>: <code>SELECT JOURNAL_NAME, JOURNAL_STATE FROM QSYS2.JOURNAL_INFO WHERE JOURNAL_NAME = 'QAUDJRN'</code></p></div>
       <p style="font-size:14px;color:var(--muted);margin-top:8px;">If not active, ask your system administrator to run: <code>CHGSECAUD QAUDLVL(*AUTFAIL *SIGNON *OBJMGT *SYSMGT *SECURITY *PGMADP)</code></p>
 
       <h2 class="section-title">The <code>SYSTOOLS.AUDIT_JOURNAL_*</code> Family</h2>
@@ -1816,7 +1816,7 @@ FROM   TABLE(
 FETCH FIRST 20 ROWS ONLY</pre></div>
 
       <h2 class="section-title">Part 1 <span class="section-badge">Natural Language Forensic Queries</span></h2>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Activate <strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong> for all queries in this section.</p>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Activate <code>IBM i Database mode</code> for all queries in this section.</p>
 
       <h3 class="subsection">Step 2 — Failed Signon Investigation</h3>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query SYSTOOLS.AUDIT_JOURNAL_PW for the last 24 hours.
@@ -1855,7 +1855,7 @@ and SV event involving that user, ordered by timestamp.</div></div>
       <p style="font-size:14px;color:var(--muted);margin-top:8px;">Bob will produce a <code>UNION ALL</code> query across multiple <code>SYSTOOLS.AUDIT_JOURNAL_*</code> functions, building a complete per-user activity timeline.</p>
 
       <h2 class="section-title">Part 3 <span class="section-badge">Feeding Findings into Ansible Remediation</span></h2>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt — switch to <strong style="color:var(--ibm-blue,#0f62fe);">Ansible for i mode</strong> first</div><div class="prompt-text">Based on the audit finding that SVCTEST has *ALLOBJ authority and should not,
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt — switch to <code>Ansible for i mode</code> first</div><div class="prompt-text">Based on the audit finding that SVCTEST has *ALLOBJ authority and should not,
 generate an Ansible playbook task that removes *ALLOBJ from that profile using
 ibm.power_ibmi.ibmi_user. Save the generated task into ./ansible/playbooks/remediate_audit_findings.yml alongside the Lab 6 playbooks.</div></div>
       <!-- <p style="font-size:14px;color:var(--muted);margin-top:8px;">Save the generated task into <code>./ansible/playbooks/remediate_audit_findings.yml</code> alongside the Lab 6 playbooks.</p> -->
@@ -1919,7 +1919,7 @@ Exclude known batch job users QBATCH and QTMHHTTP.</div></div>
     </div>
     <div class="page-body">
 
-      <div class="callout info"><div class="icon">📋</div><p>All queries run in <strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong>.</p></div>
+      <div class="callout info"><div class="icon">📋</div><p>All queries run in <code>IBM i Database mode</code>.</p></div>
 
       <h2 class="section-title">Objectives</h2>
       <ul style="padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--text);margin-bottom:8px;">
@@ -1940,8 +1940,8 @@ Exclude known batch job users QBATCH and QTMHHTTP.</div></div>
 
       <h2 class="section-title">Part 1 <span class="section-badge">PTF Group Level Analysis</span></h2>
 
-      <h3 class="subsection">Step 1 — Activate <strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database Mode</strong></h3>
-      <p style="font-size:14px;color:var(--muted);">Expand the <strong>mode dropdown</strong> beneath the Bob chat input and select <strong>IBM i Database</strong>.</p>
+      <h3 class="subsection">Step 1 — Activate <code>IBM i Database Mode</code></h3>
+      <p style="font-size:14px;color:var(--muted);">Expand the <strong>mode dropdown</strong> beneath the Bob chat input and select <code>IBM i Database mode</code>.</p>
 
       <h3 class="subsection">Step 2 — Full PTF Group Picture</h3>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query QSYS2.GROUP_PTF_INFO and show me every PTF group on this system
@@ -2050,7 +2050,7 @@ and also write it to the local workspace as
     </div>
     <div class="page-body">
 
-      <div class="callout info"><div class="icon">📋</div><p>All SQL queries in this lab run in <strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong>.</p></div>
+      <div class="callout info"><div class="icon">📋</div><p>All SQL queries in this lab run in <code>IBM i Database mode</code>.</p></div>
 
       <h2 class="section-title">Objectives</h2>
       <ul style="padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--text);margin-bottom:8px;">
@@ -2065,7 +2065,7 @@ and also write it to the local workspace as
       <ul style="padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text);margin-bottom:14px;">
         <li>IBM i 7.3+, user profile with <code>*ALLOBJ</code> or <code>*IOSYSCFG</code> authority</li>
         <li>Collection Services started (instructions below if not active)</li>
-        <li><strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong> active in Bob</li>
+        <li><code>IBM i Database mode</code> active in Bob</li>
       </ul>
 
      
@@ -2083,7 +2083,7 @@ and also write it to the local workspace as
       <h2 class="section-title">Part 1 <span class="section-badge">Current-State Health Snapshot</span></h2>
 
       <h3 class="subsection">Step 2 — Full System Health Snapshot</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt — <strong style="color:var(--ibm-blue,#0f62fe);">IBM i Database mode</strong></div><div class="prompt-text">Take a full health snapshot of this IBM i system right now. I want:
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt — <code>IBM i Database mode</code></div><div class="prompt-text">Take a full health snapshot of this IBM i system right now. I want:
 1. Overall CPU utilisation and how many jobs are active vs. waiting
 2. ASP usage percentage and how much free space remains
 3. The top 3 memory pools by fault rate
