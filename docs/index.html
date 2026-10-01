@@ -1309,8 +1309,7 @@ ansible-galaxy collection install ibm.power_hmc</pre></div>
           <div class="icon">💡</div>
           <p><strong>macOS SSL certificate error?</strong> If <code>ansible-galaxy collection install</code> fails with an SSL certificate verification error, run the following first to install trusted certificates, then re-run the collection installs:</p>
         </div>
-        <div class="code-block" style="margin:0;"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>pip install certifi
-/Applications/Python\ 3.14/Install\ Certificates.command</pre></div>
+        <div class="code-block" style="margin:0;"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>pip install certifi && /Applications/Python\ 3.14/Install\ Certificates.command</pre></div>
       </div>
 
       <div class="code-block" style="margin-top:12px;"><div class="code-header">IBM i PASE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>/QOpenSys/pkgs/bin/yum install python3.9
@@ -1354,8 +1353,7 @@ ansible-galaxy collection install ibm.power_hmc</pre></div>
           <div class="icon">💡</div>
           <p><strong>macOS SSL certificate error?</strong> If <code>ansible-galaxy collection install</code> fails with an SSL certificate verification error, run the following first to install trusted certificates, then re-run the collection installs:</p>
         </div>
-        <div class="code-block" style="margin:0;"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>pip install certifi
-/Applications/Python\ 3.14/Install\ Certificates.command</pre></div>
+        <div class="code-block" style="margin:0;"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>pip install certifi && /Applications/Python\ 3.14/Install\ Certificates.command</pre></div>
       </div>
       <div class="code-block"><div class="code-header">bash — verify setup <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible --version
 ansible-galaxy collection list | grep ibm.power_ibmi</pre></div>
