@@ -726,7 +726,6 @@
           <img src="img/preview-all.png" alt="Preview All option in the Bob editor for a DDS display file" class="screenshot" />
           <div class="callout tip"><div class="icon">💡</div><p>Try previewing <code>FRS021DF</code> too — this is the <strong>Flight Maintenance</strong> screen used in Exercise 3.</p></div>
         </div></div>
-        <div class="step"><div class="step-num">4</div><div class="step-content"><h3>Check program age</h3><p>In the Object Browser, click <code>FRS000.pgm</code> — the flight reservation logon. Check its <strong>Detail</strong>: it was compiled in 1997, over 30 years ago!</p></div></div>
       </div>
 
       <h2 class="section-title">1b <span class="section-badge">Generate Architecture Overview</span></h2>
@@ -750,13 +749,6 @@
       </div>
 
       <h2 class="section-title">1d <span class="section-badge">Optional</span></h2>
-      <h3 class="subsection">Draw.io Diagram</h3>
-      <div class="callout info"><div class="icon">📝</div><p>Install the <strong>Draw.io Integration</strong> extension first: <code>Cmd+Shift+X</code> → search "Draw.io Integration" → Install.</p></div>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt (IBM i Developer mode, Library List scope)</div><div class="prompt-text">Analyze the FLGHT4nn application from the library list and generate a draw.io architecture diagram showing the main programs, menus, and database files. Ensure that the XML generated uses pure auto-routed connector paths and contains no manual coordinate arrays (avoid using &lt;Array&gt; or &lt;mxPoint&gt; manual child elements on connectors) to prevent the Draw.io extension 'a.push is not a function' error. Save the file as FLGHT4nn-architecture.drawio in $HOME/docs/ on IBM i.</div></div>
-      <p style="font-size:14px;color:var(--muted);margin-top:10px;">In the IFS Browser, navigate to <code>$HOME/docs/</code> and click the <code>.drawio</code> file — the Draw.io extension renders it directly in the editor.</p>
-      <img src="img/drawIo.png" alt="Draw.io architecture diagram" class="screenshot" />
-
-      <h2 class="section-title">1e <span class="section-badge">Optional</span></h2>
       <h3 class="subsection">Business Rules Extraction</h3>
       <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Drill down on a specific member using the Business Rules Extraction workflow. Click the <strong>workflow icon</strong> at the top of the Bob panel, choose to run the workflow in your library list, and select <strong>Business Rules Extraction</strong>.</p>
       <img src="img/workflows-icon.png" alt="Workflows icon in the Bob panel" class="screenshot" style="max-width:200px;" />
@@ -802,6 +794,7 @@
       <div class="steps">
         <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Ask Bob to modernize</h3><p>With <code>FRS409</code> still open in the editor:</p>
           <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Can you modernize this program?"</div></div>
+          <div class="callout warning" style="margin-top:12px;"><div class="icon">⚠️</div><p>If Bob doesn't automatically offer to start the workflow, manually navigate to the top of the Bob panel → click the <strong>Start Workflow</strong> icon (play button) → then continue with the directions below.</p></div>
         </div></div>
         <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Start the workflow</h3><p>Bob recognizes the fixed-format OPM RPG and offers to run the <strong>RPG Modernization (Fixed to Free Format)</strong> workflow. Choose <strong>Start workflow</strong>.</p></div></div>
         <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Fill in the workflow form</h3>
@@ -887,6 +880,8 @@
       <p style="font-size:14px;color:var(--muted);margin-top:10px;">Bob should list fields (Flight Number, From/To City, Departure/Arrival Time, Mileage, Seats, Ticket Price) and identify the <code>S</code>-prefix naming pattern.</p>
       <img src="img/ACS-green-screen.png" alt="Flight Maintenance screen in 5250 emulator" class="screenshot" />
       <p class="screenshot-caption">The Flight Maintenance screen in IBM i Access Client Solutions (5250 emulator)</p>
+      <div class="prompt-block"><div class="prompt-label">5250 Command</div><div class="prompt-text">ADDLIBLE FLGHT4nn</div></div>
+      <div class="prompt-block"><div class="prompt-label">5250 Command</div><div class="prompt-text">CALL FLGHT4nn/FRS021</div></div>
 
       <h2 class="section-title">3c <span class="section-badge">Plan the Change</span></h2>
       <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Ask Bob to reason through a step-by-step plan <strong>without writing, editing, saving, or compiling anything</strong>.</p>
@@ -941,6 +936,8 @@ CRTRPGPGM PGM(FLGHT4nn/FRS021) SRCFILE(FLGHT4nn/QRPGSRC)  SRCMBR(FRS021) REPLACE
       </tbody></table></div>
       <img src="img/newfield.png" alt="New Total Flight Hours field visible on the Flight Maintenance screen" class="screenshot" />
       <p class="screenshot-caption">The new Flight Hours field now appears on the Flight Maintenance screen 🎉</p>
+      <div class="prompt-block"><div class="prompt-label">5250 Command</div><div class="prompt-text">ADDLIBLE FLGHT4nn</div></div>
+      <div class="prompt-block"><div class="prompt-label">5250 Command</div><div class="prompt-text">CALL FLGHT4nn/FRS021</div></div>
       <div class="callout success"><div class="icon">✅</div><p><strong>Exercise 3 complete!</strong> Total Flight Hours now flows end-to-end: <code>FLIGHTS.FLHRS</code> → <code>FLIGHTSZ.FHRS</code> → <code>FRS021</code> → <code>FRS021DF.SFLHRS</code></p></div>
     </div>
     <div class="page-nav">
@@ -1011,29 +1008,9 @@ FETCH FIRST 100 ROWS ONLY;</div></div>
         <li>✅ <code>FETCH FIRST 100 ROWS ONLY</code> is a good testing safeguard</li>
       </ul>
 
-      <h2 class="section-title">4c <span class="section-badge">Optional</span></h2>
-      <h3 class="subsection">Performance Bottleneck Analysis</h3>
+      <h2 class="section-title">4c <span class="section-badge">Performance Bottleneck Analysis</span></h2>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Is any table a performance bottleneck and why?"</div></div>
       <p style="font-size:14px;color:var(--muted);margin-top:8px;">Bob should identify <code>ORDERS</code> as the largest table, with the <code>DEPARTURE_DATE</code> filter being a strong candidate for index optimization.</p>
-
-      <h2 class="section-title">4d <span class="section-badge">Index Advisor Workflow</span></h2>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;">Still in IBM i Database mode, click the <strong>workflow icon</strong> at the top of the Bob panel → select <strong>Library List</strong> scope → choose <strong>SQL Index Strategy Advisor</strong>.</p>
-      <img src="img/workflows-icon.png" alt="Workflows icon in the Bob panel" class="screenshot" style="max-width:200px;" />
-      <div class="table-wrap"><table><thead><tr><th>Setting</th><th>Value</th></tr></thead><tbody>
-        <tr><td>Data Source</td><td>Capture New Performance Data</td></tr>
-        <tr><td>Capture Method</td><td><code>DUMP_PLAN_CACHE_TOPN</code></td></tr>
-        <tr><td>Output Library</td><td><code>FLGHT4nn</code></td></tr>
-        <tr><td>Output Object Name</td><td><code>FLGHT4nnP</code></td></tr>
-        <tr><td>Top N Queries</td><td>20</td></tr>
-        <tr><td>Top N Category</td><td>Runtime</td></tr>
-      </tbody></table></div>
-      <div class="callout warning"><div class="icon">⚠️</div><p><strong>Only create indexes in your assigned schema.</strong> When Bob gives suggested indexes, ask: <em>"Apply the highest-priority index only for FLGHT4nn"</em></p></div>
-      <p style="font-size:14px;color:var(--text);margin:14px 0 8px;font-weight:600;">Expected recommendation:</p>
-      <div class="prompt-block"><div class="prompt-label">SQL</div><div class="prompt-text" style="font-family:monospace;font-size:13px;white-space:pre;">CREATE INDEX FLGHT4nn.ORDERS_IDX_DEPDT_FLT
-    ON FLGHT4nn.ORDERS (
-        DEPARTURE_DATE,
-        FLIGHT_NUMBER
-    );</div></div>
       <div class="callout success"><div class="icon">✅</div><p>You've reviewed, corrected, analyzed, and optimized a Db2 for i SQL statement using Bob's guided Index Advisor workflow — without needing deep expertise in query optimization or Visual Explain.</p></div>
     </div>
     <div class="page-nav">
