@@ -1027,8 +1027,7 @@ FETCH FIRST 100 ROWS ONLY;</div></div>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Which active jobs have accumulated the most CPU time? For the top jobs, distinguish cumulative CPU time from their current elapsed CPU percentage."</div></div>
       <p style="font-size:14px;color:var(--muted);margin-top:10px;">Bob queries <code>QSYS2.ACTIVE_JOB_INFO</code> and returns a summary of active jobs with CPU utilization — an instant health check on your LPAR.</p>
 
-      <h2 class="section-title">Prompt 2</h2>
-      <h3 class="subsection">Inspect the Top Job</h3>
+      <h2 class="section-title">Prompt 2 <span class="section-badge">Inspect the Top Job</span></h2>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Inspect the job ranked first and determine whether it is currently CPU-bound. Check its job log and take one fresh elapsed CPU measurement. If the log is empty and the job is a PASE process, inspect its IFS job information for its executable, working directory, and open application or log files. Stop after that investigation. Distinguish facts from inferences and provide no more than two recommendations."</div></div>
       <p style="font-size:14px;color:var(--muted);margin-top:10px;">Bob uses <code>QSYS2.JOBLOG_INFO</code>, <code>QSYS2.ACTIVE_JOB_INFO</code>, and IFS inspection to investigate. The response clearly separates observations from inferences.</p>
 
