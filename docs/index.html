@@ -651,7 +651,7 @@
       <h2 class="section-title">Step 4 <span class="section-badge">Connect Bob to IBM i</span></h2>
       <div class="steps">
         <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Open the IBM i panel</h3><p>Click the IBM i icon in the left Activity Bar of Bob.</p></div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Add a new connection</h3><p>Click <strong>New Connection</strong> and enter the <strong>host IP</strong>, <strong>user profile</strong>, and select the <strong>ssh_private_key</strong> you placed in your workspace folder. <strong>Do not use the password — use only the ssh_private_key.</strong></p>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Add a new connection</h3><p>Click <strong>New Connection</strong> and enter the <strong>host IP</strong>, <strong>user profile</strong>, and select the <code>ssh_private_key</code> you placed in your workspace folder. <strong>Do not use the password — use only the <code>ssh_private_key</code>.</strong></p>
           <img src="img/i-connection.png" alt="IBM i connection dialog" class="screenshot" />
         </div></div>
         <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Add your library to the User Library List</h3><p>In Code for IBM i, go to <strong>User Library List</strong> → click the <strong>+</strong> icon → type <code>FLGHT4nn</code> → press Enter.</p>
@@ -694,7 +694,7 @@
           <img src="img/launch-terminal-picker.png" alt="Launch Terminal Picker" class="screenshot" style="max-width:700px;" />
           <img src="img/5250.png" alt="Select 5250" class="screenshot" style="max-width:700px;" />
           <img src="img/5250-terminal.png" alt="5250 Terminal" class="screenshot" style="max-width:700px;" />
-          <div class="info-box">💡 <strong>Username:</strong> ITZUSER &nbsp;|&nbsp; <strong>Password:</strong> found in your TechZone reservation details under <strong>deployment password</strong>.</div>
+          <div class="callout tip"><div class="icon">💡</div><p><strong>Username:</strong> ITZUSER &nbsp;|&nbsp; <strong>Password:</strong> found in your TechZone reservation details under <strong>deployment password</strong>.</p></div>
           <p style="margin-top:14px;margin-bottom:6px;font-size:0.85rem;color:var(--muted);">Once logged in, paste the commands below in sequence to see your associated green screen:</p>
           <div class="prompt-block"><div class="prompt-label">5250 Command</div><div class="prompt-text">ADDLIBLE FLGHT4nn</div></div>
           <div class="prompt-block"><div class="prompt-label">5250 Command</div><div class="prompt-text">CALL FLGHT4nn/FRS021</div></div>
@@ -743,8 +743,8 @@
       <h2 class="section-title">1c <span class="section-badge">Generate ERD</span></h2>
       <div class="steps">
         <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Switch to IBM i Database mode</h3><p>Use the mode selector at the bottom of the Bob chat panel.</p></div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Run the /erd command</h3><p>Type <code>/erd</code> first so it highlights in Bob chat, then send:</p>
-          <div class="prompt-block"><div class="prompt-label">Bob Slash Command</div><div class="prompt-text">/erd FLGHT4nn</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Run the /erd command</h3><p>Type <code>/erd</code> first so it highlights in Bob chat, then type your library:</p>
+          <div class="prompt-block no-copy"><div class="prompt-label">Example Input</div><div class="prompt-text"><code>/erd</code> FLGHT4nn</div></div>
         </div></div>
         <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Review the Mermaid ERD</h3><p>Bob introspects <code>FLIGHTS</code>, <code>ORDERS</code>, <code>CUSTOMERS</code>, <code>AGENTS</code>, etc. Key relationships: <code>ORDERS</code> links to <code>FLIGHTS</code>, <code>CUSTOMERS</code>, and <code>AGENTS</code>. Copy it to your architecture document.</p></div></div>
       </div>
@@ -2754,6 +2754,7 @@ function attachPromptButtons() {
   document.querySelectorAll('.prompt-block').forEach(block => {
     const textEl = block.querySelector('.prompt-text');
     if (textEl) textEl.innerHTML = stripQuotes(textEl.innerHTML);
+    if (block.classList.contains('no-copy')) return; // copy suppressed
     if (block.querySelector('.prompt-copy-btn')) return; // already attached
     const btn = document.createElement('button');
     btn.className = 'prompt-copy-btn';
