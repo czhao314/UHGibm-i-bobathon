@@ -880,7 +880,7 @@
       <p style="font-size:14px;color:var(--muted);margin-top:10px;">Bob should list fields (Flight Number, From/To City, Departure/Arrival Time, Mileage, Seats, Ticket Price) and identify the <code>S</code>-prefix naming pattern.</p>
       <img src="img/ACS-green-screen.png" alt="Flight Maintenance screen in 5250 emulator" class="screenshot" />
       <p class="screenshot-caption">The Flight Maintenance screen in IBM i Access Client Solutions (5250 emulator)</p>
-      <p style="font-size:13px;color:var(--muted);margin:12px 0 6px;">💡 Just in case you got logged out of your green screen terminal, log back in with your username and password, then run these two commands sequentially to see the screen:</p>
+      <div class="callout tip"><div class="icon">💡</div><p>Just in case you got logged out of your green screen terminal, log back in with your username and password, then run these two commands sequentially to see the screen:</p></div>
       <div class="prompt-block"><div class="prompt-label">5250 Command</div><div class="prompt-text">ADDLIBLE FLGHT4nn</div></div>
       <div class="prompt-block"><div class="prompt-label">5250 Command</div><div class="prompt-text">CALL FLGHT4nn/FRS021</div></div>
 
@@ -937,7 +937,7 @@ CRTRPGPGM PGM(FLGHT4nn/FRS021) SRCFILE(FLGHT4nn/QRPGSRC)  SRCMBR(FRS021) REPLACE
       </tbody></table></div>
       <img src="img/newfield.png" alt="New Total Flight Hours field visible on the Flight Maintenance screen" class="screenshot" />
       <p class="screenshot-caption">The new Flight Hours field now appears on the Flight Maintenance screen 🎉</p>
-      <p style="font-size:13px;color:var(--muted);margin:12px 0 6px;">💡 Just in case you got logged out of your green screen terminal, log back in with your username and password, then run these two commands sequentially to see the changes:</p>
+      <div class="callout tip"><div class="icon">💡</div><p>Just in case you got logged out of your green screen terminal, log back in with your username and password, then run these two commands sequentially to see the changes:</p></div>
       <div class="prompt-block"><div class="prompt-label">5250 Command</div><div class="prompt-text">ADDLIBLE FLGHT4nn</div></div>
       <div class="prompt-block"><div class="prompt-label">5250 Command</div><div class="prompt-text">CALL FLGHT4nn/FRS021</div></div>
       <div class="callout success"><div class="icon">✅</div><p><strong>Exercise 3 complete!</strong> Total Flight Hours now flows end-to-end: <code>FLIGHTS.FLHRS</code> → <code>FLIGHTSZ.FHRS</code> → <code>FRS021</code> → <code>FRS021DF.SFLHRS</code></p></div>
@@ -1112,7 +1112,7 @@ end-proc;</div></div>
         <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Launch the workflow</h3><p>Click the <strong>workflow icon</strong> at the top of the Bob panel → choose <strong>RPGUnit Test Plan Creation</strong> in your library list.</p>
           <img src="img/workflows-icon.png" alt="Workflows icon in the Bob panel" class="screenshot" style="max-width:200px;" />
         </div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Configure it</h3><ul><li>Click <strong>Get Started</strong> and select your library <code>FLGHT4nn</code></li><li>Enter an IFS project directory, e.g. <code>/home/&lt;user&gt;/flght4nn</code></li><li>Tell Bob to <strong>create a new test plan</strong> and select the default recommended path.</li><li>When prompted to <strong>Locate Testable Files</strong> → select <strong>Manual</strong> → input the file path of the source member you created in the step above (e.g. <code>FLGHT4nn/QRPGLESRC(CUSTCHK)</code>).</li><li>Select the exported procedure and proceed.</li><li>Choose to <strong>validate the environment</strong>.</li></ul></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Configure it</h3><ul><li>Click <strong>Get Started</strong> and select your library <code>FLGHT4nn</code></li><li>Enter an IFS project directory, e.g. <code>/home/ITZUSER/flght4nn</code></li><li>Tell Bob to <strong>create a new test plan</strong> and select the default recommended path.</li><li>When prompted to <strong>Locate Testable Files</strong> → select <strong>Manual</strong> → input the file path of the source member you created in the step above (e.g. <code>FLGHT4nn/QRPGLESRC(CUSTCHK)</code>).</li><li>Select the exported procedure and proceed.</li><li>Choose to <strong>validate the environment</strong>.</li></ul></div></div>
         <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Review output files</h3><p>Bob writes test plan documents to your IFS directory. At the bottom of the chat panel, review the files it created — these Markdown documents are used in step 6c.</p>
           <div class="callout tip"><div class="icon">💡</div><p>If Bob asks to run the Test Plan Creation workflow again, select <strong>No thanks</strong>.</p></div>
         </div></div>
