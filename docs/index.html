@@ -651,7 +651,7 @@
       <h2 class="section-title">Step 4 <span class="section-badge">Connect Bob to IBM i</span></h2>
       <div class="steps">
         <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Open the IBM i panel</h3><p>Click the IBM i icon in the left Activity Bar of Bob.</p></div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Add a new connection</h3><p>Click <strong>New Connection</strong> and enter the <strong>host IP</strong>, <strong>user profile</strong>, and <strong>ssh_private_key</strong> provided by your instructor. <strong>Do not use the password — use only the ssh_private_key.</strong></p>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Add a new connection</h3><p>Click <strong>New Connection</strong> and enter the <strong>host IP</strong>, <strong>user profile</strong>, and select the <strong>ssh_private_key</strong> you placed in your workspace folder. <strong>Do not use the password — use only the ssh_private_key.</strong></p>
           <img src="img/i-connection.png" alt="IBM i connection dialog" class="screenshot" />
         </div></div>
         <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Add your library to the User Library List</h3><p>In Code for IBM i, go to <strong>User Library List</strong> → click the <strong>+</strong> icon → type <code>FLGHT4nn</code> → press Enter.</p>
@@ -677,7 +677,7 @@
         <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Download the private key &amp; set permissions</h3>
           <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>chmod 600 ssh_private_key.pem</pre></div>
         </div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Open the SSH tunnel</h3><p>Replace <code>&lt;myuser&gt;@&lt;myIPaddress&gt;</code> with your TechZone values. On macOS/Linux you may need <code>sudo ssh</code>; on Windows remove <code>sudo</code> and run as Administrator.</p>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Open the SSH tunnel</h3><p>Replace <code>&lt;ITZUSER&gt;@&lt;myIPaddress&gt;</code> with your TechZone values. On macOS/Linux you may need <code>sudo ssh</code>; on Windows remove <code>sudo</code> and run as Administrator.</p>
           <img src="img/bob-lab-network.png" alt="Lab network diagram" class="screenshot" />
           <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>sudo ssh -i ./ssh_private_key.pem \
   -L 50000:localhost:23 -L 2001:localhost:2001 -L 449:localhost:449 \
@@ -688,12 +688,14 @@
   -L 2323:localhost:2323 -L 3001:localhost:3001 -L 3002:localhost:3002 \
   -L 2005:localhost:2005 -L 8076:localhost:8076 -L 3010:localhost:3010 \
   -o ExitOnForwardFailure=yes -o ServerAliveInterval=15 -o ServerAliveCountMax=3 \
-  &lt;myuser&gt;@&lt;myIPaddress&gt;</pre></div>
+  &lt;ITZUSER&gt;@&lt;myIPaddress&gt;</pre></div>
         </div></div>
         <div class="step"><div class="step-num">3</div><div class="step-content"><h3>(Optional) Connect IBM i 5250 Green Screen for 5250</h3><p>Only needed if you want to view the green screen. Navigate to the VSCode search bar, type in <code>&gt;IBM i: Launch Terminal Picker</code>, select <code>5250</code>, and then log in with TechZone Credentials:</p>
           <img src="img/launch-terminal-picker.png" alt="Launch Terminal Picker" class="screenshot" style="max-width:700px;" />
           <img src="img/5250.png" alt="Select 5250" class="screenshot" style="max-width:700px;" />
           <img src="img/5250-terminal.png" alt="5250 Terminal" class="screenshot" style="max-width:700px;" />
+          <div class="info-box">💡 <strong>Username:</strong> ITZUSER &nbsp;|&nbsp; <strong>Password:</strong> found in your TechZone reservation details under <strong>deployment password</strong>.</div>
+          <p style="margin-top:14px;margin-bottom:6px;font-size:0.85rem;color:var(--muted);">Once logged in, paste the commands below in sequence to see your associated green screen:</p>
           <div class="prompt-block"><div class="prompt-label">5250 Command</div><div class="prompt-text">ADDLIBLE FLGHT4nn</div></div>
           <div class="prompt-block"><div class="prompt-label">5250 Command</div><div class="prompt-text">CALL FLGHT4nn/FRS021</div></div>
         </div></div>
