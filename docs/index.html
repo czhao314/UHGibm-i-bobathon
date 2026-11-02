@@ -912,7 +912,7 @@ Only these four objects may change: FLIGHTS, FLIGHTSZ, FRS021DF, FRS021. Flag an
 
       <h2 class="section-title">3f <span class="section-badge">Build</span></h2>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Build only the four demo objects in order: (1) apply DDS for FLIGHTS, (2) rebuild FLIGHTSZ, (3) compile FRS021DF, (4) compile FRS021. Use the correct IBM i command for each source type. If one fails, stop and wait for my direction. Do not touch unrelated programs.</div></div>
-      <p style="font-size:14px;color:var(--text);margin:12px 0 6px;font-weight:600;">Expected commands:</p>
+      <p style="font-size:14px;color:var(--text);margin:12px 0 6px;font-weight:600;">Expected Commands Bob Will Run Through for This Query:</p>
       <div class="code-block"><div class="code-header">IBM i Commands <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>CHGPF FILE(FLGHT4nn/FLIGHTS)   SRCFILE(FLGHT4nn/QDDSSRCF) SRCMBR(FLIGHTS)
 CRTLF FILE(FLGHT4nn/FLIGHTSZ)  SRCFILE(FLGHT4nn/QDDSSRCF) SRCMBR(FLIGHTSZ)
 CRTDSPF FILE(FLGHT4nn/FRS021DF) SRCFILE(FLGHT4nn/QDDSSRCD) SRCMBR(FRS021DF)
@@ -1027,7 +1027,7 @@ FETCH FIRST 100 ROWS ONLY;</div></div>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Which active jobs have accumulated the most CPU time? For the top jobs, distinguish cumulative CPU time from their current elapsed CPU percentage."</div></div>
       <p style="font-size:14px;color:var(--muted);margin-top:10px;">Bob queries <code>QSYS2.ACTIVE_JOB_INFO</code> and returns a summary of active jobs with CPU utilization — an instant health check on your LPAR.</p>
 
-      <h2 class="section-title">Prompt 2 <span class="section-badge">Optional</span></h2>
+      <h2 class="section-title">Prompt 2</h2>
       <h3 class="subsection">Inspect the Top Job</h3>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">"Inspect the job ranked first and determine whether it is currently CPU-bound. Check its job log and take one fresh elapsed CPU measurement. If the log is empty and the job is a PASE process, inspect its IFS job information for its executable, working directory, and open application or log files. Stop after that investigation. Distinguish facts from inferences and provide no more than two recommendations."</div></div>
       <p style="font-size:14px;color:var(--muted);margin-top:10px;">Bob uses <code>QSYS2.JOBLOG_INFO</code>, <code>QSYS2.ACTIVE_JOB_INFO</code>, and IFS inspection to investigate. The response clearly separates observations from inferences.</p>
