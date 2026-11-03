@@ -407,14 +407,14 @@
       <a class="nav-item" onclick="showPage('oh-ibmi-package', this)">
         <span class="nav-dot"></span> IBM i Package
       </a>
+      <a class="nav-item" onclick="showPage('oh-workspace', this)">
+        <span class="nav-dot"></span> Create a Workspace
+      </a>
       <a class="nav-item" onclick="showPage('oh-connect', this)">
         <span class="nav-dot"></span> Connect IBM i to Bob
       </a>
       <a class="nav-item" onclick="showPage('oh-bob101', this)">
         <span class="nav-dot"></span> Bob 101
-      </a>
-      <a class="nav-item" onclick="showPage('oh-workspace', this)">
-        <span class="nav-dot"></span> Create a Workspace
       </a>
     </div>
   </div>
@@ -1526,7 +1526,9 @@ ansible ibmi_systems -i ansible/inventories/development/hosts.yml -m ansible.bui
 
       <h2 class="section-title">Setup <span class="section-badge">Before Part 1</span></h2>
       <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Add your library to the User Library List</h3><p>In the <strong>IBM i</strong> extension on the sidebar, go to <strong>User Library List</strong> → click the <strong>+</strong> icon → type <code>MYAPP_DB<span class="l6n">NN</span></code> → press Enter.</p></div></div>
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Add your library to the User Library List</h3><p>In the <strong>IBM i</strong> extension on the sidebar, go to <strong>User Library List</strong> → click the <strong>+</strong> icon → type <code>MYAPP_DB<span class="l6n">NN</span></code> → press Enter.</p>
+          <img src="img/library_add.png" alt="Add to Library List" class="screenshot" style="max-width:700px;" />
+        </div></div>
       </div>
 
       <h2 class="section-title">Part 1 <span class="section-badge">Generate the Playbooks with Bob</span></h2>
@@ -2031,6 +2033,7 @@ Flag if either threshold is within 30 days.</div></div>
       <h2 class="section-title">Part 5 <span class="section-badge">Health Report Generation</span></h2>
 
       <h3 class="subsection">Step 8 — Consolidated Health Report</h3>
+      <div class="callout warning"><div class="icon">⏳</div><p><strong>This may take a while.</strong> Bob has to pull together everything from the previous steps and write a full report, so it can take several minutes to finish. Let Bob keep working until the report is saved.</p></div>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Based on everything we've found — the current snapshot, trend analysis,
 anomaly detection, and capacity forecast —
 generate a comprehensive operational health report for this IBM i system.
@@ -2109,11 +2112,20 @@ Save the report to /home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt
           <div style="font-size:12px;color:var(--muted);line-height:1.5;">Install and verify the IBM i Premium Package in Bob to unlock Developer and Database modes.</div>
         </div>
 
-        <div onclick="showPage('oh-connect', document.querySelector('[onclick*=oh-connect]'))"
+        <div onclick="showPage('oh-workspace', document.querySelector('[onclick*=oh-workspace]'))"
              style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:border-color .15s,transform .15s;"
              onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'"
              onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'">
           <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Topic 2</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Create a Workspace</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">Set up your VS Code workspace for the IBM i lab — folder structure, library list, and workspace settings.</div>
+        </div>
+
+        <div onclick="showPage('oh-connect', document.querySelector('[onclick*=oh-connect]'))"
+             style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:border-color .15s,transform .15s;"
+             onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'"
+             onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Topic 3</div>
           <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Connect IBM i to Bob</div>
           <div style="font-size:12px;color:var(--muted);line-height:1.5;">Connect your IBM i TechZone environment to Bob and verify the connection is working.</div>
         </div>
@@ -2122,18 +2134,9 @@ Save the report to /home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt
              style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:border-color .15s,transform .15s;"
              onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'"
              onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'">
-          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Topic 3</div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Topic 4</div>
           <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Bob 101</div>
           <div style="font-size:12px;color:var(--muted);line-height:1.5;">A quick tour of the Bob panel, VS Code settings, terminal access, and cloning your repo.</div>
-        </div>
-
-        <div onclick="showPage('oh-workspace', document.querySelector('[onclick*=oh-workspace]'))"
-             style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:border-color .15s,transform .15s;"
-             onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'"
-             onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'">
-          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Topic 4</div>
-          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Create a Workspace</div>
-          <div style="font-size:12px;color:var(--muted);line-height:1.5;">Set up your VS Code workspace for the IBM i lab — folder structure, library list, and workspace settings.</div>
         </div>
 
       </div>
@@ -2211,6 +2214,110 @@ Save the report to /home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt
 
       </div>
       <div style="padding:24px 0 0;border-top:1px solid var(--border);margin-top:24px;display:flex;justify-content:flex-end;">
+        <button class="btn btn-primary" onclick="showPage('oh-workspace', document.querySelector('[onclick*=oh-workspace]'))">Next: Create a Workspace →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OFFICE HOURS: CREATE A WORKSPACE ── -->
+  <div class="page" id="page-oh-workspace">
+    <div class="page-hero" style="border-left: 4px solid var(--accent);">
+      <div class="eyebrow" style="color:var(--accent);">Office Hours 101 — Topic 2</div>
+      <h1>Create a Workspace</h1>
+      <p class="subtitle">Set up your VS Code workspace for the IBM i lab — folder structure, library list, and workspace settings.</p>
+    </div>
+    <div class="page-body">
+
+      <!-- jump grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:28px;">
+        <a data-scrollto="ohws-box" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 1</div><div style="font-size:13px;font-weight:700;color:var(--text);">Access Box Link</div></a>
+        <a data-scrollto="ohws-dl" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 2</div><div style="font-size:13px;font-weight:700;color:var(--text);">Download Zip File</div></a>
+        <a data-scrollto="ohws-unzip" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 3</div><div style="font-size:13px;font-weight:700;color:var(--text);">Unzip &amp; Check SSH Key</div></a>
+        <a data-scrollto="ohws-0" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 4</div><div style="font-size:13px;font-weight:700;color:var(--text);">Open Explorer</div></a>
+        <a data-scrollto="ohws-1" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 5</div><div style="font-size:13px;font-weight:700;color:var(--text);">Create Workspace</div></a>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3 id="ohws-box">Access the Box Link</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Open <a href="https://ibm.box.com/s/hcqbb5nc1tp7sedp8moj9ouzg9jn0wz9" target="_blank" rel="noopener">https://ibm.box.com/s/hcqbb5nc1tp7sedp8moj9ouzg9jn0wz9</a> and enter the password <code>IBMIbobathon2026</code> when prompted.</p></div>
+            <img src="img/box_folder.png" alt="Box folder" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Download the Zip File</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3 id="ohws-dl">Download the Zip File</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Download the zip file from the Box folder. It contains your SSH key.</p></div>
+            <img src="img/download_zip.png" alt="Download zip file" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Unzip and Check for the SSH Key</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3 id="ohws-unzip">Unzip and Check for the SSH Key</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Unzip the downloaded file and open the unzipped folder to make sure the SSH key is in there.</p></div>
+            <img src="img/ssh_key_unzipped.png" alt="SSH key in unzipped folder" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Open Explorer</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h3 id="ohws-0">Open Explorer</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>Click the Explorer icon in the VS Code activity bar to open the file explorer. This is where you will manage your workspace folders and files throughout the lab.</p></div>
+            <img src="img/oh-open-explorer.png" alt="Open Explorer" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Create Workspace</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <h3 id="ohws-1">Create Workspace</h3>
+            <div class="callout tip"><div class="icon">💡</div><p>In VS Code, go to <strong>File → Open Folder</strong> and open the <strong>unzipped folder</strong> from the previous step as your workspace for the lab. This keeps the SSH key and all your project files in one place.</p></div>
+            <img src="img/oh-workspace-create.png" alt="Create workspace" class="screenshot" style="max-width:700px;" />
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:24px 0 0;border-top:1px solid var(--border);margin-top:24px;display:flex;justify-content:space-between;">
+        <button class="btn btn-secondary" onclick="showPage('oh-ibmi-package', document.querySelector('[onclick*=oh-ibmi-package]'))">← IBM i Package</button>
         <button class="btn btn-primary" onclick="showPage('oh-connect', document.querySelector('[onclick*=oh-connect]'))">Next: Connect IBM i to Bob →</button>
       </div>
     </div>
@@ -2219,7 +2326,7 @@ Save the report to /home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt
   <!-- ── OFFICE HOURS: CONNECT IBM i TO BOB ── -->
   <div class="page" id="page-oh-connect">
     <div class="page-hero" style="border-left: 4px solid var(--accent);">
-      <div class="eyebrow" style="color:var(--accent);">Office Hours 101 — Topic 2</div>
+      <div class="eyebrow" style="color:var(--accent);">Office Hours 101 — Topic 3</div>
       <h1>Connect IBM i to Bob</h1>
       <p class="subtitle">Connect your IBM i environment to Bob so you can use IBM i Developer and Database modes during the lab.</p>
     </div>
@@ -2279,7 +2386,7 @@ Save the report to /home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt
           <div class="step-num">3</div>
           <div class="step-content">
             <h3 id="ohcon-3">IBM i Login &amp; TechZone Details</h3>
-            <div class="callout tip"><div class="icon">💡</div><p>Enter your IBM i login credentials using the TechZone details provided for the session. The red boxes outline the 3 areas of information you will need to input into the login credentials.</p></div>
+            <div class="callout tip"><div class="icon">💡</div><p>Enter your IBM i login credentials using the TechZone details provided for the session. <strong>The instructor will give you the login details from the TechZone environment.</strong> The red boxes outline the 3 areas of information you will need to input into the login credentials.</p></div>
             <img src="img/oh-ibmi-login.png" alt="IBM i login" class="screenshot" style="max-width:800px;width:100%;" />
             <img src="img/oh-techzone-details.png" alt="TechZone details" class="screenshot" style="max-width:800px;width:100%;" />
           </div>
@@ -2324,8 +2431,9 @@ Save the report to /home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt
         </div>
 
       </div>
-      <div style="padding:24px 0 0;border-top:1px solid var(--border);margin-top:24px;display:flex;justify-content:flex-start;">
-        <button class="btn btn-secondary" onclick="showPage('oh-ibmi-package', document.querySelector('[onclick*=oh-ibmi-package]'))">← IBM i Package</button>
+      <div style="padding:24px 0 0;border-top:1px solid var(--border);margin-top:24px;display:flex;justify-content:space-between;">
+        <button class="btn btn-secondary" onclick="showPage('oh-workspace', document.querySelector('[onclick*=oh-workspace]'))">← Create a Workspace</button>
+        <button class="btn btn-primary" onclick="showPage('oh-bob101', document.querySelector('[onclick*=oh-bob101]'))">Next: Bob 101 →</button>
       </div>
     </div>
   </div>
@@ -2333,7 +2441,7 @@ Save the report to /home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt
   <!-- ── OFFICE HOURS: BOB 101 ── -->
   <div class="page" id="page-oh-bob101">
     <div class="page-hero" style="border-left: 4px solid var(--accent);">
-      <div class="eyebrow" style="color:var(--accent);">Office Hours 101 — Topic 3</div>
+      <div class="eyebrow" style="color:var(--accent);">Office Hours 101 — Topic 4</div>
       <h1>Bob 101</h1>
       <p class="subtitle">A quick tour of what's where in Bob — modes, tools, skills, and how to get the most out of your session.</p>
     </div>
@@ -2431,112 +2539,8 @@ Save the report to /home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt
           </div>
         </div>
       </div>
-      <div style="padding:24px 0 0;border-top:1px solid var(--border);margin-top:24px;display:flex;justify-content:space-between;">
-        <button class="btn btn-secondary" onclick="showPage('oh-connect', document.querySelector('[onclick*=oh-connect]'))">← Connect IBM i to Bob</button>
-        <button class="btn btn-primary" onclick="showPage('oh-workspace', document.querySelector('[onclick*=oh-workspace]'))">Next: Create a Workspace →</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── OFFICE HOURS: CREATE A WORKSPACE ── -->
-  <div class="page" id="page-oh-workspace">
-    <div class="page-hero" style="border-left: 4px solid var(--accent);">
-      <div class="eyebrow" style="color:var(--accent);">Office Hours 101 — Topic 4</div>
-      <h1>Create a Workspace</h1>
-      <p class="subtitle">Set up your VS Code workspace for the IBM i lab — folder structure, library list, and workspace settings.</p>
-    </div>
-    <div class="page-body">
-
-      <!-- jump grid -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:28px;">
-        <a data-scrollto="ohws-0" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 1</div><div style="font-size:13px;font-weight:700;color:var(--text);">Open Explorer</div></a>
-        <a data-scrollto="ohws-1" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 2</div><div style="font-size:13px;font-weight:700;color:var(--text);">Create Workspace</div></a>
-        <a data-scrollto="ohws-2" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 3</div><div style="font-size:13px;font-weight:700;color:var(--text);">Create Folder</div></a>
-        <a data-scrollto="ohws-3" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 4</div><div style="font-size:13px;font-weight:700;color:var(--text);">Download SSH Key</div></a>
-        <a data-scrollto="ohws-4" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s,transform .15s;" onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Step 5</div><div style="font-size:13px;font-weight:700;color:var(--text);">Insert SSH</div></a>
-      </div>
-
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <h3 id="ohws-0">Open Explorer</h3>
-            <div class="callout tip"><div class="icon">💡</div><p>Click the Explorer icon in the VS Code activity bar to open the file explorer. This is where you will manage your workspace folders and files throughout the lab.</p></div>
-            <img src="img/oh-open-explorer.png" alt="Open Explorer" class="screenshot" style="max-width:700px;" />
-          </div>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
-        <div style="flex:1;height:1px;background:var(--border);"></div>
-        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Create Workspace</span>
-        <div style="flex:1;height:1px;background:var(--border);"></div>
-      </div>
-
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <h3 id="ohws-1">Create Workspace</h3>
-            <div class="callout tip"><div class="icon">💡</div><p>In VS Code, go to <strong>File → Open Folder</strong> and select or create a folder to use as your workspace for the lab. This keeps all your project files organised in one place.</p></div>
-            <img src="img/oh-workspace-create.png" alt="Create workspace" class="screenshot" style="max-width:700px;" />
-          </div>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
-        <div style="flex:1;height:1px;background:var(--border);"></div>
-        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Create Folder</span>
-        <div style="flex:1;height:1px;background:var(--border);"></div>
-      </div>
-
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <h3 id="ohws-2">Create Folder</h3>
-            <div class="callout tip"><div class="icon">💡</div><p>Inside your workspace, create a new folder to store your lab files. Give it a name relevant to your project.</p></div>
-            <img src="img/oh-create-folder.png" alt="Create folder" class="screenshot" style="max-width:700px;" />
-          </div>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
-        <div style="flex:1;height:1px;background:var(--border);"></div>
-        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Download SSH Key</span>
-        <div style="flex:1;height:1px;background:var(--border);"></div>
-      </div>
-
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-content">
-            <h3 id="ohws-3">Download SSH Key</h3>
-            <div class="callout tip"><div class="icon">💡</div><p>Download the SSH private key from your TechZone reservation details — this key is required to authenticate your IBM i connection.</p></div>
-            <img src="img/oh-download-ssh.png" alt="Download SSH key" class="screenshot" style="max-width:700px;" />
-          </div>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:12px;margin:28px 0;">
-        <div style="flex:1;height:1px;background:var(--border);"></div>
-        <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);">Insert SSH</span>
-        <div style="flex:1;height:1px;background:var(--border);"></div>
-      </div>
-
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">5</div>
-          <div class="step-content">
-            <h3 id="ohws-4">Insert SSH</h3>
-            <div class="callout tip"><div class="icon">💡</div><p>Move the SSH private key into the folder you just created.</p></div>
-            <img src="img/oh-insert-ssh.png" alt="Insert SSH key" class="screenshot" style="max-width:700px;" />
-          </div>
-        </div>
-      </div>
-
       <div style="padding:24px 0 0;border-top:1px solid var(--border);margin-top:24px;display:flex;justify-content:flex-start;">
-        <button class="btn btn-secondary" onclick="showPage('oh-bob101', document.querySelector('[onclick*=oh-bob101]'))">← Bob 101</button>
+        <button class="btn btn-secondary" onclick="showPage('oh-connect', document.querySelector('[onclick*=oh-connect]'))">← Connect IBM i to Bob</button>
       </div>
     </div>
   </div>
@@ -2547,7 +2551,7 @@ Save the report to /home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt
 // ── TRACK SWITCHING ───────────────────────────────────
 const devPages     = ['overview','setup','ex1','ex2','ex3','ex4','ex5','ex6','summary'];
 const ansiblePages = ['ansible-overview','lab5','lab6','lab7','lab8','lab9'];
-const ohPages      = ['oh-overview','oh-ibmi-package','oh-connect','oh-bob101','oh-workspace'];
+const ohPages      = ['oh-overview','oh-ibmi-package','oh-workspace','oh-connect','oh-bob101'];
 let currentTrack = 'dev';
 let visited = { dev: new Set(['overview']), ansible: new Set(), oh: new Set() };
 
