@@ -277,6 +277,8 @@
   .lib-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .lib-picker select, .lib-picker input { background: var(--dark); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 7px; font-size: 14px; outline: none; transition: border .15s; }
   .lib-picker select:focus, .lib-picker input:focus { border-color: var(--orange); }
+  #lab6-lib-display, #lab6-usr-display { font-family: "SF Mono", "Fira Code", monospace; font-size: 15px; font-weight: 700; color: var(--orange); padding: 8px 16px; background: rgba(255,153,0,.1); border-radius: 7px; border: 1px solid rgba(255,153,0,.3); }
+  .l6n { color: var(--orange); font-weight: 700; }
   #lib-display { font-family: "SF Mono", "Fira Code", monospace; font-size: 15px; font-weight: 700; color: var(--orange); padding: 8px 16px; background: rgba(255,153,0,.1); border-radius: 7px; border: 1px solid rgba(255,153,0,.3); }
   #port-display { font-family: "SF Mono", "Fira Code", monospace; font-size: 15px; font-weight: 700; color: var(--green); padding: 8px 16px; background: rgba(102,187,106,.1); border-radius: 7px; border: 1px solid rgba(102,187,106,.3); }
 
@@ -1214,7 +1216,7 @@ end-proc;</div></div>
              onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'">
           <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:6px;">Lab 8 · ~25 min</div>
           <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">PTF Impact Analysis Agent</div>
-          <div style="font-size:12px;color:var(--muted);line-height:1.5;">Trace supersede chains, generate a sequenced deployment plan, and have Bob author a CAB-ready change request document.</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">Audit supersede chains, plan permanent applies and PTF group refreshes, and have Bob author a CAB-ready change request document.</div>
         </div>
 
         <div onclick="showPage('lab9', document.querySelector('[onclick*=lab9]'))" style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;grid-column:1/-1;transition:border-color .15s,transform .15s;"
@@ -1416,11 +1418,7 @@ Use IBM i Ansible collection modules (ibm.power_ibmi) and follow best practices.
 
       <h2 class="section-title">Part 3 <span class="section-badge">Run the Playbook</span></h2>
       <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Run through Bob</h3>
-          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Run the PTF currency check playbook</div></div>
-          <div class="callout tip"><div class="icon">💡</div><p>Bob may iterate on the playbook a few times to adapt to your system — this is normal. Let it self-correct.</p></div>
-        </div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Pre-flight verification</h3><p>Run these on your IBM i before executing the playbook:</p>
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Pre-flight verification</h3><p>Run these on your IBM i before executing the playbook:</p>
           <div class="code-block"><div class="code-header">IBM i PASE <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>/QOpenSys/pkgs/bin/python3.9 -c "import ibm_db_dbi; conn = ibm_db_dbi.connect(); print('OK')"
 /QOpenSys/pkgs/bin/python3.9 -c "import itoolkit; print(itoolkit.__version__)"
 /QOpenSys/pkgs/cwbping localhost</pre></div>
@@ -1434,6 +1432,10 @@ Use IBM i Ansible collection modules (ibm.power_ibmi) and follow best practices.
           </div>
           <div class="code-block" style="margin-top:10px;"><div class="code-header">bash — Ansible controller <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-galaxy collection list | grep ibm.power_ibmi   # Must show 3.3.0
 ansible --version                                       # Must show 2.9+</pre></div>
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Run through Bob</h3>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Run the PTF currency check playbook</div></div>
+          <div class="callout tip"><div class="icon">💡</div><p>Bob may iterate on the playbook a few times to adapt to your system — this is normal. Let it self-correct.</p></div>
         </div></div>
         <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Review output &amp; open the report</h3><p>Check the PLAY RECAP for success/failure. Then open the generated HTML report:</p>
           <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>open ./ansible/reports/&lt;REPORT_NAME&gt;</pre></div>
@@ -1512,44 +1514,57 @@ ansible --version                                       # Must show 2.9+</pre></
       <div class="code-block"><div class="code-header">bash — verify <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-galaxy collection list | grep ibm.power_ibmi
 ansible ibmi_systems -i ansible/inventories/development/hosts.yml -m ansible.builtin.ping</pre></div>
 
-      <h2 class="section-title">Lab Environment Setup <span class="section-badge">Run before students arrive</span></h2>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Create the non-compliant baseline that students will audit and remediate. The <code>MYAPP_DB</code> library must exist before the audit playbook runs.</p>
-      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre># Create test library in non-compliant state
-ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
-  -m ibm.power_ibmi.ibmi_cl_command \
-  -a "cmd='CRTLIB LIB(MYAPP_DB) TEXT(''Lab 6 Test Library'')'"
+      <div class="lib-picker">
+        <h3>🔢 Enter Your Lab 6 Student Number (01–20)</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Your instructor has already prepared a non-compliant library and user profile for you. Enter the number your instructor gave you and every prompt, command, and table in this lab will use your own objects.</p>
+        <div class="lib-row">
+          <input type="number" id="lab6-student-num" min="1" max="20" placeholder="e.g. 7" oninput="updateLab6Num()" style="width:100px;" />
+          <span style="color:var(--muted);font-size:13px;">→ Your library:</span>
+          <span id="lab6-lib-display">MYAPP_DBNN</span>
+          <span style="color:var(--muted);font-size:13px;">Your profile:</span>
+          <span id="lab6-usr-display">LAB6USRNN</span>
+        </div>
+      </div>
 
-ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
-  -m ibm.power_ibmi.ibmi_object_authority \
-  -a "object_name=MYAPP_DB object_type=*LIB user=*PUBLIC operation=grant authority=*CHANGE"
-
-# Set QINACTMSGQ non-compliant (QPWDMINLEN blocked by QPWDRULES on this system)
-ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
-  -m ibm.power_ibmi.ibmi_cl_command \
-  -a "cmd='CHGSYSVAL SYSVAL(QINACTMSGQ) VALUE(*ENDJOB)'"</pre></div>
+      <h2 class="section-title">Setup <span class="section-badge">Before Part 1</span></h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Add your library to the User Library List</h3><p>In the <strong>IBM i</strong> extension on the sidebar, go to <strong>User Library List</strong> → click the <strong>+</strong> icon → type <code>MYAPP_DB<span class="l6n">NN</span></code> → press Enter.</p></div></div>
+      </div>
 
       <h2 class="section-title">Part 1 <span class="section-badge">Generate the Playbooks with Bob</span></h2>
       <div class="steps">
         <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Activate <code>Ansible for i mode</code></h3><p>Expand the modes dropdown and select <strong>ℹ️ Ansible for i</strong>.</p></div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Ask Bob to generate the security compliance project</h3>
-          <div class="prompt-block"><div class="prompt-label">Bob Prompt — copy this exactly</div><div class="prompt-text">Create a security compliance automation project for IBM i using the ibm.power_ibmi collection (version 3.3.0).
-
-Generate two playbooks and a reporting template:
-
-1. audit_security.yml:
-   - Audit system values QSECURITY, QINACTMSGQ, QMAXSIGN, QALWOBJRST using ibmi_sysval
-   - Audit user profiles for default/blank passwords using ibmi_user_compliance_check
-   - Inspect the public authority of library MYAPP_DB using ibmi_object_authority with operation=display
-   - Save a JSON compliance report locally using ansible.builtin.template with delegate_to: localhost
-
-2. remediate_security.yml:
-   - Set QINACTMSGQ=*DSCJOB and QALWOBJRST=*NONE using ibmi_cl_command with CHGSYSVAL
-   - Revoke *PUBLIC *CHANGE authority on MYAPP_DB using ibmi_object_authority, then grant *PUBLIC *EXCLUDE
-
-3. A Jinja2 template at ./ansible/templates/security_report.json.j2 that outputs a structured
-   compliance scorecard. Use delegate_to: localhost on the template task.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Have Bob check the module parameters first</h3>
+          <p>Before generating anything, ask Bob to look up the real parameters in the installed collection. This avoids the most common mistakes (wrong parameter names, using a read-only module to change something).</p>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt — copy this exactly</div><div class="prompt-text">Before we build anything, I want to make sure we use the right module parameters. First activate
+the Python virtual environment for this project (source .venv/bin/activate) and keep using it for
+every Ansible command in this lab, since that's where Ansible and the ibm.power_ibmi collection are
+installed. Then use ansible-doc to look up ibm.power_ibmi.ibmi_sysval, ibm.power_ibmi.ibmi_user_compliance_check,
+ibm.power_ibmi.ibmi_object_authority and ibm.power_ibmi.ibmi_cl_command. For each one, tell me
+the required parameters and what they're called, and whether the module can read, change, or
+both. Also confirm the installed version of the ibm.power_ibmi collection is 3.3.0.</div></div>
+          <div class="callout tip"><div class="icon">💡</div><p>Review Bob's answer before continuing. Bob should activate the <code>.venv</code> first (your terminal prompt will show <code>(.venv)</code>). You should see that <code>ibmi_sysval</code> takes a <code>sysvalue</code> list and is read-only, <code>ibmi_user_compliance_check</code> takes <code>users</code> and <code>fields</code>, and <code>ibmi_object_authority</code> supports the <code>display</code> operation.</p></div>
         </div></div>
-        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Verify Bob's generated files</h3>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Ask Bob to generate the security compliance project</h3>
+          <div class="prompt-block"><div class="prompt-label">Bob Prompt — copy this exactly</div><div class="prompt-text">Now build the security compliance project using what you just looked up.
+
+I'm student <span class="l6n">NN</span> and I want to build a small security compliance project for our shared IBM i
+system, using the ibm.power_ibmi collection (version 3.3.0).
+
+Create two playbooks, audit_security.yml and remediate_security.yml. Both should take my student
+number as an extra variable (-e student=<span class="l6n">NN</span>). My objects are the library MYAPP_DB<span class="l6n">NN</span> and the user
+profile LAB6USR<span class="l6n">NN</span>. The system is shared, so please don't change any system values or touch
+anything that belongs to other students.
+
+The audit should check the QSECURITY, QINACTMSGQ, QMAXSIGN and QALWOBJRST system values (report
+only), whether my LAB6USR<span class="l6n">NN</span> profile is disabled, and what public authority is set on my
+MYAPP_DB<span class="l6n">NN</span> library. Have it write a JSON compliance scorecard on my local machine to
+./ansible/reports/security_compliance_report.json, using a Jinja2 template at
+./ansible/templates/security_report.json.j2.
+
+The remediation should disable my profile and lock down my library so *PUBLIC has no access.</div></div>
+        </div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><h3>Verify Bob's generated files</h3>
           <div class="table-wrap"><table><thead><tr><th>File</th><th>Purpose</th></tr></thead><tbody>
             <tr><td><code>./ansible/playbooks/audit_security.yml</code></td><td>Checks system values, user profiles, and library authority</td></tr>
             <tr><td><code>./ansible/playbooks/remediate_security.yml</code></td><td>Applies corrective changes to bring the system into compliance</td></tr>
@@ -1558,16 +1573,53 @@ Generate two playbooks and a reporting template:
         </div></div>
       </div>
 
-      <h2 class="section-title">Part 2 <span class="section-badge">Key Module Patterns</span></h2>
-      <div class="callout warning"><div class="icon">⚠️</div><p><strong>These are common parameter mistakes in the generated playbooks. Use the Bob prompt below to verify and fix them before running.</strong></p></div>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt — review and fix generated playbooks</div><div class="prompt-text">Review the generated playbooks in ./ansible/playbooks/ and fix any parameter mistakes based on these rules:
+      <h2 class="section-title">Playbook Execution &amp; Self-Healing</h2>
 
-1. ibmi_sysval — the parameter name must be "sysvalue" (not "sysval"). Each entry is a dict with "name", "expect", and optionally "check".
-2. ibmi_user_compliance_check — parameters are "users" (list of profile names) and "fields" (list of dicts with "name" and "expect"). There is no "check_type" parameter — remove it if present.
-3. ibmi_object_authority — use "operation: display" to read authority, not "operation: query".
-4. ibmi_cl_command — use this (not ibmi_sysval) for any task that changes a system value with CHGSYSVAL. ibmi_sysval is read-only.
+      <h3 class="subsection">Step 1 — Run the Audit Playbook</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Run the security audit playbook with student=<span class="l6n">NN</span></div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Or run directly (uses the student number you entered above):</p>
+      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-playbook -i ansible/inventories/development/hosts.yml \
+  ansible/playbooks/audit_security.yml -e student=<span class="l6n">NN</span></pre></div>
+      <div class="callout tip"><div class="icon">💡</div><p>Bob may iterate on the playbook a few times to adapt to your system. Let it self-correct — review its explanations for each change.</p></div>
+      <p style="font-size:14px;color:var(--text);margin:12px 0 8px;font-weight:600;">Expected student-specific findings with the non-compliant baseline:</p>
+      <div class="table-wrap"><table><thead><tr><th>Object</th><th>Current</th><th>Target</th><th>Status</th></tr></thead><tbody>
+        <tr><td><code>MYAPP_DB<span class="l6n">NN</span> *PUBLIC</code></td><td><code>*CHANGE</code></td><td><code>*EXCLUDE</code></td><td>❌ FAIL</td></tr>
+        <tr><td><code>LAB6USR<span class="l6n">NN</span></code> status</td><td><code>*ENABLED</code></td><td><code>*DISABLED</code></td><td>❌ FAIL</td></tr>
+      </tbody></table></div>
+      <div class="callout info"><div class="icon">📋</div><p>The scorecard also lists the system-wide values (<code>QSECURITY</code>, <code>QINACTMSGQ</code>, <code>QMAXSIGN</code>, <code>QALWOBJRST</code>). The IBM i system is shared, so these are <strong>audit-only</strong>: they are reported but the remediation playbook does not change them.</p></div>
 
-Fix any of these issues found in the playbooks and show me what you changed.</div></div>
+      <h3 class="subsection">Step 2 — Run the Remediation Playbook</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Run the remediation playbook with student=<span class="l6n">NN</span> to fix the non-compliant findings</div></div>
+      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-playbook -i ansible/inventories/development/hosts.yml \
+  ansible/playbooks/remediate_security.yml -e student=<span class="l6n">NN</span></pre></div>
+      <p style="font-size:14px;color:var(--text);margin:12px 0 8px;font-weight:600;">What this changes:</p>
+      <div class="table-wrap"><table><thead><tr><th>Setting</th><th>Before</th><th>After</th></tr></thead><tbody>
+        <tr><td><code>MYAPP_DB<span class="l6n">NN</span> *PUBLIC</code></td><td><code>*CHANGE</code></td><td><code>*EXCLUDE</code></td></tr>
+        <tr><td><code>LAB6USR<span class="l6n">NN</span></code> status</td><td><code>*ENABLED</code></td><td><code>*DISABLED</code></td></tr>
+      </tbody></table></div>
+      <div class="callout info"><div class="icon">📋</div><p>The <code>PLAY RECAP</code> should show <code>changed=3</code> and <code>failed=0</code> (revoke, grant, disable). Remediation only touches your own <code>MYAPP_DB<span class="l6n">NN</span></code> and <code>LAB6USR<span class="l6n">NN</span></code>, so other students on the shared system are unaffected.</p></div>
+
+      <h3 class="subsection">Step 3 — Re-Audit and Verify Compliance</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Ask Bob to run the audit a second time to confirm the remediation worked, then compare the results:</p>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Re-run the security audit playbook with student=<span class="l6n">NN</span>, then compare the two compliance report files and summarize what changed</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Or run the audit directly and then ask Bob to compare the two reports. (uses the student number you entered above):</p>
+      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-playbook -i ansible/inventories/development/hosts.yml \
+  ansible/playbooks/audit_security.yml -e student=<span class="l6n">NN</span></pre></div>
+      <div class="callout success"><div class="icon">✅</div><p>Both student-specific items should now show <strong>PASS</strong> and the score for your <code>MYAPP_DB<span class="l6n">NN</span></code> and <code>LAB6USR<span class="l6n">NN</span></code> controls should read <strong>100%</strong>. System-wide values are still reported as-is.</p></div>
+
+      <h2 class="section-title">Common Troubleshooting</h2>
+      <div class="table-wrap"><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
+        <tr><td><code>CWBNL0203</code></td><td><code>ibm.power_ibmi</code> 3.5.x pyodbc fails in PASE sessions</td><td>Pin to <code>ibm.power_ibmi:3.3.0</code></td></tr>
+        <tr><td><code>parameter 'sysval' not supported</code></td><td>Wrong parameter name</td><td>Use <code>sysvalue</code> (list of dicts)</td></tr>
+        <tr><td><code>invalid operation: query</code></td><td>Wrong operation on <code>ibmi_object_authority</code></td><td>Use <code>operation: display</code></td></tr>
+        <tr><td><code>check_type is not a valid parameter</code></td><td>Wrong param on <code>ibmi_user_compliance_check</code></td><td>Use <code>users</code> + <code>fields</code> parameters</td></tr>
+        <tr><td><code>MYAPP_DB<span class="l6n">NN</span> not found / CPF9801</code></td><td>Wrong student number, or your instructor has not prepared your library yet</td><td>Check your number (<code>01</code>–<code>20</code>) or ask your instructor</td></tr>
+      </tbody></table></div>
+
+      <div class="callout success"><div class="icon">✅</div><p>You've built and run an automated security compliance and self-healing remediation assistant on IBM i using Bob and Ansible. Your non-compliant library and user profile were detected, remediated, and verified in a single automated workflow.</p></div>
+
+      <h2 class="section-title">Troubleshooting Help <span class="section-badge">Key Module Patterns</span></h2>
+      <div class="callout warning"><div class="icon">⚠️</div><p><strong>Only use this section if you're having a lot of trouble.</strong> If the playbooks Bob generated keep failing, compare the tasks below with what Bob wrote and ask Bob to correct any that don't match. If your lab is running fine, you can skip this.</p></div>
 
       <h3 class="subsection">Pattern 1 — System Value Auditing</h3>
       <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">The <code>ibmi_sysval</code> parameter must be <code>sysvalue</code>, not <code>sysval</code>:</p>
@@ -1582,150 +1634,34 @@ Fix any of these issues found in the playbooks and show me what you changed.</di
   failed_when: false</pre></div>
 
       <h3 class="subsection">Pattern 2 — User Profile Compliance</h3>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">Parameters are <code>users</code> (list of names) and <code>fields</code> (list of dicts with <code>name</code>/<code>expect</code>). There is no <code>check_type</code> parameter:</p>
-      <div class="code-block"><div class="code-header">audit_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Check for profiles with default/blank passwords
+      <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">Parameters are <code>users</code> (list of names) and <code>fields</code> (list of dicts with <code>name</code>/<code>expect</code>). There is no <code>check_type</code> parameter. Each student has their own profile, <code>LAB6USR<span class="l6n">NN</span></code>, which the audit checks:</p>
+      <div class="code-block"><div class="code-header">audit_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Check the student profile is disabled
   ibm.power_ibmi.ibmi_user_compliance_check:
     users:
-      - '*ALL'
+      - "LAB6USR{{ student }}"
     fields:
-      - {name: 'NO_PASSWORD_INDICATOR', expect: ['NO']}
-      - {name: 'STATUS',                expect: ['*ENABLED']}
+      - {name: 'STATUS', expect: ['*DISABLED']}
   register: user_compliance
   failed_when: false</pre></div>
 
       <h3 class="subsection">Pattern 3 — Library Permissions</h3>
       <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">Use <code>operation: display</code> to read authority, not <code>operation: query</code>:</p>
-      <div class="code-block"><div class="code-header">audit_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Audit public authority on MYAPP_DB
+      <div class="code-block"><div class="code-header">audit_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Audit public authority on the student library
   ibm.power_ibmi.ibmi_object_authority:
-    object_name: 'MYAPP_DB'
+    object_name: "MYAPP_DB{{ student }}"
     object_type: '*LIB'
     user: '*PUBLIC'
     operation: display
   register: myapp_public_auth
   failed_when: false</pre></div>
 
-      <h3 class="subsection">Pattern 4 — Setting System Values</h3>
-      <div class="callout info"><div class="icon">📋</div><p><code>ibmi_sysval</code> is <strong>read-only</strong>. To change a system value, use <code>ibmi_cl_command</code> with <code>CHGSYSVAL</code>.</p></div>
-      <div class="code-block"><div class="code-header">remediate_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Set QINACTMSGQ to disconnect inactive sessions
+      <h3 class="subsection">Pattern 4 — Remediating the Student Profile</h3>
+      <div class="callout info"><div class="icon">📋</div><p><code>ibmi_sysval</code> is <strong>read-only</strong>. System values are system-wide on this shared IBM i, so this lab <strong>audits</strong> them but never changes them. The remediation playbook only changes your own profile and library.</p></div>
+      <div class="code-block"><div class="code-header">remediate_security.yml <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Disable the student profile
   ibm.power_ibmi.ibmi_cl_command:
-    cmd: "CHGSYSVAL SYSVAL(QINACTMSGQ) VALUE(*DSCJOB)"</pre></div>
-      <div class="callout tip"><div class="icon">💡</div><p><strong>Note:</strong> On this system <code>QPWDRULES</code> is active with <code>*MINLEN15</code>, which blocks <code>CHGSYSVAL</code> on <code>QPWDMINLEN</code>. <code>QINACTMSGQ</code> is audited and remediated instead as it covers the same CIS benchmark category.</p></div>
+    cmd: "CHGUSRPRF USRPRF(LAB6USR{{ student }}) STATUS(*DISABLED)"</pre></div>
+      <div class="callout tip"><div class="icon">💡</div><p><strong>Note:</strong> On this system <code>QPWDRULES</code> is active with <code>*MINLEN15</code>, which blocks <code>CHGSYSVAL</code> on <code>QPWDMINLEN</code>. <code>QINACTMSGQ</code> is audited instead as it covers the same CIS benchmark category.</p></div>
 
-      <h2 class="section-title">Playbook Execution &amp; Self-Healing</h2>
-
-      <h3 class="subsection">Step 1 — Run the Audit Playbook</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Run the security audit playbook</div></div>
-      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Or run directly:</p>
-      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-playbook -i ansible/inventories/development/hosts.yml \
-  ansible/playbooks/audit_security.yml</pre></div>
-      <div class="callout tip"><div class="icon">💡</div><p>Bob may iterate on the playbook a few times to adapt to your system. Let it self-correct — review its explanations for each change.</p></div>
-      <p style="font-size:14px;color:var(--text);margin:12px 0 8px;font-weight:600;">Expected findings with the non-compliant baseline:</p>
-      <div class="table-wrap"><table><thead><tr><th>Item</th><th>Current</th><th>Target</th><th>Status</th></tr></thead><tbody>
-        <tr><td><code>QSECURITY</code></td><td><code>50</code></td><td><code>&gt;= 50</code></td><td>✅ PASS</td></tr>
-        <tr><td><code>QINACTMSGQ</code></td><td><code>*ENDJOB</code></td><td><code>*DSCJOB</code></td><td>❌ FAIL</td></tr>
-        <tr><td><code>QMAXSIGN</code></td><td><code>000003</code></td><td><code>000003</code></td><td>✅ PASS</td></tr>
-        <tr><td><code>QALWOBJRST</code></td><td><code>*ALL</code></td><td><code>*NONE</code></td><td>❌ FAIL</td></tr>
-        <tr><td><code>MYAPP_DB *PUBLIC</code></td><td><code>*CHANGE</code></td><td><code>*EXCLUDE</code></td><td>❌ FAIL</td></tr>
-      </tbody></table></div>
-
-      <h3 class="subsection">Step 2 — Run the Remediation Playbook</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Run the remediation playbook to fix the non-compliant findings</div></div>
-      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-playbook -i ansible/inventories/development/hosts.yml \
-  ansible/playbooks/remediate_security.yml</pre></div>
-      <p style="font-size:14px;color:var(--text);margin:12px 0 8px;font-weight:600;">What this changes:</p>
-      <div class="table-wrap"><table><thead><tr><th>Setting</th><th>Before</th><th>After</th></tr></thead><tbody>
-        <tr><td><code>QINACTMSGQ</code></td><td><code>*ENDJOB</code></td><td><code>*DSCJOB</code></td></tr>
-        <tr><td><code>QALWOBJRST</code></td><td><code>*ALL</code></td><td><code>*NONE</code></td></tr>
-        <tr><td><code>MYAPP_DB *PUBLIC</code></td><td><code>*CHANGE</code></td><td><code>*EXCLUDE</code></td></tr>
-      </tbody></table></div>
-      <div class="callout warning"><div class="icon">⚠️</div><p><code>QALWOBJRST=*NONE</code> means no objects can be restored from save files without explicit authority. On a shared ITZ system this is safe for the lab; reverse it with <code>*ALL</code> afterwards if needed.</p></div>
-
-      <h3 class="subsection">Step 3 — Re-Audit and Verify Compliance</h3>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Run the audit a second time to confirm all items now pass:</p>
-      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>ansible-playbook -i ansible/inventories/development/hosts.yml \
-  ansible/playbooks/audit_security.yml</pre></div>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Compare the two compliance report files and summarize what changed</div></div>
-      <div class="callout success"><div class="icon">✅</div><p>All three previously failing items should now show <strong>PASS</strong> and the overall compliance score should read <strong>100%</strong> for the audited controls.</p></div>
-
-      <h3 class="subsection">Step 4 — Reset the Environment (Optional)</h3>
-      <div class="code-block"><div class="code-header">bash <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre># Restore non-compliant baseline for the next student session
-ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
-  -m ibm.power_ibmi.ibmi_cl_command \
-  -a "cmd='CHGSYSVAL SYSVAL(QINACTMSGQ) VALUE(*ENDJOB)'"
-
-ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
-  -m ibm.power_ibmi.ibmi_cl_command \
-  -a "cmd='CHGSYSVAL SYSVAL(QALWOBJRST) VALUE(*ALL)'"
-
-ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
-  -m ibm.power_ibmi.ibmi_object_authority \
-  -a "object_name=MYAPP_DB object_type=*LIB user=*PUBLIC operation=grant authority=*CHANGE"
-
-# Optionally delete the test library
-ansible ibmi_systems -i ansible/inventories/development/hosts.yml \
-  -m ibm.power_ibmi.ibmi_cl_command \
-  -a "cmd='DLTLIB LIB(MYAPP_DB)'"</pre></div>
-
-      <h2 class="section-title">Additional Security Use Cases</h2>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Ask Bob to add these tasks to your existing <code>audit_security.yml</code> or <code>remediate_security.yml</code>:</p>
-
-      <h3 class="subsection">1. Inactive Profile Disabling</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Add a task to audit_security.yml that finds all enabled user profiles that have not signed on in more than 90 days, then add a second task to remediate_security.yml that disables those profiles using ibmi_cl_command.</div></div>
-      <div class="code-block"><div class="code-header">result <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Find profiles inactive for more than 90 days
-  ibm.power_ibmi.ibmi_sql_query:
-    sql: &gt;
-      SELECT AUTHORIZATION_NAME FROM QSYS2.USER_INFO
-      WHERE STATUS = '*ENABLED'
-        AND PREVIOUS_SIGNON &lt; CURRENT DATE - 90 DAYS
-        AND AUTHORIZATION_NAME != 'QSECOFR'
-  register: inactive_users
-  failed_when: false
-
-- name: Disable inactive profiles
-  ibm.power_ibmi.ibmi_cl_command:
-    cmd: "CHGUSRPRF USRPRF({{ item.AUTHORIZATION_NAME }}) STATUS(*DISABLED)"
-  loop: "{{ inactive_users.row | default([]) }}"</pre></div>
-
-      <h3 class="subsection">2. SSH Configuration Hardening</h3>
-      <div class="callout tip"><div class="icon">💡</div><p><strong>IBM i path:</strong> The yum-installed OpenSSH config lives at <code>/QOpenSys/QIBM/UserData/SC1/OpenSSH/etc/sshd_config</code>, not the Linux default.</p></div>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Add tasks to remediate_security.yml that enforce six CIS-recommended sshd_config settings using ansible.builtin.lineinfile: PermitRootLogin no, HostbasedAuthentication no, MaxAuthTries 4, ClientAliveCountMax 0, ClientAliveInterval 300, and strong Ciphers only.</div></div>
-      <div class="code-block"><div class="code-header">result <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Enforce SSH hardening settings (CIS 4.4.x)
-  ansible.builtin.lineinfile:
-    path: "/QOpenSys/QIBM/UserData/SC1/OpenSSH/etc/sshd_config"
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-  loop:
-    - {regexp: '^#?PermitRootLogin',        line: 'PermitRootLogin no'}
-    - {regexp: '^#?HostbasedAuthentication', line: 'HostbasedAuthentication no'}
-    - {regexp: '^#?MaxAuthTries',            line: 'MaxAuthTries 4'}
-    - {regexp: '^#?ClientAliveCountMax',     line: 'ClientAliveCountMax 0'}
-    - {regexp: '^#?ClientAliveInterval',     line: 'ClientAliveInterval 300'}
-    - {regexp: '^#?Ciphers',                 line: 'Ciphers aes256-ctr,aes192-ctr,aes128-ctr'}
-  notify: Restart SSH Daemon</pre></div>
-
-      <h3 class="subsection">3. Broad Object Authority Audit</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Add a task that reports all objects in MYAPP_DB where *PUBLIC has *ALL authority, using QSYS2.OBJECT_PRIVILEGES.</div></div>
-      <div class="code-block"><div class="code-header">result <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Report all objects with *PUBLIC *ALL authority in MYAPP_DB
-  ibm.power_ibmi.ibmi_sql_query:
-    sql: &gt;
-      SELECT OBJECT_NAME, OBJECT_TYPE, OBJECT_AUTHORITY
-      FROM QSYS2.OBJECT_PRIVILEGES
-      WHERE OBJECT_SCHEMA = 'MYAPP_DB'
-        AND GRANTEE = '*PUBLIC'
-        AND OBJECT_AUTHORITY = '*ALL'
-  register: overly_permissive_objects
-  failed_when: false</pre></div>
-
-      <h2 class="section-title">Common Troubleshooting</h2>
-      <div class="table-wrap"><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
-        <tr><td><code>CWBNL0203</code></td><td><code>ibm.power_ibmi</code> 3.5.x pyodbc fails in PASE sessions</td><td>Pin to <code>ibm.power_ibmi:3.3.0</code></td></tr>
-        <tr><td><code>parameter 'sysval' not supported</code></td><td>Wrong parameter name</td><td>Use <code>sysvalue</code> (list of dicts)</td></tr>
-        <tr><td><code>invalid operation: query</code></td><td>Wrong operation on <code>ibmi_object_authority</code></td><td>Use <code>operation: display</code></td></tr>
-        <tr><td><code>check_type is not a valid parameter</code></td><td>Wrong param on <code>ibmi_user_compliance_check</code></td><td>Use <code>users</code> + <code>fields</code> parameters</td></tr>
-        <tr><td><code>MYAPP_DB not found / CPF9801</code></td><td>Library not created before audit runs</td><td>Run the instructor setup block first</td></tr>
-      </tbody></table></div>
-
-      <div class="callout success"><div class="icon">✅</div><p>You've built and run an automated security compliance and self-healing remediation assistant on IBM i using Bob and Ansible. All three failing controls were detected, remediated, and verified in a single automated workflow.</p></div>
     </div>
     <div class="page-nav">
       <button class="btn btn-secondary" onclick="showPage('lab5', document.querySelector('[onclick*=lab5]'))">← Lab 5</button>
@@ -1825,41 +1761,6 @@ for the last 48 hours. Build a unified timeline showing every PW, AF, CP, OM,
 and SV event involving that user, ordered by timestamp.</div></div>
       <p style="font-size:14px;color:var(--muted);margin-top:8px;">Bob will produce a <code>UNION ALL</code> query across multiple <code>SYSTOOLS.AUDIT_JOURNAL_*</code> functions, building a complete per-user activity timeline.</p>
 
-      <h2 class="section-title">Part 3 <span class="section-badge">Feeding Findings into Ansible Remediation</span></h2>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt — switch to <code>Ansible for i mode</code> first</div><div class="prompt-text">Based on the audit finding that SVCTEST has *ALLOBJ authority and should not,
-generate an Ansible playbook task that removes *ALLOBJ from that profile using
-ibm.power_ibmi.ibmi_user. Save the generated task into ./ansible/playbooks/remediate_audit_findings.yml alongside the Lab 6 playbooks.</div></div>
-      <!-- <p style="font-size:14px;color:var(--muted);margin-top:8px;">Save the generated task into <code>./ansible/playbooks/remediate_audit_findings.yml</code> alongside the Lab 6 playbooks.</p> -->
-      <div class="code-block"><div class="code-header">result <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>- name: Remove *ALLOBJ special authority from SVCTEST
-  ibm.power_ibmi.ibmi_user:
-    name: SVCTEST
-    special_authority:
-      - '*NONE'
-  register: profile_update
-
-- name: Confirm authority change
-  ibm.power_ibmi.ibmi_sql_query:
-    sql: &gt;
-      SELECT USER_NAME, SPECIAL_AUTHORITIES
-      FROM   QSYS2.USER_INFO
-      WHERE  USER_NAME = 'SVCTEST'
-  register: verify_result</pre></div>
-
-      <h2 class="section-title">Additional Forensic Use Cases</h2>
-      <h3 class="subsection">1. Brute-Force Detection Against a Specific Profile</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Show me all PW entries for user QSECOFR in the last 7 days,
-broken down by hour so I can see if there's a pattern.</div></div>
-
-      <h3 class="subsection">2. Adopted Authority Audit</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query SYSTOOLS.AUDIT_JOURNAL_AD for the last 24 hours.
-Show which programs are running under adopted authority and who called them.
-Flag any non-IBM programs adopting *ALLOBJ or *SECADM.</div></div>
-
-      <h3 class="subsection">3. After-Hours Activity Report</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Show me all authority failures and object management events that occurred
-between 10 PM and 6 AM local time over the last 30 days.
-Exclude known batch job users QBATCH and QTMHHTTP.</div></div>
-
       <h2 class="section-title">Common Troubleshooting</h2>
       <div class="table-wrap"><table><thead><tr><th>Error</th><th>Likely Cause</th><th>Resolution</th></tr></thead><tbody>
         <tr><td><code>SQL0443 — SYSTOOLS.AUDIT_JOURNAL_PW not found</code></td><td>IBM i below 7.4 or PTF not applied</td><td>Apply group PTF SF99722 or upgrade to 7.4+</td></tr>
@@ -1882,7 +1783,7 @@ Exclude known batch job users QBATCH and QTMHHTTP.</div></div>
     <div class="page-hero">
       <div class="eyebrow">Lab 8 — Ansible Track</div>
       <h1>PTF Impact Analysis Agent</h1>
-      <p class="subtitle">Turn Bob into a PTF Impact Analysis Agent — query PTF group levels, trace dependency and supersede chains, generate a sequenced deployment plan, and have Bob author a complete change request document ready for CAB approval.</p>
+      <p class="subtitle">Turn Bob into a PTF Impact Analysis Agent — query PTF group levels, confirm nothing is pending, audit supersede chains, generate a sequenced maintenance plan, and have Bob author a complete change request document ready for CAB approval.</p>
       <div class="meta-pills">
         <span class="pill time">⏱ ~25 minutes</span>
         <span class="pill level">Intermediate</span>
@@ -1895,9 +1796,9 @@ Exclude known batch job users QBATCH and QTMHHTTP.</div></div>
       <h2 class="section-title">Objectives</h2>
       <ul style="padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--text);margin-bottom:8px;">
         <li>Query <code>QSYS2.GROUP_PTF_INFO</code> to inventory installed PTF groups, levels, and apply dates</li>
-        <li>Use <code>QSYS2.PTF_INFO</code> to analyse individual PTF status, IPL requirements, and supersede relationships</li>
-        <li>Trace pre-requisite and supersede chains to establish correct application order</li>
-        <li>Have Bob generate a sequenced, human-readable deployment plan</li>
+        <li>Use <code>QSYS2.PTF_INFO</code> to confirm nothing is pending and to find PTFs applied only temporarily</li>
+        <li>Audit supersede chains to prove every superseded PTF has an installed replacement</li>
+        <li>Have Bob generate a sequenced maintenance plan (permanent apply plus PTF group refresh)</li>
         <li>Have Bob author a complete AI-written change request document</li>
       </ul>
 
@@ -1927,48 +1828,57 @@ Show the group name, installed level, and last applied date.</div></div>
 
       <h2 class="section-title">Part 2 <span class="section-badge">Individual PTF Status Inventory</span></h2>
 
-      <h3 class="subsection">Step 4 — Surface All Unapplied PTFs</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query QSYS2.PTF_INFO for all PTFs that are NOT in status APPLIED or ON ORDER.
-Show PTF ID, product, status, whether an IPL is required, and the load date.
-Sort by load date so the oldest unaddressed PTFs are first.</div></div>
-      <div class="table-wrap"><table><thead><tr><th><code>PTF_STATUS</code></th><th>Meaning</th><th>Action</th></tr></thead><tbody>
-        <tr><td><code>NOT APPLIED</code></td><td>Loaded on disk, not yet applied</td><td>Schedule for apply</td></tr>
-        <tr><td><code>APPLY PENDING</code></td><td>Queued, waiting for IPL or delayed apply</td><td>Check <code>IPL_REQUIRED</code></td></tr>
-        <tr><td><code>LOADED</code></td><td>Transferred to system, not yet applied</td><td>Apply immediately or at next window</td></tr>
-        <tr><td><code>SUPERSEDED</code></td><td>A newer PTF replaces this one</td><td>Apply the superseding PTF instead</td></tr>
-        <tr><td><code>TEMPORARILY APPLIED</code></td><td>Applied but not permanent</td><td>Confirm or make permanent</td></tr>
+      <h3 class="subsection">Step 4 — Find PTFs That Are Applied Only Temporarily</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query QSYS2.PTF_INFO for all PTFs whose PTF_LOADED_STATUS is APPLIED
+(temporarily applied - not yet permanent).
+Show product, PTF ID, status, IPL required type, and the status timestamp.
+Sort by status timestamp, oldest first.</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;">On the lab system this returns <strong>151 PTFs</strong>, all applied on 2025-11-25 (134 <code>IMMEDIATE</code>, 17 <code>DELAYED</code>). They are active but can still be removed — making them permanent is the open work item.</p>
+      <div class="table-wrap"><table><thead><tr><th><code>PTF_LOADED_STATUS</code></th><th>Meaning</th><th>Action</th></tr></thead><tbody>
+        <tr><td><code>PERMANENTLY APPLIED</code></td><td>Applied and made permanent</td><td>None</td></tr>
+        <tr><td><code>APPLIED</code></td><td>Applied temporarily — still removable</td><td>Soak, then make permanent</td></tr>
+        <tr><td><code>SUPERSEDED</code></td><td>A newer PTF replaces this one</td><td>Verify the replacement is installed (Step 6)</td></tr>
+        <tr><td>Any other value (e.g. loaded but not applied)</td><td>Waiting to be applied</td><td>Schedule for apply</td></tr>
       </tbody></table></div>
+
+      <h3 class="subsection">Step 5 — Confirm Nothing Is Waiting to Be Applied</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query QSYS2.PTF_INFO and count PTFs that are not APPLIED, PERMANENTLY APPLIED
+or SUPERSEDED, or that have an action pending or are on order.
+Then summarise the APPLIED PTFs by IPL required type.</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>Expected result: <code>PENDING_PTFS = 0</code>.</strong> There is no apply backlog — that is a valid audit finding, and it changes the plan Bob builds in Step 7.</p>
 
       <h2 class="section-title">Part 3 <span class="section-badge">Supersede Chain Analysis</span></h2>
 
-      <h3 class="subsection">Step 6 — Trace the Supersede Chain</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">For each unapplied PTF that has a SUPERSEDED_BY_PTF_ID, show me the full
-supersede chain — PTF A superseded by B, B superseded by C — until we reach
-the terminal (non-superseded) PTF. That terminal one is what I actually need
-to apply.</div></div>
-      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Bob will produce a recursive CTE walking the supersede chain. A <code>CHAIN_DEPTH &gt; 3</code> is a sign the system has been going without PTFs for a long time.</p>
+      <h3 class="subsection">Step 6 — Audit the Supersede Chains</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">For every PTF with PTF_LOADED_STATUS = SUPERSEDED, follow the supersede chain
+(PTF A superseded by B, B superseded by C) to the terminal PTF. Summarise by
+chain depth and by the loaded status of the terminal PTF, including any
+terminal PTF that is not on this system at all.</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Bob will produce a recursive CTE walking the supersede chain. <strong>Expected:</strong> 446 chains, all depth 2 or less, and every terminal PTF installed (<code>APPLIED</code> or <code>PERMANENTLY APPLIED</code>). A <code>CHAIN_DEPTH &gt; 3</code>, or any <code>NOT ON SYSTEM</code> row, would indicate a real backlog.</p>
 
-      <h2 class="section-title">Part 4 <span class="section-badge">Deployment Plan Generation</span></h2>
+      <h2 class="section-title">Part 4 <span class="section-badge">Maintenance Plan Generation</span></h2>
 
-      <h3 class="subsection">Step 8 — Generate the Sequenced Deployment Plan</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Based on everything we've found — the PTF group levels and apply dates, the unapplied PTFs,
-the IPL requirements, the supersede chains — generate
-a sequenced PTF deployment plan for this system.
+      <h3 class="subsection">Step 7 — Generate the Sequenced Maintenance Plan</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Based on everything we've found - the PTF group levels and apply dates, the
+temporarily applied PTFs, the zero-pending result, and the supersede chain
+audit - generate a sequenced PTF maintenance plan for this system.
 
 Structure it as:
-1. Phase 1: Immediate applies (no IPL)
-2. Phase 2: IPL-required applies with a
-   recommended maintenance window duration estimate
-3. PTFs to skip because they are superseded (list the terminal replacement)
+1. Phase 1: Make the temporarily applied PTFs permanent (after a soak-period check)
+2. Phase 2: Refresh the stale PTF groups - name the groups and levels to order,
+   with a recommended maintenance window duration estimate
+3. Confirmation that no superseded PTF needs action (cite the chain audit)
 4. A summary risk statement: what is the exposure if we defer this work?</div></div>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;">Expect a plan that makes the <strong>151</strong> temporarily applied PTFs permanent, then refreshes the stale groups <code>SF99761</code>, <code>SF99963</code>, <code>SF99411</code> and the cumulative <code>SF99760</code>. With nothing pending, the risk is drift rather than a backlog.</p>
 
-      <h3 class="subsection">Step 9 — Save the Deployment Plan to IFS</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Save the deployment plan as a Markdown file to the IFS at
-/home/ITZUSER/PTFREPORTS/deployment_plan_&lt;today's date&gt;_&lt;yourname&gt;.md</div></div>
+      <h3 class="subsection">Step 8 — Save the Maintenance Plan to IFS</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Save the maintenance plan as a Markdown file to the IFS at
+/home/ITZUSER/PTFREPORTS/maintenance_plan_&lt;today's date&gt;_&lt;yourname&gt;.md</div></div>
 
       <h2 class="section-title">Part 5 <span class="section-badge">AI-Authored Change Request Document</span></h2>
 
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Using the deployment plan we just generated, write a formal IT change request
+      <h3 class="subsection">Step 9 — Generate the Change Request</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Using the maintenance plan we just generated, write a formal IT change request
 document suitable for submission to a Change Advisory Board (CAB).
 
 Include:
@@ -1994,13 +1904,13 @@ and also write it to the local workspace as
       <h2 class="section-title">Common Troubleshooting</h2>
       <div class="table-wrap"><table><thead><tr><th>Error</th><th>Likely Cause</th><th>Resolution</th></tr></thead><tbody>
         <tr><td><code>SQL0204 — QSYS2.GROUP_PTF_CURRENCY not found</code></td><td><code>GROUP_PTF_CURRENCY</code> does not exist on IBM i 7.6</td><td>Use <code>QSYS2.GROUP_PTF_INFO</code></td></tr>
-        <tr><td><code>GROUP_PTF_INFO</code> returns no rows</td><td>No PTF groups installed</td><td>Apply a cumulative PTF package first</td></tr>
-        <tr><td><code>PTF_INFO</code> shows <code>ON ORDER</code> for many PTFs</td><td>PTF ordering via ECS is pending</td><td>Check <code>WRKPTFGRP</code>; PTFs may still be downloading</td></tr>
+        <tr><td><code>SQL0206</code> — column <code>PTF_STATUS</code> / <code>IPL_REQUIRED</code> / <code>LOAD_DATE</code> / <code>SUPERSEDED_BY_PTF_ID</code> not found</td><td>Column names differ on IBM i 7.6</td><td>Use <code>PTF_LOADED_STATUS</code>, <code>PTF_IPL_REQUIRED</code>, <code>PTF_STATUS_TIMESTAMP</code>, <code>PTF_SUPERSEDED_BY_PTF</code></td></tr>
+        <tr><td><code>GROUP_PTF_INFO</code> returns no rows</td><td>No PTF groups installed</td><td>Part 1 returns an empty result set; continue with <code>QSYS2.PTF_INFO</code> in Parts 2–3</td></tr>
+        <tr><td>Step 5 returns <code>PENDING_PTFS = 0</code></td><td>The system has no apply backlog</td><td>Expected on the lab system — a valid audit finding; continue with the permanent-apply and group-refresh plan</td></tr>
         <tr><td>Supersede chain query runs slowly</td><td>Large <code>PTF_INFO</code> table with no index hint</td><td>Add <code>FETCH FIRST 50 ROWS ONLY</code> during investigation</td></tr>
-        <tr><td><code>ibmi_fix</code> Ansible module fails with <code>CPF3634</code></td><td>PTF save files not present on system</td><td>Use <code>ibmi_fix_repo_lkup</code> first to confirm PTF is available locally</td></tr>
       </tbody></table></div>
 
-      <div class="callout success"><div class="icon">✅</div><p>You've built a complete PTF Impact Analysis Agent — group-level gap analysis, individual PTF status inventory, supersede chain tracing, a sequenced deployment plan, and an AI-authored CAB-ready change document.</p></div>
+      <div class="callout success"><div class="icon">✅</div><p>You've built a complete PTF Impact Analysis Agent — PTF group review, pending-PTF verification, a temporary-apply inventory, a supersede chain audit, a sequenced maintenance plan, and an AI-authored CAB-ready change document.</p></div>
     </div>
     <div class="page-nav">
       <button class="btn btn-secondary" onclick="showPage('lab7', document.querySelector('[onclick*=lab7]'))">← Lab 7</button>
@@ -2819,6 +2729,14 @@ function updateLib() {
   });
 
   _currentNN = newNN;
+}
+
+function updateLab6Num() {
+  const n = parseInt(document.getElementById('lab6-student-num').value, 10);
+  const v = (n >= 1 && n <= 20) ? String(n).padStart(2, '0') : 'NN';
+  document.querySelectorAll('.l6n').forEach(e => { e.textContent = v; });
+  document.getElementById('lab6-lib-display').textContent = 'MYAPP_DB' + v;
+  document.getElementById('lab6-usr-display').textContent = 'LAB6USR' + v;
 }
 
 updateProgress();

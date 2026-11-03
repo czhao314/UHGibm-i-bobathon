@@ -224,6 +224,22 @@ Duplicate Jinja2 template at `./ansible/templates/ptf_currency_report.html.j2`, 
 
 ## Playbook Execution - Ansible for i mode
 
+**Pre-flight verification checklist** — run these before executing the playbook:
+
+On your IBM i:
+```bash
+# All three must succeed
+/QOpenSys/pkgs/bin/python3.9 -c "import ibm_db_dbi; conn = ibm_db_dbi.connect(); print('OK')"
+/QOpenSys/pkgs/bin/python3.9 -c "import itoolkit; print(itoolkit.__version__)"
+/QOpenSys/pkgs/cwbping localhost   # Should show all host servers connected
+```
+
+On your Mac (Ansible controller):
+```bash
+ansible-galaxy collection list | grep ibm.power_ibmi   # Must show 3.3.0
+ansible --version                                       # Must show 2.9+
+```
+
 **Run the playbook through Bob:**
 ```bash
 Run the PTF currency check playbook
@@ -244,22 +260,6 @@ Run the PTF currency check playbook
 - Connection timeout: Verify firewall rules and network connectivity
 - `CWBNL0203` / ODBC errors: You have v3.5.0 of `ibm.power_ibmi` — downgrade to v3.3.0 (see Prerequisites)
 - `SQL0206 - Column not found` on `SERIAL_NUMBER` or `PARTITION_NAME`: Remove those columns from the `ENV_SYS_INFO` query; they don't exist on IBM i 7.6 VMs
-
-**Pre-flight verification checklist** — run these before executing the playbook:
-
-On your IBM i:
-```bash
-# All three must succeed
-/QOpenSys/pkgs/bin/python3.9 -c "import ibm_db_dbi; conn = ibm_db_dbi.connect(); print('OK')"
-/QOpenSys/pkgs/bin/python3.9 -c "import itoolkit; print(itoolkit.__version__)"
-/QOpenSys/pkgs/cwbping localhost   # Should show all host servers connected
-```
-
-On your Mac (Ansible controller):
-```bash
-ansible-galaxy collection list | grep ibm.power_ibmi   # Must show 3.3.0
-ansible --version                                       # Must show 2.9+
-```
 
 ### When the playbook finishes, check the output by opening the html file in browser
 

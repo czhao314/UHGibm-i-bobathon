@@ -8,17 +8,16 @@
 
 ## Introduction
 
-Knowing *which* PTFs are missing is only half the job. Before you schedule a maintenance window, you need to know: How far behind are your PTF groups? Which missing fixes carry pre-requisites or supersede chains you must apply first? Which ones require an IPL — and which can go in immediately? And can you produce a change document your CAB (Change Advisory Board) will actually approve?
+A fully patched system is not a finished system. Before you schedule the next maintenance window, you need to know: Is anything actually waiting to be applied? Which fixes are applied only temporarily and still need to be made permanent? Do the supersede chains all end in an installed PTF? Which PTF groups have drifted behind? And can you produce a change document your CAB (Change Advisory Board) will actually approve?
 
-This lab turns IBM Bob into a **PTF Impact Analysis Agent**. Using Bob in **IBM i Database mode**, you'll query `QSYS2.GROUP_PTF_INFO` and `QSYS2.PTF_INFO` in plain English, trace dependency and supersede chains, generate a sequenced deployment plan, and have Bob author a formal change request document — ready for approval. An optional final section shows how to hand the plan off to the Ansible playbooks built in Lab 5.
+This lab turns IBM Bob into a **PTF Impact Analysis Agent**. Using Bob in **IBM i Database mode**, you'll query `QSYS2.GROUP_PTF_INFO` and `QSYS2.PTF_INFO` in plain English, confirm nothing is pending, audit supersede chains, generate a sequenced maintenance plan, and have Bob author a formal change request document — ready for approval.
 
 **Objectives:**
 - Query `QSYS2.GROUP_PTF_INFO` to inventory installed PTF groups, their levels, and when they were last applied
-- Use `QSYS2.PTF_INFO` to analyse individual PTF status, IPL requirements, and supersede relationships
-- Trace pre-requisite and supersede chains to establish correct application order
-- Have Bob generate a sequenced, human-readable deployment plan
+- Use `QSYS2.PTF_INFO` to confirm nothing is pending and to find PTFs applied only temporarily
+- Audit supersede chains to prove every superseded PTF has an installed replacement
+- Have Bob generate a sequenced maintenance plan (permanent apply plus PTF group refresh)
 - Have Bob author a complete AI-written change request document
-- (Optional) Feed the deployment plan into an Ansible `ibmi_fix` playbook from Lab 5
 
 ---
 
@@ -31,8 +30,7 @@ This lab turns IBM Bob into a **PTF Impact Analysis Agent**. Using Bob in **IBM 
 
 ### Bob Requirements
 - IBM Bob installed with IBM i Database mode configured (Lab 4)
-- **IBM i Database mode** active — this is where all queries in Parts 1–4 run
-- **IBM i Developer mode** available for the optional Ansible section (Part 5)
+- **IBM i Database mode** active — this is where all queries and documents in Parts 1–5 are produced
 
 ### Verify PTF Service Availability
 
@@ -107,107 +105,141 @@ Bob will filter the `GROUP_PTF_INFO` results already returned to highlight the g
 
 ## Part 2: Individual PTF Status Inventory
 
-### Step 4: Surface All Unapplied PTFs
+### Step 4: Find PTFs That Are Applied Only Temporarily
 
 ```
-Query QSYS2.PTF_INFO for all PTFs that are NOT in status APPLIED or ON ORDER.
-Show PTF ID, product, status, whether an IPL is required, and the load date.
-Sort by load date so the oldest unaddressed PTFs are first.
+Query QSYS2.PTF_INFO for all PTFs whose PTF_LOADED_STATUS is APPLIED
+(temporarily applied - not yet permanent).
+Show product, PTF ID, status, IPL required type, and the status timestamp.
+Sort by status timestamp, oldest first.
 ```
 
 Expected SQL pattern:
 
 ```sql
-SELECT   PTF_IDENTIFIER,
-         PRODUCT_ID,
-         PTF_STATUS,
-         IPL_REQUIRED,
-         LOAD_DATE,
-         SUPERSEDED_BY_PTF_ID
+SELECT   PTF_PRODUCT_ID,
+         PTF_IDENTIFIER,
+         PTF_LOADED_STATUS,
+         PTF_IPL_REQUIRED,
+         PTF_STATUS_TIMESTAMP
 FROM     QSYS2.PTF_INFO
-WHERE    PTF_STATUS NOT IN ('APPLIED', 'ON ORDER', 'SUPERSEDED')
-ORDER BY LOAD_DATE ASC
+WHERE    PTF_LOADED_STATUS = 'APPLIED'
+ORDER BY PTF_STATUS_TIMESTAMP ASC, PTF_PRODUCT_ID
 ```
 
-**Status values and what they mean:**
+On the lab system this returns **151 PTFs**, all applied on 2025-11-25 (134 `IMMEDIATE`, 17 `DELAYED`). They are active but can still be removed - making them permanent is the open work item.
 
-| `PTF_STATUS` | Meaning | Action |
+**`PTF_LOADED_STATUS` values seen on this system:**
+
+| `PTF_LOADED_STATUS` | Meaning | Action |
 |---|---|---|
-| `NOT APPLIED` | Loaded on disk, not yet applied | Schedule for apply |
-| `APPLY PENDING` | Queued, waiting for IPL or delayed apply | Check `IPL_REQUIRED` |
-| `LOADED` | Transferred to system, not yet applied | Apply immediately or at next window |
-| `SUPERSEDED` | A newer PTF replaces this one | Apply the superseding PTF instead |
-| `TEMPORARILY APPLIED` | Applied but not permanent | Confirm or make permanent |
+| `PERMANENTLY APPLIED` | Applied and made permanent | None |
+| `APPLIED` | Applied temporarily - still removable | Soak, then make permanent |
+| `SUPERSEDED` | A newer PTF replaces this one | Verify the replacement is installed (Step 6) |
+| Any other value (e.g. loaded but not applied) | Waiting to be applied | Schedule for apply |
+
+### Step 5: Confirm Nothing Is Waiting to Be Applied
+
+```
+Query QSYS2.PTF_INFO and count PTFs that are not APPLIED, PERMANENTLY APPLIED
+or SUPERSEDED, or that have an action pending or are on order.
+Then summarise the APPLIED PTFs by IPL required type.
+```
+
+Expected SQL pattern:
+
+```sql
+SELECT COUNT(*) AS PENDING_PTFS
+FROM   QSYS2.PTF_INFO
+WHERE  PTF_LOADED_STATUS NOT IN ('APPLIED', 'PERMANENTLY APPLIED', 'SUPERSEDED')
+   OR  PTF_ACTION_PENDING = 'YES'
+   OR  PTF_ON_ORDER = 'YES'
+```
+
+**Expected result: `PENDING_PTFS = 0`.** There is no apply backlog - that is a valid audit finding, and it changes the plan Bob builds in Step 7.
 
 
 ---
 
 ## Part 3: Dependency and Supersede Chain Analysis
 
-### Step 6: Trace the Supersede Chain
+### Step 6: Audit the Supersede Chains
 
-PTFs supersede each other in chains. Applying an older PTF when a newer one supersedes it wastes time and may leave the system in an inconsistent state.
+PTFs supersede each other in chains. A healthy system has an installed PTF at the end of every chain. A chain that ends in a PTF that is not on the system is a hidden gap.
 
 ```
-For each unapplied PTF that has a SUPERSEDED_BY_PTF_ID, show me the full
-supersede chain — PTF A superseded by B, B superseded by C — until we reach
-the terminal (non-superseded) PTF. That terminal one is what I actually need
-to apply.
+For every PTF with PTF_LOADED_STATUS = SUPERSEDED, follow the supersede chain
+(PTF A superseded by B, B superseded by C) to the terminal PTF. Summarise by
+chain depth and by the loaded status of the terminal PTF, including any
+terminal PTF that is not on this system at all.
 ```
 
 Bob will produce a recursive CTE:
 
 ```sql
-WITH SUPERSEDE_CHAIN (START_PTF, CURRENT_PTF, CHAIN_STEP) AS (
-  -- Base: unapplied PTFs that are superseded
-  SELECT   PTF_IDENTIFIER, SUPERSEDED_BY_PTF_ID, 1
+WITH SUPERSEDE_CHAIN (START_PTF, PRODUCT, CURRENT_PTF, CHAIN_STEP) AS (
+  -- Base: superseded PTFs and the PTF that replaces them
+  SELECT   PTF_IDENTIFIER, PTF_PRODUCT_ID, PTF_SUPERSEDED_BY_PTF, 1
   FROM     QSYS2.PTF_INFO
-  WHERE    PTF_STATUS NOT IN ('APPLIED', 'ON ORDER')
-    AND    SUPERSEDED_BY_PTF_ID IS NOT NULL
+  WHERE    PTF_LOADED_STATUS = 'SUPERSEDED'
+    AND    PTF_SUPERSEDED_BY_PTF <> ''
 
   UNION ALL
 
   -- Recursive: follow the chain
-  SELECT   SC.START_PTF, P.SUPERSEDED_BY_PTF_ID, SC.CHAIN_STEP + 1
+  SELECT   SC.START_PTF, SC.PRODUCT, P.PTF_SUPERSEDED_BY_PTF, SC.CHAIN_STEP + 1
   FROM     SUPERSEDE_CHAIN SC
   JOIN     QSYS2.PTF_INFO P
-    ON     SC.CURRENT_PTF = P.PTF_IDENTIFIER
-  WHERE    P.SUPERSEDED_BY_PTF_ID IS NOT NULL
+    ON     P.PTF_IDENTIFIER = SC.CURRENT_PTF
+    AND    P.PTF_PRODUCT_ID = SC.PRODUCT
+  WHERE    P.PTF_SUPERSEDED_BY_PTF <> ''
     AND    SC.CHAIN_STEP < 10
 )
-SELECT   START_PTF    AS ORIGINAL_PTF,
-         CURRENT_PTF  AS TERMINAL_PTF_TO_APPLY,
-         CHAIN_STEP   AS CHAIN_DEPTH
-FROM     SUPERSEDE_CHAIN
-WHERE    (START_PTF, CHAIN_STEP) IN (
-           SELECT START_PTF, MAX(CHAIN_STEP)
-           FROM   SUPERSEDE_CHAIN
-           GROUP BY START_PTF
-         )
+SELECT   SC.CHAIN_STEP                                   AS CHAIN_DEPTH,
+         COALESCE(T.PTF_LOADED_STATUS, 'NOT ON SYSTEM')  AS TERMINAL_STATUS,
+         COUNT(*)                                        AS PTF_COUNT
+FROM     SUPERSEDE_CHAIN SC
+LEFT JOIN QSYS2.PTF_INFO T
+  ON     T.PTF_IDENTIFIER = SC.CURRENT_PTF
+  AND    T.PTF_PRODUCT_ID = SC.PRODUCT
+WHERE    SC.CHAIN_STEP = (SELECT MAX(X.CHAIN_STEP)
+                          FROM   SUPERSEDE_CHAIN X
+                          WHERE  X.START_PTF = SC.START_PTF
+                            AND  X.PRODUCT   = SC.PRODUCT)
+GROUP BY SC.CHAIN_STEP, COALESCE(T.PTF_LOADED_STATUS, 'NOT ON SYSTEM')
 ORDER BY CHAIN_DEPTH DESC
 ```
 
-> **Tip:** A `CHAIN_DEPTH > 3` is a sign the system has been going without PTFs for a long time — the backlog has compounded.
+**Expected result on the lab system:**
+
+| CHAIN_DEPTH | TERMINAL_STATUS | PTF_COUNT |
+|---|---|---|
+| 2 | PERMANENTLY APPLIED | 64 |
+| 2 | APPLIED | 179 |
+| 1 | PERMANENTLY APPLIED | 111 |
+| 1 | APPLIED | 92 |
+
+> **Tip:** Every chain is 2 deep or less and every terminal PTF is installed - there are no `NOT ON SYSTEM` rows, so no superseded PTF needs action. A `CHAIN_DEPTH > 3`, or any `NOT ON SYSTEM` row, would indicate a real backlog.
 
 
 ---
 
-## Part 4: Deployment Plan Generation
+## Part 4: Maintenance Plan Generation
 
-With the gap analysis, IPL split, and supersede chains checks complete, ask Bob to synthesise everything into an actionable deployment plan.
+With the group review, pending-PTF check, and supersede audit complete, ask Bob to synthesise everything into the plan for the next maintenance cycle.
 
-### Step 8: Generate the Sequenced Deployment Plan
+### Step 7: Generate the Sequenced Maintenance Plan
 
 ```
-Based on everything we've found — the PTF group levels and apply dates, the unapplied PTFs,
-the IPL requirements, the supersede chains — generate
-a sequenced PTF deployment plan for this system.
+Based on everything we've found - the PTF group levels and apply dates, the
+temporarily applied PTFs, the zero-pending result, and the supersede chain
+audit - generate a sequenced PTF maintenance plan for this system.
 
 Structure it as:
-1. Phase 1: Immediate applies (no IPL)
-2. Phase 2: IPL-required applies with a
-   recommended maintenance window duration estimate
-3. PTFs to skip because they are superseded (list the terminal replacement)
+1. Phase 1: Make the temporarily applied PTFs permanent (after a soak-period check)
+2. Phase 2: Refresh the stale PTF groups - name the groups and levels to order,
+   with a recommended maintenance window duration estimate
+3. Confirmation that no superseded PTF needs action (cite the chain audit)
 4. A summary risk statement: what is the exposure if we defer this work?
 ```
 
@@ -217,39 +249,37 @@ Bob will reason across all the query results from Parts 1–3 and produce a stru
 
 **Example Bob output (abbreviated):**
 
-> **PTF Deployment Plan — IBMI-PROD01 — Generated 2026-06-15**
+> **PTF Maintenance Plan — IBMI-PROD01 — Generated 2026-06-15**
 >
-> **Phase 1 — Immediate Applies (no IPL required) — 14 PTFs**
-> Apply in this order:
-> 1. SI88234 (5770SS1) — pre-req for SI88901
-> 2. SI88901 (5770SS1)
-> 3. SI87612 (5770DB1)
-> …
+> **Current state:** 0 PTFs pending apply. 151 PTFs temporarily applied since 2025-11-25.
 >
-> **Phase 2 — IPL-Required Applies — 7 PTFs**
+> **Phase 1 — Make Permanent — 151 PTFs (134 IMMEDIATE, 17 DELAYED)**
+> Confirm no regressions since 2025-11-25, then make permanent product by
+> product (5770SS1 first). After this step the PTFs can no longer be removed.
+>
+> **Phase 2 — PTF Group Refresh — Order from Fix Central**
 > Recommended maintenance window: **45–60 minutes** (includes IPL cycle)
-> Apply in this order:
-> 1. SI89001 (5770TC1) — no pre-reqs
-> 2. SI89412 (5770SS1) — pre-req: SI89001 (Phase 2 item 1)
-> …
+> 1. SF99761 (All PTF Groups) — installed level 7, last applied 2025-02-27
+> 2. SF99963 (Performance Tools) and SF99411 (POWER11 GA) — last applied 2025-08-06
+> 3. SF99760 (Cumulative) — installed level 25312; order the current level
 >
-> **Superseded — Skip These, Apply Terminal Instead**
-> - SI85001 → superseded by SI87444 (already in Phase 1)
+> **Superseded PTFs — No Action**
+> All 446 superseded PTFs have an installed replacement (0 missing terminals).
 >
 > **Risk Statement**
-> SF99960 (Db2 for i) was last applied in November 2025. Three of the
-> missing PTFs address SQL query performance regressions affecting high-volume
-> batch jobs. SF99967 (Technology Refresh) was last applied in November 2025; two missing PTFs
-> include security fixes for privilege escalation CVEs. Deferring beyond the
-> next scheduled maintenance window carries **High** operational and security risk.
+> No fix is currently waiting, so the exposure is drift rather than a backlog.
+> The last full patch cycle was November 2025, and SF99761 dates from February 2025.
+> Leaving the 151 temporary PTFs unmade-permanent also complicates the next
+> cumulative apply. Deferring beyond the next scheduled maintenance window carries
+> **Moderate** risk.
 
 ---
 
-### Step 9: Save the Deployment Plan to IFS
+### Step 8: Save the Maintenance Plan to IFS
 
 ```
-Save the deployment plan as a Markdown file to the IFS at
-/home/ITZUSER/PTFREPORTS/deployment_plan_<today's date>_<yourname>.md
+Save the maintenance plan as a Markdown file to the IFS at
+/home/ITZUSER/PTFREPORTS/maintenance_plan_<today's date>_<yourname>.md
 ```
 
 Bob uses `write_stream_file` to persist the plan, creating the directory if needed.
@@ -258,10 +288,12 @@ Bob uses `write_stream_file` to persist the plan, creating the directory if need
 
 ## Part 5: AI-Authored Change Request Document
 
-The deployment plan is the technical artefact. The change request is the governance artefact. Ask Bob to write it:
+### Step 9: Generate the Change Request
+
+The maintenance plan is the technical artefact. The change request is the governance artefact. Ask Bob to write it:
 
 ```
-Using the deployment plan we just generated, write a formal IT change request
+Using the maintenance plan we just generated, write a formal IT change request
 document suitable for submission to a Change Advisory Board (CAB).
 
 Include:
@@ -283,21 +315,21 @@ Format it as a Markdown document.
 
 ---
 
-**Change Title:** PTF Group Level Remediation — IBMI-PROD01
+**Change Title:** PTF Permanent Apply and Group Refresh — IBMI-PROD01
 **Change Reference:** CHG-2026-0615-001  
 **Classification:** Standard — Scheduled Maintenance
 
 **Executive Summary**
-This change applies 21 Program Temporary Fixes (PTFs) to IBM i system IBMI-PROD01 to address outstanding PTF group levels for Db2 for i (SF99960) and Technology Refresh (SF99967), neither of which has been updated since November 2025. Two PTFs in scope address published security vulnerabilities. The change is decomposed into an immediate phase (no system restart) and a planned IPL phase during the next scheduled maintenance window.
+This change makes 151 temporarily applied Program Temporary Fixes (PTFs) permanent on IBM i system IBMI-PROD01 and refreshes the PTF groups that have fallen behind (SF99761, SF99963, SF99411, and the cumulative package SF99760). No fixes are currently waiting to be applied; this change closes out the November 2025 patch cycle and prevents drift. The group refresh requires an IPL and will be done during the next scheduled maintenance window.
 
-**Rollback Plan**  
-IBM i PTFs can be removed using `RMVPTF` for temporarily-applied fixes. Permanently-applied PTFs can be backed out to the previous PTF save file if one was captured before this change. The Phase 1 (immediate) applies will be performed with `DELAYED(*YES)` to allow inspection before permanent activation. The Phase 2 IPL applies will be preceded by a full `SAVSYS` to tape/SAVF to enable point-in-time recovery.
+**Rollback Plan**
+Temporarily applied PTFs can be removed with `RMVPTF`, but **making them permanent removes that option**, so Phase 1 is performed only after the soak-period check passes. Phase 2 (group refresh) is preceded by a full `SAVSYS` to tape/SAVF to enable point-in-time recovery.
 
-**Post-Change Verification**  
-- Confirm all Phase 1 PTFs show `PTF_STATUS = 'APPLIED'` in `QSYS2.PTF_INFO`  
-- Confirm `PTF_GROUP_STATUS = 'INSTALLED'` and `PTF_GROUP_APPLY_TIMESTAMP` is updated for SF99960 and SF99967 in `QSYS2.GROUP_PTF_INFO`
-- Run the Lab 5 PTF compliance Ansible playbook to generate an updated compliance report
-- Validate critical batch jobs complete normally within the first 24 hours post-change  
+**Post-Change Verification**
+- Confirm all Phase 1 PTFs show `PTF_LOADED_STATUS = 'PERMANENTLY APPLIED'` in `QSYS2.PTF_INFO`
+- Confirm `PTF_GROUP_STATUS = 'INSTALLED'` and `PTF_GROUP_APPLY_TIMESTAMP` is updated for SF99761, SF99963, SF99411 and SF99760 in `QSYS2.GROUP_PTF_INFO`
+- Re-run the Step 5 pending-PTF check and confirm it still returns 0
+- Validate critical batch jobs complete normally within the first 24 hours post-change
 
 ---
 
@@ -320,10 +352,10 @@ Bob will use `write_stream_file` for the IFS copy and the workspace file tools f
 | Error | Likely Cause | Resolution |
 |---|---|---|
 | `SQL0204 — QSYS2.GROUP_PTF_CURRENCY not found` | `GROUP_PTF_CURRENCY` does not exist on IBM i 7.6 | Use `QSYS2.GROUP_PTF_INFO` — all lab queries have been updated to this service |
-| `GROUP_PTF_INFO` returns no rows | No PTF groups installed | Apply a cumulative PTF package first: `ibmi_fix` with a SF99760 group fix |
-| `PTF_INFO` shows `ON ORDER` for many PTFs | PTF ordering via ECS is pending | Check WRKPTFGRP output; PTFs may still be downloading from IBM |
+| `SQL0206 — column PTF_STATUS / IPL_REQUIRED / LOAD_DATE / SUPERSEDED_BY_PTF_ID not found` | Column names differ on IBM i 7.6 | Use `PTF_LOADED_STATUS`, `PTF_IPL_REQUIRED`, `PTF_STATUS_TIMESTAMP`, `PTF_SUPERSEDED_BY_PTF` |
+| `GROUP_PTF_INFO` returns no rows | No PTF groups installed | Part 1 returns an empty result set; continue with `QSYS2.PTF_INFO` in Parts 2–3 |
+| Step 5 returns `PENDING_PTFS = 0` | The system has no apply backlog | Expected on the lab system — this is a valid audit finding; continue with the permanent-apply and group-refresh plan |
 | Supersede chain query runs slowly | Large PTF_INFO table with no index hint | Add `FETCH FIRST 50 ROWS ONLY` during investigation to limit scope |
-| `ibmi_fix` Ansible module fails with `CPF3634` | PTF save files not present on system | Use `ibmi_fix_repo_lkup` first to confirm PTF is available locally |
 
 ---
 
@@ -331,12 +363,10 @@ Bob will use `write_stream_file` for the IFS copy and the workspace file tools f
 
 You've built a complete PTF Impact Analysis Agent on IBM i using Bob as the natural language interface. The capabilities delivered:
 
-- **`QSYS2.GROUP_PTF_INFO`** as the currency gap source of truth — installed level, status, and apply timestamp at a glance (IBM i 7.6; `GROUP_PTF_CURRENCY` not available on this release)
-- **`QSYS2.PTF_INFO`** for individual PTF status, IPL requirements, and supersede/pre-requisite chains
-- **Deployment plan generation** — phased, ordered, and risk-rated, produced by Bob in one conversational exchange
+- **`QSYS2.GROUP_PTF_INFO`** as the PTF group currency source of truth — installed level, status, and apply timestamp at a glance (IBM i 7.6; `GROUP_PTF_CURRENCY` not available on this release)
+- **`QSYS2.PTF_INFO`** to prove nothing is pending, find temporarily applied PTFs, and audit supersede chains
+- **Maintenance plan generation** — permanent apply plus PTF group refresh, phased and risk-rated, produced by Bob in one conversational exchange
 - **AI-authored change documents** — CAB-ready, with rollback plan and post-change verification queries
-- **Custom PTF Impact Agent mode** — makes this analysis available to anyone on your team in natural language
-- **Ansible handoff** — plan approved, execution automated via `ibmi_fix` with phased staging
 
 **Next Steps:**
 - Connect the Lab 7 (Audit Journal) sysadmin agent mode with this PTF agent — security findings that map to CVEs can trigger an immediate PTF gap check
@@ -388,11 +418,21 @@ ORDER BY PTF_GROUP_NAME, PTF_GROUP_LEVEL
 
 If this query returns no rows, students can still work with `QSYS2.PTF_INFO` directly for Parts 2–3; Part 1 will return an empty result set.
 
-### Seeding a Realistic Gap
+### Expected State of the Lab System
 
-To give students something to find, deliberately leave the system a few levels behind by not applying the latest cumulative. On a lab system this is the natural state — no action usually needed.
+This system has been fully patched: there are **no PTFs waiting to be applied**. The lab is written around that fact. Students audit the system, find what is still only temporarily applied, prove the supersede chains are healthy, and plan the next maintenance cycle. Verified values (as of lab prep):
 
-To verify the gap students will see:
+| Check | Expected result |
+|---|---|
+| PTFs not loaded/applied, with an action pending, or on order (Step 5) | **0** |
+| `PTF_LOADED_STATUS = 'APPLIED'` (temporary) | **151** (134 `IMMEDIATE`, 17 `DELAYED`), all applied 2025-11-25 |
+| `PTF_LOADED_STATUS = 'PERMANENTLY APPLIED'` | 743 |
+| `PTF_LOADED_STATUS = 'SUPERSEDED'` | 446 (243 chains of depth 2, 203 of depth 1), 0 with a missing replacement |
+| Stalest PTF groups | SF99761 (2025-02-27), SF99963 and SF99411 (2025-08-06) |
+
+> **Optional — demonstrate a real backlog:** to make Steps 4–5 return pending rows, load (but do not apply) a PTF with `LODPTF`. A loaded PTF appears in `QSYS2.PTF_INFO` with a `PTF_LOADED_STATUS` other than `APPLIED`, `PERMANENTLY APPLIED` or `SUPERSEDED`, and `PENDING_PTFS` becomes greater than 0. Remove it afterwards with `RMVPTF` or leave it for a follow-on exercise.
+
+To verify the PTF group state students will see:
 
 ```sql
 SELECT PTF_GROUP_NAME, PTF_GROUP_DESCRIPTION,
@@ -405,12 +445,4 @@ ORDER BY LAST_APPLIED ASC
 FETCH FIRST 5 ROWS ONLY
 ```
 
-> **Note:** `GROUP_PTF_INFO` does not include IBM's current shipped level (`IBM_LEVEL`) or a pre-computed `GAP` column. The "gap" for student exercises is demonstrated by comparing installed levels against IBM Fix Central or by showing that SF99761 (All PTF Groups) is at level 7 while SF99969 (Group HIPER) is at level 14, illustrating uneven application.
-
-### Ansible Section Note
-
-Part 7 (Ansible handoff) reuses the Lab 5 inventory and collection setup. Confirm `ibm.power_ibmi:3.3.0` is still installed on the Ansible controller before the session:
-
-```bash
-ansible-galaxy collection list | grep ibm.power_ibmi
-```
+> **Note:** `GROUP_PTF_INFO` does not include IBM's current shipped level (`IBM_LEVEL`) or a pre-computed `GAP` column. Group drift for student exercises is demonstrated by comparing apply dates (SF99761 last applied 2025-02-27 versus most groups on 2025-11-25) and by showing that SF99761 (All PTF Groups) is at level 7 while SF99969 (Group HIPER) is at level 14, illustrating uneven application. The level to order is confirmed against IBM Fix Central.
