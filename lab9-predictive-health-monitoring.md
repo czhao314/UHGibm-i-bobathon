@@ -1,6 +1,6 @@
 # Lab 9: Predictive Operational Health Monitoring on IBM i with IBM Bob
 
-**Duration:** 25 minutes  
+**Duration:** 20 minutes
 **Difficulty:** Intermediate  
 **Version:** 1 — June 2026
 
@@ -10,7 +10,7 @@
 
 Reactive troubleshooting — waiting for a user to report slowness, then hunting for the hot job — is the most common IBM i operational pattern. But the data to catch problems *before* users notice has always been there: IBM i continuously exposes system metrics through `QSYS2` SQL services and captures multi-interval performance history via Collection Services. The gap has been the effort required to query, interpret, and act on that data.
 
-This lab turns IBM Bob into a **Predictive Operational Health Monitor**. Using Bob in **IBM i Database mode**, you'll establish a current-state baseline across CPU, disk, memory pools, and active jobs; compare snapshots across time to detect trends; identify resources approaching saturation; and have Bob produce a capacity forecast and a prioritised health report. You'll also configure a **custom health monitor agent mode** so any team member can ask "how is this system going to look next week?" and get a data-backed answer.
+This lab turns IBM Bob into a **Predictive Operational Health Monitor**. Using Bob in **IBM i Database mode**, you'll establish a current-state baseline across CPU, disk, memory pools, and active jobs; compare snapshots across time to detect trends; identify resources approaching saturation; and have Bob produce a capacity forecast and a prioritised health report.
 
 **Objectives:**
 - Take and interpret real-time health snapshots using `QSYS2.SYSTEM_STATUS_INFO`, `QSYS2.SYSDISKSTAT`, and `QSYS2.MEMORY_POOL_INFO`
@@ -18,7 +18,6 @@ This lab turns IBM Bob into a **Predictive Operational Health Monitor**. Using B
 - Detect anomalies by comparing current metrics against a rolling baseline
 - Identify resources trending toward saturation and forecast when thresholds will be breached
 - Have Bob generate a prioritised health report with risk ratings and recommended actions
-- Configure a Bob custom health monitor agent mode for standing operational use
 
 ---
 
@@ -51,10 +50,10 @@ Start a Collection Services collection on this system using the *STANDARDP profi
 
 Bob will execute:
 ```
-STRPFRCOL COLLNAME(*GEN) INTERVAL(15) TYPE(*STANDARDP)
+STRPFRCOL COLPRF(*STANDARDP)
 ```
 
-> **Note:** `*STANDARDP` captures system-level metrics (`*SYSLVL`, `*DISK`, `*JOBMI`) at 15-minute intervals — sufficient for trend analysis. For this lab, even a collection started a few minutes before the exercises will generate enough data to work with.
+> **Note:** `*STANDARDP` captures system-level metrics (`*SYSLVL`, `*DISK`, `*JOBMI`). The default collection interval is 15 minutes, which is sufficient for trend analysis (`*DISK` is always collected at 5 minutes or less). To use a shorter interval, run `CFGPFRCOL INTERVAL(5)`; the change takes effect immediately. For this lab, even a collection started a few minutes before the exercises will generate enough data to work with.
 
 ---
 
@@ -69,20 +68,14 @@ STRPFRCOL COLLNAME(*GEN) INTERVAL(15) TYPE(*STANDARDP)
 | `QSYS2.COLLECTION_SERVICES_INFO` | Collection state, profile, interval, categories |
 | `QPFRDATA.QAPMJSUM` | Collection Services history — CPU ms per interval by job group (15-min intervals) |
 | `QPFRDATA.QAPMDISK` | Collection Services history — per-disk I/O counts, service time, utilisation per interval |
-| `QSYS2.JOBLOG_INFO` | Full job message log — escape messages, FFDC references, runtime errors |
 
 ---
 
 ## Part 1: Current-State Health Snapshot
 
-### Step 1: Activate IBM i Database Mode
+### Step 1: Full System Health Snapshot
 
-- Expand the **mode dropdown** beneath the Bob chat input
-- Select **IBM i Database**
-
-### Step 2: Full System Health Snapshot
-
-Start with a single comprehensive prompt to establish the current baseline:
+First, expand the **mode dropdown** beneath the Bob chat input and select **IBM i Database**. Then start with a single comprehensive prompt to establish the current baseline:
 
 ```
 Take a full health snapshot of this IBM i system right now. I want:
@@ -148,7 +141,7 @@ FETCH FIRST 3 ROWS ONLY
 - `ELAPSED_PERCENT_BUSY > 70` — I/O bottleneck risk on that arm (note: NULL for SAN/virtual disks — use `PERCENT_USED` instead)
 - `ELAPSED_TOTAL_FAULTS` elevated in `*BASE` or `*INTERACT` pool — memory pressure causing paging
 
-### Step 3: Identify the Top Resource Consumers Right Now
+### Step 2: Identify the Top Resource Consumers Right Now
 
 ```
 Show me the top 10 active jobs by current elapsed CPU percentage.
@@ -164,17 +157,54 @@ Bob queries `QSYS2.ACTIVE_JOB_INFO` with `ELAPSED_CPU_PERCENTAGE` ordered descen
 
 A single snapshot tells you the state *now*. Trends tell you where the system is *going*.
 
-### Step 4: Read Collection Services History
+### Step 3: Point at the Latest Collection
+
+`QPFRDATA.QAPMJSUM` and `QPFRDATA.QAPMDISK` hold one member per collection. A plain `FROM QPFRDATA.QAPMJSUM` reads only the oldest member, so you need aliases for the newest one.
+
+```
+Find the most recent member of QPFRDATA.QAPMJSUM and QPFRDATA.QAPMDISK
+using QSYS2.SYSPARTITIONSTAT (highest CREATE_TIMESTAMP). Create QTEMP aliases
+called JSUM and DISK that point at those members. Use them in the next steps.
+```
+
+Bob will run, for both files:
+
+```sql
+SELECT TABLE_NAME, TABLE_PARTITION AS LATEST_MEMBER, NUMBER_ROWS
+FROM (SELECT TABLE_NAME, TABLE_PARTITION, NUMBER_ROWS,
+             ROW_NUMBER() OVER (PARTITION BY TABLE_NAME
+                                ORDER BY CREATE_TIMESTAMP DESC) AS RN
+      FROM QSYS2.SYSPARTITIONSTAT
+      WHERE TABLE_SCHEMA = 'QPFRDATA'
+        AND TABLE_NAME IN ('QAPMJSUM', 'QAPMDISK')) X
+WHERE RN = 1
+```
+
+and then, using the member names it returns:
+
+```sql
+CREATE OR REPLACE ALIAS QTEMP.JSUM FOR QPFRDATA.QAPMJSUM (<latest member>)
+CREATE OR REPLACE ALIAS QTEMP.DISK FOR QPFRDATA.QAPMDISK (<latest member>)
+```
+
+> **Note:** `QTEMP` aliases last only for the current job. If Bob reports `QTEMP.JSUM not found` later, repeat this step.
+
+### Step 4: Read Collection Services History and Detect the CPU Trend
 
 ```
 Query QSYS2.COLLECTION_SERVICES_INFO to show me the active collection name,
-profile, and start time. Then query QPFRDATA.QAPMJSUM for system-level CPU
-samples over the last 2 hours. Sum all job-group buckets per interval to get
+profile, and start time. Then query QTEMP.JSUM for system-level CPU
+samples over the most recent 2 hours of collected data. Sum all job-group buckets per interval to get
 the system total. Show timestamp, CPU ms per second, and interval duration.
-I want to see whether CPU is trending up, flat, or down.
+
+Then, using window arithmetic on those samples, tell me:
+1. The average CPU over the full window
+2. The average CPU for the first half vs the second half of the window
+3. Whether the trend is rising (second half > first half by more than 5%), falling, or flat
+4. The peak CPU sample and when it occurred
 ```
 
-Bob will query the Collection Services `QPFRDATA` library directly — `SYSTOOLS.METRICS_*` views are not available on this system:
+Bob will query the Collection Services data through the alias — `SYSTOOLS.METRICS_*` views are not available on this system:
 
 ```sql
 -- System-level CPU per 15-minute interval
@@ -183,35 +213,25 @@ SELECT   DATETIME                                               AS INTERVAL_TS,
          INTSEC                                                 AS INTERVAL_SEC,
          SUM(JSCPU)                                            AS TOTAL_CPU_MS,
          DECIMAL(SUM(JSCPU) / NULLIF(INTSEC, 0), 12, 2)       AS CPU_MS_PER_SEC
-FROM     QPFRDATA.QAPMJSUM
-WHERE    DATETIME >= CURRENT_TIMESTAMP - 2 HOURS
+FROM     QTEMP.JSUM
+WHERE    DATETIME >= (SELECT MAX(DATETIME) - 2 HOURS FROM QTEMP.JSUM)
 GROUP BY DATETIME, INTSEC
 ORDER BY DATETIME
 ```
 
-> **Tip:** `JSCPU` is total CPU milliseconds consumed by all jobs in the interval. Dividing by `INTSEC` normalises across any variable-length intervals. If only 1–2 intervals have been collected (collection just started), widen the window to `CURRENT_TIMESTAMP - 30 MINUTES` and note that the trend window is short.
-
-### Step 5: Detect CPU Trend Direction
-
-```
-From the CPU samples we just retrieved, calculate using window arithmatic:
-1. The average CPU over the full window
-2. The average CPU for the first half vs the second half of the window
-3. Whether the trend is rising (second half > first half by more than 5%), falling, or flat
-4. The peak CPU sample and when it occurred
-```
+> **Tip:** `JSCPU` is total CPU milliseconds consumed by all jobs in the interval. Dividing by `INTSEC` normalises across any variable-length intervals. The window is anchored to the newest collected interval (`MAX(DATETIME)`) rather than the clock, so the query works whether the data is minutes or days old. If only 1–2 intervals have been collected (collection just started), narrow the window to `MAX(DATETIME) - 30 MINUTES` and note that the trend window is short.
 
 Bob will apply window arithmetic to the sample set and classify the trend — this is the core of anomaly detection without requiring a dedicated monitoring tool.
 
-### Step 6: Disk I/O Trend
+### Step 5: Disk I/O Trend
 
 ```
 From Collection Services data, show me disk I/O request rates and average
-response times sampled over the last 2 hours. Flag any interval where
+response times sampled over the most recent 2 hours of collected data. Flag any interval where
 average response time exceeded 20ms — that threshold indicates I/O pressure.
 ```
 
-Bob will query `QPFRDATA.QAPMDISK` — `SYSTOOLS.METRICS_DISK` does not exist on this system:
+Bob will query `QTEMP.DISK` — `SYSTOOLS.METRICS_DISK` does not exist on this system:
 
 ```sql
 -- Per-disk I/O rate and average response time from Collection Services
@@ -228,8 +248,8 @@ SELECT   DATETIME                                                         AS INT
            THEN '🚨 PRESSURE'
            ELSE '✅ OK'
          END                                                              AS IO_FLAG
-FROM     QPFRDATA.QAPMDISK
-WHERE    DATETIME >= CURRENT_TIMESTAMP - 2 HOURS
+FROM     QTEMP.DISK
+WHERE    DATETIME >= (SELECT MAX(DATETIME) - 2 HOURS FROM QTEMP.DISK)
 ORDER BY DATETIME, DSARM
 ```
 
@@ -237,105 +257,52 @@ ORDER BY DATETIME, DSARM
 
 ## Part 3: Anomaly Detection
 
-### Step 7: Compare Current Metrics to the Sampled Baseline
+### Step 6: Compare Current Metrics to the Sampled Baseline
 
 ```
-Using the Collection Services samples from QPFRDATA.QAPMJSUM and QPFRDATA.QAPMDISK
-over the last 2 hours as a baseline, compare the current snapshot values to that baseline.
+Using the Collection Services samples from QTEMP.JSUM and QTEMP.DISK
+over the most recent 2 hours of collected data, treat all intervals except the latest
+as the baseline and the latest interval as "current".
 
-For each metric (CPU ms/sec, disk I/O ops/sec, pool fault rate):
+For each metric (CPU ms/sec and disk I/O ops/sec):
 - Show the baseline average across all sampled intervals
 - Show the current value from the most recent interval
 - Calculate the deviation (current minus baseline average)
 - Flag as ANOMALY if the current value is more than 2 standard deviations above
   the baseline average, or more than 25% above it in absolute terms
+- Also identify the single most unusual interval in the window (highest value
+  relative to the average) and say whether it is a meaningful anomaly or normal variance
 ```
 
-Bob will calculate rolling statistics across the sample set and compare point-in-time values — surfacing genuine deviations rather than normal variance. Example output structure Bob will produce:
+> **Note:** A healthy system will often show no anomaly. "Normal variance" is a valid finding.
+
+Bob will calculate rolling statistics across the sample set and compare point-in-time values — surfacing genuine deviations rather than normal variance. Example output structure Bob will produce (values will differ on your system):
 
 | Metric | Baseline Avg | Current | Deviation | Status |
 |---|---|---|---|---|
-| CPU Utilisation % | 34.2 | 71.5 | +37.3 pts | ⚠️ ANOMALY |
-| Active Jobs | 412 | 418 | +6 | Normal |
-| Disk Arm 1 Utilisation % | 28.1 | 29.4 | +1.3 pts | Normal |
-| *BASE Pool Faults/sec | 0.3 | 14.7 | +14.4 | ⚠️ ANOMALY |
-
-### Step 8: Root-Cause the Anomalies
-
-For each flagged anomaly, ask Bob to correlate with the active job picture:
-
-```
-CPU is anomalously high right now compared to the 2-hour baseline.
-Cross-reference with the active job snapshot — which jobs started or
-significantly increased their CPU consumption within the last 30 minutes?
-```
-
-Bob will join `ACTIVE_JOB_INFO` job start times against the baseline window to identify new or escalating jobs as the likely cause. Once a specific job is identified, move to Step 9 to diagnose it in depth.
-
-### Step 9: Deep Job Investigation
-
-The anomaly pointed you at a specific job. Now find out exactly what it is doing and why.
-
-```
-The anomaly detection flagged job [JOB_NAME] as the likely cause of the CPU spike.
-Investigate this job fully:
-1. Pull its job log — show all escape messages, warnings, and any FFDC references
-2. Show its current runtime context: thread count, memory use, subsystem, pool,
-   and how long it has been running
-3. If it is a PASE process, check the IFS for its executable path, working
-   directory, and any open log files
-4. Based on what you find, give me no more than two recommendations.
-Distinguish facts from inferences.
-```
-
-Bob will combine `QSYS2.JOBLOG_INFO`, `QSYS2.ACTIVE_JOB_INFO`, and `search_ifs` to build a complete picture of the job. The `QSYS2.JOBLOG_INFO` query it uses:
-
-```sql
-SELECT   MESSAGE_TIMESTAMP,
-         MESSAGE_TYPE,
-         MESSAGE_ID,
-         MESSAGE_TEXT,
-         MESSAGE_SECOND_LEVEL_TEXT
-FROM     QSYS2.JOBLOG_INFO
-WHERE    JOB_NAME = '[JOB_NAME]'
-  AND    MESSAGE_TYPE IN ('*ESCAPE', '*DIAGNOSTIC', '*COMPLETION')
-ORDER BY MESSAGE_TIMESTAMP DESC
-FETCH FIRST 50 ROWS ONLY
-```
-
-**What to look for in the job log:**
-
-| Message pattern | Likely meaning |
-|---|---|
-| `MCH` prefix messages | Machine check — memory or pointer errors |
-| `SQL` prefix messages | Db2 errors — query failures, lock waits, SQL0501 cursor issues |
-| `CPF` prefix escape messages | OS-level errors — authority failures, object not found |
-| References to `/tmp/` or `/var/log/` IFS paths | PASE application — check those files for stack traces |
-| `FFDC` in message text | Java/JVM crash — IFS dump file generated, Bob can read it |
-
-> **Key insight:** The job log is the bridge between the trending anomaly (CPU spiked at 13:58) and the root cause (a SQL cursor loop that was never closed). Without it, you'd have the symptom but not the fix.
+| CPU ms/sec | 1.2 | 1.4 | +0.2 | Normal |
+| Disk I/O ops/sec | 28.1 | 29.4 | +1.3 | Normal |
 
 ---
 
 ## Part 4: Capacity Forecasting
 
-### Step 10: ASP Usage Forecast
+### Step 7: ASP Usage Forecast
 
-ASP (Auxiliary Storage Pool) usage grows monotonically unless objects are deleted or saved-and-freed. It's the most forecastable metric on the system.
+ASP (Auxiliary Storage Pool) usage grows monotonically unless objects are deleted or saved-and-freed. It's the most forecastable metric on the system. Collection Services does not hold a long enough ASP history for a fitted trend in this lab, so you will project from the current snapshot and a stated growth assumption.
 
 ```
-Query QSYS2.SYSTEM_STATUS_INFO for current ASP usage.
-Then query Collection Services for ASP usage samples over the last 7 days.
-Calculate the average daily growth rate in GB.
-Project forward: at the current growth rate, how many days until ASP reaches
-85%? And how many days until it reaches 95%?
+Query QSYS2.ASP_INFO for the current system ASP (ASP 1) usage.
+Assume the ASP grows by 2 GB per day.
+Project forward: how many days until ASP reaches 85%? And how many days
+until it reaches 95%?
 Flag if either threshold is within 30 days.
 ```
 
-Bob will fit a linear projection to the ASP samples:
+Bob will query the current ASP snapshot and apply a linear projection:
 
 ```sql
--- Daily ASP usage from QSYS2.ASP_INFO (current snapshot)
+-- Current ASP usage from QSYS2.ASP_INFO (current snapshot)
 -- TOTAL_CAPACITY and TOTAL_CAPACITY_AVAILABLE are in MB
 SELECT   ASP_NUMBER,
          ASP_TYPE,
@@ -349,46 +316,18 @@ FROM     QSYS2.ASP_INFO
 ORDER BY ASP_NUMBER
 ```
 
-For the growth trend, use the LPAR-level disk capacity from Collection Services history:
-
-```sql
--- Daily ASP capacity snapshots from QPFRDATA.QAPMLPAR
--- LPCAP = total disk capacity bytes, LPAVL = available bytes
-SELECT   DATE(DATETIME)                                             AS SAMPLE_DATE,
-         MIN(LPAVL)     / 1073741824.0                             AS MIN_FREE_GB,
-         MAX(LPAVL)     / 1073741824.0                             AS MAX_FREE_GB,
-         (MAX(LPCAP) - MIN(LPAVL)) / 1073741824.0                 AS USED_GB
-FROM     QPFRDATA.QAPMLPAR
-WHERE    DATETIME >= CURRENT_TIMESTAMP - 7 DAYS
-GROUP BY DATE(DATETIME)
-ORDER BY SAMPLE_DATE
-```
-
-> **Note:** If `QPFRDATA.QAPMLPAR` has no rows (the `*LPAR` category is not being collected), use the current `QSYS2.ASP_INFO` snapshot combined with a hypothetical growth rate, or enable the `*LPAR` category with `CHGPFRCOL CGTLIST(*ADD *LPAR)`.
-
-Then reason over the trend:
-> *"ASP is currently at 73.4% (892 GB of 1,216 GB). Over the last 7 days it grew by an average of 4.2 GB/day. At that rate: 85% threshold (1,034 GB) will be reached in approximately **34 days**. 95% threshold (1,155 GB) will be reached in approximately **63 days**. The 85% threshold is within the 30-day warning window — **flag as Medium risk**."*
-
-### Step 11: Memory Pool Sizing Forecast
-
-```
-For each memory pool with a fault rate above 1 fault/second in the Collection
-Services data, show the current pool size, the defined (minimum) size, and
-calculate how much additional memory would be needed to bring the fault rate
-to near zero based on IBM's general guidance of 10% headroom above working set.
-```
-
-Bob will reason against pool fault rates and IBM's documented pool-sizing heuristics to recommend concrete `CHGSHRPOOL` or `WRKSHRPOOL` adjustments.
+Then reason over the projection:
+> *"ASP 1 is currently at 35.42% (66.0 GB of 186.4 GB). Assuming 2 GB/day growth: the 85% threshold (158.5 GB) will be reached in approximately **46 days**, and the 95% threshold (177.1 GB) in approximately **56 days**. Neither is within the 30-day warning window — **Low risk**. Note the system's own storage threshold is 90%."*
 
 ---
 
 ## Part 5: Health Report Generation
 
-### Step 12: Consolidated Health Report
+### Step 8: Consolidated Health Report
 
 ```
 Based on everything we've found — the current snapshot, trend analysis,
-anomaly detections, job investigation, SQL diagnosis, and capacity forecasts —
+anomaly detection, and capacity forecast —
 generate a comprehensive operational health report for this IBM i system.
 
 Structure it as:
@@ -400,6 +339,8 @@ Structure it as:
 5. Recommended Actions — prioritised list (Critical / High / Medium / Low)
    with specific commands or queries to execute
 6. Monitoring Recommendations — what to watch over the next 24–72 hours
+
+If no anomaly was found, state that clearly and mark the dashboard Green.
 
 Format as Markdown.
 ```
@@ -413,10 +354,10 @@ Format as Markdown.
 | Error | Likely Cause | Resolution |
 |---|---|---|
 | `QSYS2.DISK_STATISTICS` not found | This view does not exist — correct name is `QSYS2.SYSDISKSTAT` | Replace all references with `QSYS2.SYSDISKSTAT` |
-| `QSYS2.COLLECTION_SERVICES_INFO` returns no rows | No collection running | Run `STRPFRCOL COLLNAME(*GEN) TYPE(*STANDARDP)` |
-| Collection data only covers a few minutes | Collection just started | Wait 2–3 intervals (30–45 mins at 15-min interval) or reduce interval to 5 mins for lab: `STRPFRCOL COLLNAME(*GEN) INTERVAL(5)` |
+| `QSYS2.COLLECTION_SERVICES_INFO` returns no rows | No collection running | Run `STRPFRCOL COLPRF(*STANDARDP)` |
+| Collection data only covers a few minutes | Collection just started | Wait 2–3 intervals (30–45 mins at 15-min interval) or reduce interval to 5 mins for lab: `CFGPFRCOL INTERVAL(5)` |
 | `QSYS2.SYSDISKSTAT` columns `ELAPSED_PERCENT_BUSY` / `ELAPSED_IO_REQUESTS` are NULL | Disk is SAN/virtual (e.g. IBM 2145) — hypervisor does not expose arm-level I/O counters | Use `PERCENT_USED` for storage utilisation; arm-level busy % is not available for virtual disks |
-| `QPFRDATA.QAPMLPAR` returns no rows | `*LPAR` category not enabled in Collection Services | Run `CHGPFRCOL CGTLIST(*ADD *LPAR)` to start collecting LPAR-level data |
+| `QTEMP.JSUM` or `QTEMP.DISK` not found | QTEMP aliases last only for the current job | Repeat Step 3 to recreate them |
 | `MEMORY_POOL_INFO` fault rates all zero | System is lightly loaded | Fault rates of zero are valid — the health story is "all green" |
 | ASP query returns multiple rows | Multiple ASPs configured | Add `WHERE ASP_NUMBER = 1` to focus on the system ASP |
 
@@ -429,14 +370,13 @@ You've built a complete end-to-end Predictive Operational Health Monitor on IBM 
 - **Real-time snapshots** across CPU, disk, memory pools, and jobs — the current-state baseline
 - **Collection Services trend data** pulled into conversational analysis — no dedicated monitoring console needed
 - **Anomaly detection** by comparing current values to a rolling sample baseline, with statistical flagging
-- **Job drill-down** — once an anomaly is attributed to a job, `QSYS2.JOBLOG_INFO` and IFS inspection identify the root cause without leaving Bob
-- **Capacity forecasting** with days-to-threshold projections for ASP and memory pools
+- **Capacity forecasting** with days-to-threshold projections for the ASP
 - **AI-generated health reports** — executive-ready, with the full chain from anomaly to capacity risk in one document
 
 **Next Steps:**
 - Combine with Lab 7 (Audit Journal): correlate security events with performance anomalies — a CPU spike coinciding with after-hours `OM` journal entries is a high-confidence incident indicator
 - Combine with Lab 8 (PTF Impact): before a PTF maintenance window, run a health snapshot to establish the pre-change baseline; run it again post-IPL to confirm no regressions
-- Extend the `ibmi-health-monitor` mode with organisation-specific thresholds (your system's normal CPU baseline may be 60%, not 34%)
+- Tune the anomaly thresholds to your own system's normal CPU baseline
 - Schedule a daily Collection Services review as a Bob task and route the summary to a Teams/Slack channel via webhook
 
 **Resources:**
@@ -444,7 +384,6 @@ You've built a complete end-to-end Predictive Operational Health Monitor on IBM 
 - [QSYS2.SYSTEM_STATUS_INFO — IBM Docs](https://www.ibm.com/docs/en/i/7.4?topic=services-system-status-info)
 - [QSYS2.SYSDISKSTAT — IBM Docs](https://www.ibm.com/docs/en/i/7.4?topic=services-sysdiskstat)
 - [QSYS2.MEMORY_POOL_INFO — IBM Docs](https://www.ibm.com/docs/en/i/7.4?topic=services-memory-pool-info)
-- [QSYS2.JOBLOG_INFO — IBM Docs](https://www.ibm.com/docs/en/i/7.4?topic=services-joblog-info)
 - [IBM i Performance Capabilities Reference](https://www.ibm.com/docs/en/i/7.4?topic=performance)
 
 ---
@@ -453,32 +392,21 @@ You've built a complete end-to-end Predictive Operational Health Monitor on IBM 
 
 ### Prerequisites on the IBM i Target
 
-Start Collection Services at least 30 minutes before students arrive so there is meaningful trend data:
+Start Collection Services at least 4 hours before students arrive so there is meaningful trend data (about 16 intervals at the 15-minute default):
 
 ```
 STRPFRCOL COLPRF(*STANDARDP)
 ```
 
-> **Note:** The collection interval is configured in Collection Services via `CFGPFRCOL` or IBM Navigator for i. The default interval is 5 minutes, which gives students 6 data points in 30 minutes — enough to demonstrate trending.
+> **Note:** The default collection interval on this system is 15 minutes (900 seconds). Check with `SELECT DEFAULT_COLLECTION_INTERVAL FROM QSYS2.COLLECTION_SERVICES_INFO`. Data in `QPFRDATA` is retained for the number of days in `RETENTION_DAYS`.
 
 ### Seeding Interesting Data
 
-To give students an anomaly to find, run a CPU-intensive query a few minutes before the session:
+No data seeding is required. The lab works on a healthy system: Step 6 reports the most unusual interval even if it is not a real problem. Start Collection Services at least 4 hours before the session so the latest collection member has enough intervals for the 2-hour window and a baseline. If the collection is restarted, a new member is created and starts empty, so Step 3 will point at the new, shorter member.
 
-```sql
--- Run this to spike CPU temporarily (safe on any IBM i)
-SELECT COUNT(*)
-FROM TABLE(QSYS2.OBJECT_STATISTICS('*ALL', '*PGM')) AS obj_stats
-```
+### ASP Forecasting
 
-Or start a CPU-consuming job via CL:
-```
-SBMJOB CMD(CALL PGM(QSYS/QCMD)) JOBD(QBATCH) JOBQ(QBATCH)
-```
-
-### ASP Forecasting Without 7 Days of Data
-
-If Collection Services was just started, students can still do ASP forecasting using:
+Step 7 projects from the current snapshot and an assumed growth rate rather than 7 days of history. Students can use:
 
 ```sql
 -- SYSTEM_ASP_USED is already a percentage (e.g. 37.68)
@@ -503,7 +431,7 @@ FROM     QSYS2.ASP_INFO
 WHERE    ASP_NUMBER = 1
 ```
 
-Tell students to assume a hypothetical growth rate of 5 GB/day and have Bob project from the current snapshot — the forecasting logic is the same, the data window is just shorter.
+Tell students to assume a growth rate of 2 GB/day and have Bob project from the current snapshot. On this system (ASP 1 at about 35%) that gives roughly 46 days to 85% and 56 days to 95% — a Low risk result that fits the healthy-system narrative.
 
 ### Resetting Between Sessions
 

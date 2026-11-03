@@ -1222,7 +1222,7 @@ end-proc;</div></div>
         <div onclick="showPage('lab9', document.querySelector('[onclick*=lab9]'))" style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;grid-column:1/-1;transition:border-color .15s,transform .15s;"
              onmouseenter="this.style.borderColor='var(--accent2)';this.style.transform='translateY(-2px)'"
              onmouseleave="this.style.borderColor='var(--border)';this.style.transform='none'">
-          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:6px;">Lab 9 · ~25 min</div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:6px;">Lab 9 · ~20 min</div>
           <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Predictive Operational Health Monitoring</div>
           <div style="font-size:12px;color:var(--muted);line-height:1.5;">Real-time snapshots, Collection Services trend analysis, anomaly detection, capacity forecasting, and an AI-generated health report — no monitoring console required.</div>
         </div>
@@ -1925,7 +1925,7 @@ and also write it to the local workspace as
       <h1>Predictive Operational Health Monitoring</h1>
       <p class="subtitle">Turn Bob into a Predictive Operational Health Monitor — real-time snapshots, Collection Services trend analysis, anomaly detection, capacity forecasting, and an AI-generated health report. No dedicated monitoring console required.</p>
       <div class="meta-pills">
-        <span class="pill time">⏱ ~25 minutes</span>
+        <span class="pill time">⏱ ~20 minutes</span>
         <span class="pill level">Intermediate</span>
       </div>
     </div>
@@ -1938,7 +1938,7 @@ and also write it to the local workspace as
         <li>Take and interpret real-time health snapshots using <code>QSYS2.SYSTEM_STATUS_INFO</code>, <code>QSYS2.SYSDISKSTAT</code>, and <code>QSYS2.MEMORY_POOL_INFO</code></li>
         <li>Read Collection Services history from <code>QPFRDATA.QAPMJSUM</code> and <code>QPFRDATA.QAPMDISK</code></li>
         <li>Detect anomalies by comparing current metrics against a rolling baseline</li>
-        <li>Forecast when ASP and memory pool thresholds will be breached</li>
+        <li>Forecast when ASP thresholds will be breached</li>
         <li>Have Bob generate a prioritised health report with risk ratings and recommended actions</li>
       </ul>
 
@@ -1958,12 +1958,11 @@ and also write it to the local workspace as
         <tr><td><code>QSYS2.ACTIVE_JOB_INFO</code></td><td>Live job snapshot: CPU%, thread count, memory, wait reason</td></tr>
         <tr><td><code>QPFRDATA.QAPMJSUM</code></td><td>Collection Services history — CPU ms per interval by job group</td></tr>
         <tr><td><code>QPFRDATA.QAPMDISK</code></td><td>Collection Services history — per-disk I/O counts and service time per interval</td></tr>
-        <tr><td><code>QSYS2.JOBLOG_INFO</code></td><td>Full job message log — escape messages, FFDC references, runtime errors</td></tr>
       </tbody></table></div>
 
       <h2 class="section-title">Part 1 <span class="section-badge">Current-State Health Snapshot</span></h2>
 
-      <h3 class="subsection">Step 2 — Full System Health Snapshot</h3>
+      <h3 class="subsection">Step 1 — Full System Health Snapshot</h3>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt — <code>IBM i Database mode</code></div><div class="prompt-text">Take a full health snapshot of this IBM i system right now. I want:
 1. Overall CPU utilisation and how many jobs are active vs. waiting
 2. ASP usage percentage and how much free space remains
@@ -1974,83 +1973,68 @@ and also write it to the local workspace as
 Present the results as a structured health dashboard summary.</div></div>
       <p style="font-size:14px;color:var(--muted);margin-top:8px;"><strong>What to look for:</strong> <code>ELAPSED_CPU_USED &gt; 80</code> (CPU-constrained), <code>SYSTEM_ASP_USED &gt; 85</code> (disk space risk), <code>ELAPSED_PERCENT_BUSY &gt; 70</code> on any disk arm (I/O bottleneck), elevated faults in <code>*BASE</code> or <code>*INTERACT</code> pool (memory pressure).</p>
 
-      <h3 class="subsection">Step 3 — Top Resource Consumers</h3>
+      <h3 class="subsection">Step 2 — Top Resource Consumers</h3>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Show me the top 10 active jobs by current elapsed CPU percentage.
 For each job, also show thread count, temporary storage used, and current wait reason.
 Flag any job over 20% elapsed CPU as a potential concern.</div></div>
 
       <h2 class="section-title">Part 2 <span class="section-badge">Trend Analysis with Collection Services</span></h2>
 
-      <h3 class="subsection">Step 4 — Collection Services CPU History</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query QSYS2.COLLECTION_SERVICES_INFO to show me the active collection name,
-profile, and start time. Then query QPFRDATA.QAPMJSUM for system-level CPU
-samples over the last 2 hours. Sum all job-group buckets per interval to get
-the system total. Show timestamp, CPU ms per second, and interval duration.
-I want to see whether CPU is trending up, flat, or down.</div></div>
+      <h3 class="subsection">Step 3 — Point at the Latest Collection</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Find the most recent member of QPFRDATA.QAPMJSUM and QPFRDATA.QAPMDISK
+using QSYS2.SYSPARTITIONSTAT (highest CREATE_TIMESTAMP). Create QTEMP aliases
+called JSUM and DISK that point at those members. Use them in the next steps.</div></div>
+      <div class="callout tip"><div class="icon">💡</div><p><code>QPFRDATA.QAPMJSUM</code> and <code>QPFRDATA.QAPMDISK</code> hold one member per collection, and a plain query reads only the oldest. <code>QTEMP</code> aliases last only for the current job. If Bob reports <code>QTEMP.JSUM not found</code> later, repeat this step.</p></div>
 
-      <h3 class="subsection">Step 5 — CPU Trend Direction</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">From the CPU samples we just retrieved, calculate using window arithmetic:
+      <h3 class="subsection">Step 4 — Collection Services History and CPU Trend</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query QSYS2.COLLECTION_SERVICES_INFO to show me the active collection name,
+profile, and start time. Then query QTEMP.JSUM for system-level CPU
+samples over the most recent 2 hours of collected data. Sum all job-group buckets per interval to get
+the system total. Show timestamp, CPU ms per second, and interval duration.
+
+Using window arithmetic, also calculate:
 1. The average CPU over the full window
 2. The average CPU for the first half vs the second half of the window
 3. Whether the trend is rising (second half > first half by more than 5%), falling, or flat
 4. The peak CPU sample and when it occurred</div></div>
 
-      <h3 class="subsection">Step 6 — Disk I/O Trend</h3>
+      <h3 class="subsection">Step 5 — Disk I/O Trend</h3>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">From Collection Services data, show me disk I/O request rates and average
-response times sampled over the last 2 hours. Flag any interval where
+response times sampled over the most recent 2 hours of collected data. Flag any interval where
 average response time exceeded 20ms — that threshold indicates I/O pressure.</div></div>
 
       <h2 class="section-title">Part 3 <span class="section-badge">Anomaly Detection</span></h2>
 
-      <h3 class="subsection">Step 7 — Compare Current to Baseline</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Using the Collection Services samples from QPFRDATA.QAPMJSUM and QPFRDATA.QAPMDISK
-over the last 2 hours as a baseline, compare the current snapshot values to that baseline.
+      <h3 class="subsection">Step 6 — Compare Current to Baseline</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Using the Collection Services samples from QTEMP.JSUM and QTEMP.DISK
+over the most recent 2 hours of collected data, treat all intervals except the latest
+as the baseline and the latest interval as "current".
 
-For each metric (CPU ms/sec, disk I/O ops/sec, pool fault rate):
+For each metric (CPU ms/sec and disk I/O ops/sec):
 - Show the baseline average across all sampled intervals
 - Show the current value from the most recent interval
 - Calculate the deviation (current minus baseline average)
 - Flag as ANOMALY if the current value is more than 2 standard deviations above
-  the baseline average, or more than 25% above it in absolute terms</div></div>
-
-      <h3 class="subsection">Step 8 — Root-Cause the Anomalies</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">CPU is anomalously high right now compared to the 2-hour baseline.
-Cross-reference with the active job snapshot — which jobs started or
-significantly increased their CPU consumption within the last 30 minutes?</div></div>
-
-      <h3 class="subsection">Step 9 — Deep Job Investigation</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">The anomaly detection flagged job [JOB_NAME] as the likely cause of the CPU spike.
-Investigate this job fully:
-1. Pull its job log — show all escape messages, warnings, and any FFDC references
-2. Show its current runtime context: thread count, memory use, subsystem, pool,
-   and how long it has been running
-3. If it is a PASE process, check the IFS for its executable path, working
-   directory, and any open log files
-4. Based on what you find, give me no more than two recommendations.
-Distinguish facts from inferences.</div></div>
+  the baseline average, or more than 25% above it in absolute terms
+- Also identify the single most unusual interval in the window (highest value
+  relative to the average) and say whether it is a meaningful anomaly or normal variance</div></div>
+      <div class="callout tip"><div class="icon">💡</div><p>A healthy system will often show no anomaly. "Normal variance" is a valid finding.</p></div>
 
       <h2 class="section-title">Part 4 <span class="section-badge">Capacity Forecasting</span></h2>
 
-      <h3 class="subsection">Step 10 — ASP Usage Forecast</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query QSYS2.SYSTEM_STATUS_INFO for current ASP usage.
-Then query Collection Services for ASP usage samples over the last 7 days.
-Calculate the average daily growth rate in GB.
-Project forward: at the current growth rate, how many days until ASP reaches
-85%? And how many days until it reaches 95%?
+      <h3 class="subsection">Step 7 — ASP Usage Forecast</h3>
+      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Query QSYS2.ASP_INFO for the current system ASP (ASP 1) usage.
+Assume the ASP grows by 2 GB per day.
+Project forward: how many days until ASP reaches 85%? And how many days
+until it reaches 95%?
 Flag if either threshold is within 30 days.</div></div>
-      <div class="callout tip"><div class="icon">💡</div><p>If <code>QPFRDATA.QAPMLPAR</code> has no rows (the <code>*LPAR</code> category not collected), use the current <code>QSYS2.ASP_INFO</code> snapshot combined with a hypothetical growth rate. Enable with: <code>CHGPFRCOL CGTLIST(*ADD *LPAR)</code></p></div>
-
-      <h3 class="subsection">Step 11 — Memory Pool Sizing Forecast</h3>
-      <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">For each memory pool with a fault rate above 1 fault/second in the Collection
-Services data, show the current pool size, the defined (minimum) size, and
-calculate how much additional memory would be needed to bring the fault rate
-to near zero based on IBM's general guidance of 10% headroom above working set.</div></div>
+      <div class="callout tip"><div class="icon">💡</div><p>Collection Services does not hold a long enough ASP history for a fitted trend in this lab, so Bob projects from the current <code>QSYS2.ASP_INFO</code> snapshot and the stated growth assumption.</p></div>
 
       <h2 class="section-title">Part 5 <span class="section-badge">Health Report Generation</span></h2>
 
-      <h3 class="subsection">Step 12 — Consolidated Health Report</h3>
+      <h3 class="subsection">Step 8 — Consolidated Health Report</h3>
       <div class="prompt-block"><div class="prompt-label">Bob Prompt</div><div class="prompt-text">Based on everything we've found — the current snapshot, trend analysis,
-anomaly detections, job investigation, SQL diagnosis, and capacity forecasts —
+anomaly detection, and capacity forecast —
 generate a comprehensive operational health report for this IBM i system.
 
 Structure it as:
@@ -2061,6 +2045,7 @@ Structure it as:
 5. Recommended Actions — prioritised list (Critical / High / Medium / Low) with specific commands or queries
 6. Monitoring Recommendations — what to watch over the next 24–72 hours
 
+If no anomaly was found, state that clearly and mark the dashboard Green.
 Format as Markdown.
 Save the report to /home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt;_&lt;yourname&gt;.md"
 </div></div>
@@ -2069,14 +2054,14 @@ Save the report to /home/ITZUSER/HEALTHREPORTS/health_report_&lt;today's date&gt
       <h2 class="section-title">Common Troubleshooting</h2>
       <div class="table-wrap"><table><thead><tr><th>Error</th><th>Likely Cause</th><th>Resolution</th></tr></thead><tbody>
         <tr><td><code>QSYS2.DISK_STATISTICS</code> not found</td><td>This view does not exist</td><td>Replace all references with <code>QSYS2.SYSDISKSTAT</code></td></tr>
-        <tr><td><code>COLLECTION_SERVICES_INFO</code> returns no rows</td><td>No collection running</td><td>Run <code>STRPFRCOL COLLNAME(*GEN) TYPE(*STANDARDP)</code></td></tr>
-        <tr><td>Collection data only covers a few minutes</td><td>Collection just started</td><td>Wait 2–3 intervals or reduce interval to 5 mins: <code>STRPFRCOL COLLNAME(*GEN) INTERVAL(5)</code></td></tr>
+        <tr><td><code>COLLECTION_SERVICES_INFO</code> returns no rows</td><td>No collection running</td><td>Run <code>STRPFRCOL COLPRF(*STANDARDP)</code></td></tr>
+        <tr><td>Collection data only covers a few minutes</td><td>Collection just started</td><td>Wait 2–3 intervals or reduce interval to 5 mins: <code>CFGPFRCOL INTERVAL(5)</code></td></tr>
         <tr><td><code>SYSDISKSTAT</code> columns <code>ELAPSED_PERCENT_BUSY</code> / <code>ELAPSED_IO_REQUESTS</code> are NULL</td><td>Disk is SAN/virtual — hypervisor doesn't expose arm-level I/O counters</td><td>Use <code>PERCENT_USED</code> for storage utilisation</td></tr>
-        <tr><td><code>QPFRDATA.QAPMLPAR</code> returns no rows</td><td><code>*LPAR</code> category not enabled</td><td>Run <code>CHGPFRCOL CGTLIST(*ADD *LPAR)</code></td></tr>
+        <tr><td><code>QTEMP.JSUM</code> or <code>QTEMP.DISK</code> not found</td><td>QTEMP aliases last only for the current job</td><td>Repeat Step 3 to recreate them</td></tr>
         <tr><td>ASP query returns multiple rows</td><td>Multiple ASPs configured</td><td>Add <code>WHERE ASP_NUMBER = 1</code> to focus on the system ASP</td></tr>
       </tbody></table></div>
 
-      <div class="callout success"><div class="icon">✅</div><p>You've built a complete end-to-end Predictive Operational Health Monitor — real-time snapshots, Collection Services trend analysis, statistical anomaly detection, job drill-down, capacity forecasting, and an executive-ready health report — all from conversational prompts with Bob.</p></div>
+      <div class="callout success"><div class="icon">✅</div><p>You've built a complete end-to-end Predictive Operational Health Monitor — real-time snapshots, Collection Services trend analysis, statistical anomaly detection, capacity forecasting, and an executive-ready health report — all from conversational prompts with Bob.</p></div>
     </div>
     <div class="page-nav">
       <button class="btn btn-secondary" onclick="showPage('lab8', document.querySelector('[onclick*=lab8]'))">← Lab 8</button>
